@@ -1,10 +1,17 @@
-import React from 'react'
 import ReactDOM from 'react-dom/client'
-import App from './App.jsx'
+import {BrowserRouter, Route, Routes} from "react-router-dom";
 import './index.css'
+import Login from './components/Login';
+
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <BrowserRouter> 
+    <>
+      {/* <Navbar> */}
+      <Routes>
+
+        <Route path="/login" element={<Login/>}/>
+      </Routes>
+    </>
+  </BrowserRouter>
 )
