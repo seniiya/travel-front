@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom';
 
 
 export default function FindID() {
-    // const { register, handleSubmit, formState: { errors }} = useForm();
+    // const { register, onSubmit, formState: { errors }} = useForm();
     const [email, setEmail] = useState('');
     const [verificationCode, setVerificationCode] = useState('');
     const [isEmailVerified, setIsEmailVerified] = useState(false);
@@ -27,7 +27,7 @@ export default function FindID() {
         setIsEmailVerified(true);
     };
 
-        const handleSubmit = (e) => {
+    const onSubmit = (e) => {
         e.preventDefault();
         let isValid = true;
 
@@ -55,7 +55,7 @@ export default function FindID() {
             <A.LoginPageContainer>
                 <A.LoginMain>
                 <A.Logo src={logo} alt="Memoir Logo" onClick={handleLogoClick}/>
-                <form onSubmit = {handleSubmit(onSubmit)}>
+                <form onSubmit = {onSubmit}>
                 <A.Description>계정에 등록된 이메일로 인증을 해주세요.</A.Description>
                     <A.InputForm>
                         <A.InputContainer>

@@ -35,7 +35,7 @@ export default function Login() {
         },
         pw: {
             required: true,
-            minLength: 5,
+            minLength: 8,
             maxLength: 20,
             pattern: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{5,20}$/
         }
@@ -80,6 +80,7 @@ export default function Login() {
                 <A.LoginMain>
                     <A.Logo src={logo} alt="Memoir Logo" onClick={handleLogoClick}/>
                     <form onSubmit = {handleSubmit(onSubmit)}>
+                    {/* <form onSubmit = {onSubmit}> */}
                     <A.InputForm>
                         <A.InputContainer>
                             <A.InputWrapper>
