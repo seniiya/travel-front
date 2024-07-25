@@ -36,10 +36,10 @@ export default function Login() {
         pw: {
             required: true,
             minLength: 8,
-            maxLength: 20,
-            pattern: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{5,20}$/
+            pattern:  /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/
         }
     };
+    // 영문자 + 숫자 
 
 
     const onSubmit = (data) => {
