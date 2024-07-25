@@ -21,6 +21,8 @@ export const loginpage = styled.div`
 export const InputContainer = styled.div`
     position: relative;
     width: 100%;
+    display: flex;
+    align-items: center;
 `;
 
 
@@ -31,6 +33,7 @@ export const Icon = styled.img`
     transform: translateY(-50%);
     width: 20px; /* Adjust size as needed */
     height: 20px;
+    // margin-left: 10px;
     cursor: pointer;
 `;
 
@@ -47,9 +50,11 @@ export const IconClear = styled.img`
 
 export const ErrorMessage = styled.div`
     color: red;
-    font-size: 14px;
-    margin-top: 10px;a
-    margin-bottom: 10px;
+    font-size: 13px;
+    bottom: 0;
+    left: 0;
+    // margin-top: 0px;
+    // margin-bottom: 0px;
 `;
 
 
@@ -91,7 +96,26 @@ export const LoginMain = styled.div`
 
     // /* Frame 10018 */
 
-    // position: absolute;
+    position: absolute;
+    // width: 584px;
+    // height: 457.55px;
+    // left: 0px;
+    // top: 0px;
+`;
+
+// 비번 변경 페이지 
+export const RePWMain = styled.div`
+    display: flex;
+    flex-direction: column;
+    // align-items: flex-start;
+    align-items: center;
+    // padding: 50px 70px;
+    gap: 10px;
+    // width: 100%;
+
+    // /* Frame 10018 */
+
+    position: absolute;
     // width: 584px;
     // height: 457.55px;
     // left: 0px;
@@ -102,14 +126,15 @@ export const Logo = styled.img`
   align-items: center;
   width: 150px;
   height: auto;
-  margin-bottom: 1rem;
-  marign-top: 50px;
+  margin-bottom: 8px;
+  marign-top: 20px;
 `;
 
 export const Description = styled.p`
   margin-bottom: 30px; /* Increased margin for better spacing */
   color: #333; /* Adjust text color */
   font-size: 1.1em; /* Slightly larger text for readability */
+  margin-top: 8px;
 `;
 
 export const InputForm = styled.div`
@@ -117,27 +142,38 @@ export const InputForm = styled.div`
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    padding: 0px;
+    // padding-bottom: 40px;
+    padding: 10px;
     gap: 20px;
 
-    width: 444px;
-    height: 90px;
+    // width: 444px;
+    // height: 90px;
+    // hegith: auto;
+    width: 100%;
 
 
     /* Inside auto layout */
-    flex: none;
-    order: 0;
-    align-self: stretch;
-    flex-grow: 0;
+    // flex: none;
+    // order: 0;
+    // align-self: stretch;
+    // flex-grow: 0;
 
-    margin-top:
+ 
+`;
 
+export const InputWrapper = styled.div`
+    display: flex;
+    align-items: center;
+    // border-bottom: 1px solid #ddd;
+    width: 100%;
 `;
 
 export const Input = styled.input`
-    width: calc(100% - 30px); /* Adjust width to leave space for icon */
-    padding: 10px;
-    padding-right: 30px; /* Adjust padding for icon space */
+    flex: 1;
+    // width: calc(100% - 30px); /* Adjust width to leave space for icon */
+    width: calc(100% - 150px);
+    padding: 10px 0;
+    // padding-right: 30px; /* Adjust padding for icon space */
     border: none;
     border-bottom: 1px solid #ddd;
     outline: none;
@@ -145,8 +181,26 @@ export const Input = styled.input`
     &:focus {
         border-bottom: 2px solid #007bff;
     }
-    
+      
+
 `;
+
+
+
+export const HolderTxt = styled.div`
+    font-size: 14px;
+`;
+
+export const Hint = styled.span`
+    font-size: 12px;
+    // color: #888;
+    // margin-left: 10px;
+    // wite-space: nowrap;
+    // transform: translateY(-50%);
+    // visibility: ${({isVisible}) => (isVisible ? 'visible' : 'hidden')};
+`;
+
+
 
 export const SmallButton = styled.button`
   position: absolute;
@@ -224,13 +278,14 @@ export const Button = styled.button`
     width: 444px;
     height: 50px;
     margin-top: 40px;
+    margin-bottom: 20px;
 
 
     // width: 100%;
     padding: 10px;
     background-color: #005CF9;
     border: none;
-    border-radius: 4px;
+    border-radius: 15px;
     color: white;
     font-size: 1rem;
     cursor: pointer;
@@ -318,30 +373,30 @@ export const LookText = styled.div`
 `;
 
 export const LoglookLink = styled(Link)`
-/* 아이디 찾기 */
+    /* 아이디 찾기 */
 
-// width: 69px;
-// height: 20px;
+    // width: 69px;
+    // height: 20px;
 
-font-family: 'AppleSDGothicNeoR00';
-font-style: normal;
-font-weight: 400;
-font-size: 14px;
-// line-height: 20px;
-/* identical to box height */
-display: flex;
-align-items: center;
-letter-spacing: -0.005em;
+    font-family: 'AppleSDGothicNeoR00';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    // line-height: 20px;
+    /* identical to box height */
+    display: flex;
+    align-items: center;
+    letter-spacing: -0.005em;
 
-/* Foundation /Blue/Normal :active */
-color: #55585B;
+    /* Foundation /Blue/Normal :active */
+    color: #55585B;
 
 
-/* Inside auto layout */
-flex: none;
-order: 0;
-flex-grow: 0;
-text-decoration: none;
+    /* Inside auto layout */
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+    text-decoration: none;
 
 `;
 

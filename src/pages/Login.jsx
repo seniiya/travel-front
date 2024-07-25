@@ -61,15 +61,15 @@ export default function Login() {
         setShowPw(!showPw);
     };
 
-    // 이거 왜 해주는거임 
+  
     const handleIdChange = (e) => {
         setIdValue(e.target.value);
     };
-    // 얘도 왜 해주는거임
+   
     const handlePwChange = (e) => {
         setPwValue(e.target.value);
     };
-    // 얜 뭔 역할임 
+  
     const clearIdInput = () => {
         setIdValue("");
     };
@@ -82,16 +82,19 @@ export default function Login() {
                     <form onSubmit = {handleSubmit(onSubmit)}>
                     <A.InputForm>
                         <A.InputContainer>
-                            <A.Input 
-                                {...register("id", validationRules.id)} 
-                                type='text' 
-                                placeholder='아이디'
-                                value={idValue}
-                                onChange={handleIdChange} // 얘네 왜 넣어주지 
-                            />
-                            {idValue && (
-                                <A.IconClear src={cancel} alt="Cancel Icon" onClick={clearIdInput}/>
-                            )}                        
+                            <A.InputWrapper>
+
+                                <A.Input 
+                                    {...register("id", validationRules.id)} 
+                                    type='text' 
+                                    placeholder='아이디'
+                                    value={idValue}
+                                    onChange={handleIdChange} // 얘네 왜 넣어주지 
+                                />
+                                {idValue && (
+                                    <A.IconClear src={cancel} alt="Cancel Icon" onClick={clearIdInput}/>
+                                )} 
+                            </A.InputWrapper>                       
                         </A.InputContainer>
                         
                         <A.InputContainer>

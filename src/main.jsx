@@ -6,6 +6,7 @@ import Login from './pages/Login';
 import SignupPage from './pages/SignupPage';
 import EmailSignupPage from './pages/EmailSignupPage';
 import FindID from './pages/FindID';
+import RePW from './pages/RePW';
 
 
 ReactDOM.createRoot(document.getElementById('root')).render(
@@ -18,6 +19,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <Route path="/signup" element={<SignupPage />} />
         <Route path='/emailsignup' element={<EmailSignupPage/>}/>
         <Route path='/find-id' element={<FindID/>}/>
+        <Route path='/repasswd' element={<RePW/>}/>
       </Routes>
     </>
   </BrowserRouter>

@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 
 
 export default function FindID() {
+    // const { register, handleSubmit, formState: { errors }} = useForm();
     const [email, setEmail] = useState('');
     const [verificationCode, setVerificationCode] = useState('');
     const [isEmailVerified, setIsEmailVerified] = useState(false);
@@ -25,14 +26,6 @@ export default function FindID() {
         // Simulate email verification
         setIsEmailVerified(true);
     };
-
-    // const handleSubmit = (e) => {
-    //     e.preventDefault();
-    //     if (isEmailVerified) {
-    //       // Handle successful email verification
-    //       navigate('/next-step');
-    //     }
-    //   };
 
         const handleSubmit = (e) => {
         e.preventDefault();
@@ -62,6 +55,7 @@ export default function FindID() {
             <A.LoginPageContainer>
                 <A.LoginMain>
                 <A.Logo src={logo} alt="Memoir Logo" onClick={handleLogoClick}/>
+                <form onSubmit = {handleSubmit(onSubmit)}>
                 <A.Description>계정에 등록된 이메일로 인증을 해주세요.</A.Description>
                     <A.InputForm>
                         <A.InputContainer>
@@ -92,7 +86,7 @@ export default function FindID() {
                             <A.PwlookLink to="/find-pw">비밀번호 찾기</A.PwlookLink>
                         </A.LookText>
                     </A.UnderText>
-                   
+                    </form>
                 </A.LoginMain>
 
             </A.LoginPageContainer>
