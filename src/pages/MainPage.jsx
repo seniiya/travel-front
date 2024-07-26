@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import MainBack from '../pic/MainBack.png';
-import logo2 from '../pic/logo2.png';
-import folder from '../pic/folder.png';
+import MainBack from '../components/pic/MainBack.png';
+import logo2 from '../components/pic/logo2.png';
+import folder from '../components/pic/folder.png';
 
 const MainContainer = styled.div`
   position: relative;

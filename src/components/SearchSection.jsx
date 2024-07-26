@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import styled from 'styled-components';
-import magnifierIcon from '../pic/큰돋보기.png'; 
+import magnifierIcon from '../components/pic/큰돋보기.png'; 
 import PropTypes from 'prop-types'; // 돋보기 아이콘 이미지
 
 const SearchContainer = styled.div`

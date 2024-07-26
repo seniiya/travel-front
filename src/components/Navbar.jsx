@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import search from '../pic/search.png';
-import logo1 from '../pic/logo1.png';
-import music from '../pic/music.png';
-import Dropdown from './Dropdown'
+import search from '../components/pic/search.png';
+import logo1 from '../components/pic/logo1.png';
+import music from '../components/pic/music.png';
+import Dropdown from './Dropdown';
 import TravelBagDropdown from './TravelBagDropdown';
-import dropdownIcon from '../pic/화살표.png'
+import dropdownIcon from '../components/pic/화살표.png';
 import SearchSection from './SearchSection';
 
 const NavbarWrapper = styled.div`

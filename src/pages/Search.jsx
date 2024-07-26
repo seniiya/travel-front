@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import Dropdown from '../components/Dropdown';
 import styled from 'styled-components';
-import searchIcon from '../pic/큰돋보기.png'; // 아이콘 이미지를 임포트합니다.
+import searchIcon from '../components/pic/큰돋보기.png'; // 아이콘 이미지를 임포트합니다.
 
 const SearchContent = styled.div`
   display: flex;
