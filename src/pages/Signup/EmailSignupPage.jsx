@@ -128,7 +128,8 @@ const EmailSignupPage = () => {
     e.preventDefault();
     if (isEmailVerified) {
       // Handle successful email verification
-      navigate('/next-step');
+      navigate('/signup');
+      // 이메일 인증이 완료되면 회원가입창으로 넘어가도록 수정했습니다 !! 
     }
   };
 

@@ -234,7 +234,8 @@ function Navbar() {
         <Link to="#">여행 기록</Link>
         </NavbarLinks>
         <NavbarLogo>
-          <Link to="/home" className='mainHome'/>
+          <Link to="/" className='mainHome'/> 
+          {/* 로고 클릭하면 "/" 메인페이지로 이동하도록 ! */}
         </NavbarLogo>
         <NavbarIcons>
           <SearchIcon onClick={() => setShowSearchSection(!showSearchSection)} />

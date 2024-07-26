@@ -4,6 +4,7 @@ import MainBack from '../components/pic/MainBack.png';
 import logo2 from '../components/pic/logo2.png';
 import folder from '../components/pic/folder.png';
 
+
 const MainContainer = styled.div`
   position: relative;
   max-width: 1920px;
@@ -108,7 +109,10 @@ const MainPage = () => {
         {createFolder('• 쌓인 기록')}
         {createFolder('• 총 기록일')}
       </FolderContainer>
+      
     </MainContainer>
+
+
   );
 };
 

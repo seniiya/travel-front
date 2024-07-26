@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import Dropdown from '../components/Dropdown';
+import Dropdown from './Dropdown';
 
 function TravelBags() {
   const navigate = useNavigate();

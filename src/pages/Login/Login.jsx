@@ -5,7 +5,7 @@ import copyright from '../img/copyright.svg';
 import visible from '../img/visible.svg';
 import invisible from '../img/invisible.svg';
 import cancel from '../img/cancel.svg';
-import * as A from "./Login.style";
+import * as A from "../Login.style";
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 

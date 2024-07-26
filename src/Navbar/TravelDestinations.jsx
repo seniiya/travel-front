@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import Dropdown from '../components/Dropdown';
+import Dropdown from './Dropdown';
 
 function TravelDestinations() {
   const navigate = useNavigate();
