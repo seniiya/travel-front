@@ -15,6 +15,7 @@ import Music from './pages/Music';
 import RePW from './pages/RePW';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import Contents from './pages/Contents';
 
 
 ReactDOM.createRoot(document.getElementById('root')).render(
@@ -36,7 +37,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <Route path="/search" element={<Search />} />
         <Route path="/music" element={<Music />} />
       </Routes>
-      <Footer/>
     
+      <Contents />
+      <Footer/>
+      
   </BrowserRouter>
 )

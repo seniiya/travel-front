@@ -14,15 +14,15 @@ import sampleDefault3 from '../components/pic/samples/sample3.jpeg';
 import sampleDefault4 from '../components/pic/samples/sample4.jpeg';
 import sampleDefault5 from '../components/pic/samples/sample5.jpeg';
 import sampleDefault6 from '../components/pic/samples/sample6.jpeg';
-import sampleDefault7 from '../components/pic/sample7.jpeg';
-import sampleDefault8 from '../components/pic/sample8.jpeg';
-import sampleDefault9 from '../components/pic/sample9.jpeg';
-import sampleDefault10 from '../components/pic/sample10.jpeg';
-import sampleDefault11 from '../components/pic/sample11.jpeg';
-import sampleDefault12 from '../components/pic/sample12.jpeg';
-import sampleDefault13 from '../components/pic/sample13.jpeg';
-import sampleDefault14 from '../components/pic/sample14.jpeg';
-import sampleDefault15 from '../components/pic/sample15.jpeg';
+import sampleDefault7 from '../components/pic/samples/sample7.jpeg';
+import sampleDefault8 from '../components/pic/samples/sample8.jpeg';
+import sampleDefault9 from '../components/pic/samples/sample9.jpeg';
+import sampleDefault10 from '../components/pic/samples/sample10.jpeg';
+import sampleDefault11 from '../components/pic/samples/sample11.jpeg';
+import sampleDefault12 from '../components/pic/samples/sample12.jpeg';
+import sampleDefault13 from '../components/pic/samples/sample13.jpeg';
+import sampleDefault14 from '../components/pic/samples/sample14.jpeg';
+import sampleDefault15 from '../components/pic/samples/sample15.jpeg';
 import sampleDefault16 from '../components/pic/samples/sample16.jpeg';
 
 const images = [
