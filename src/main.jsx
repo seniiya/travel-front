@@ -5,7 +5,9 @@ import MainPage from './pages/MainPage';
 import Login from './pages/Login';
 import SignupPage from './pages/SignupPage';
 import EmailSignupPage from './pages/EmailSignupPage';
-import FindID from './pages/FindID';
+// import FindID from './pages/FindID';
+import FindIdPage from './pages/FindIdPage';
+import FindPwPage from './pages/FindPwPage';
 import TravelDestinations from './pages/TravelDestinations';
 import TravelBags from './pages/TravelBags';
 import Search from './pages/Search';
@@ -24,7 +26,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <Route path="/login" element={<Login/>}/>
         <Route path="/signup" element={<SignupPage />} />
         <Route path='/emailsignup' element={<EmailSignupPage/>}/>
-        <Route path='/find-id' element={<FindID/>}/>
+        {/* <Route path='/find-id' element={<FindID/>}/> */}
+        <Route path='/findid' element={<FindIdPage/>}/>
+        <Route path='/findpw' element={<FindPwPage/>}/>
         <Route path='/repasswd' element={<RePW/>}/>
 
         <Route path="/travel-destinations" element={<TravelDestinations />} />

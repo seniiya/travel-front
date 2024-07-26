@@ -126,8 +126,8 @@ export default function Login() {
                     <A.UnderText>
                         <A.SignText to='/signup'>회원가입</A.SignText>
                         <A.LookText>
-                            <A.LoglookLink to="/find-id">아이디 찾기</A.LoglookLink> | {' '}
-                            <A.PwlookLink to="/find-pw">비밀번호 찾기</A.PwlookLink>
+                            <A.LoglookLink to="/findid">아이디 찾기</A.LoglookLink> | {' '}
+                            <A.PwlookLink to="/findpw">비밀번호 찾기</A.PwlookLink>
                         </A.LookText>
                     </A.UnderText>
                     </form>
