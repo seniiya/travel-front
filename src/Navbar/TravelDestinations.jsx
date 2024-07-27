@@ -76,5 +76,6 @@ function TravelDestinations() {
 // TravelDestinations.propTypes = {
 //   history: PropTypes.object.isRequired,
 // };
+// isRequired 정의 x, history 쓰이는 곳이 없음, proptypes 
 
 export default TravelDestinations;

@@ -114,7 +114,7 @@ const FindIdPage = () => {
   const [codeError, setCodeError] = useState('');
 
   const handleLogoClick = () => {
-    navigate('/mainpage');
+    navigate('/');
   };
 
   const validateEmail = () => {

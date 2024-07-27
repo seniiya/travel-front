@@ -1,4 +1,4 @@
-
+// 사진이 없는 것 같고, music.jsx 넣으니까 자꾸 오류떠서 일단 빼두었습니다 ㅜㅜ !! 
 import { useNavigate } from 'react-router-dom';
 import Dropdown from '../components/Dropdown.jsx';
 import styled from 'styled-components';

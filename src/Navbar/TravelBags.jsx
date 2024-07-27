@@ -35,3 +35,5 @@ function TravelBags() {
 }
 
 export default TravelBags;
+
+// TravelDestinations.jsx 와 같은 이유로 propstypes 관련 코드를 지워놨습니다 !! 

@@ -24,6 +24,7 @@ function SearchSectionWrapper() {
   const navigate = useNavigate();
   return <SearchSection onClose={() => navigate('/')} />;
 }
+// searchsection에서 onclose 때문에 자꾸 오류가 생겨서 코드 수정 
 
 
  

@@ -118,7 +118,7 @@ const FindIdPage = () => {
 
 
   const handleLogoClick = () => {
-    navigate('/mainpage');
+    navigate('/');
   };
 
   const validateEmail = () => {

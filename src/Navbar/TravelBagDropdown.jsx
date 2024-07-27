@@ -1,6 +1,5 @@
-import PropTypes from 'prop-types';
-// import search from '../components/pic/search.png';
-// search = PropTypes 같은 작은 돋보기 사진 입니다. 
+// import PropTypes from 'prop-types';
+
 import styled from 'styled-components';
 
 const DropdownContainer = styled.div`
@@ -99,6 +98,7 @@ function TravelBagDropdown({ onClose }) {
 // TravelBagDropdown.propTypes = {
 //   onClose: PropTypes.func.isRequired,
 // };
-//PropTypes 가 작은 돋보기로 미리님의 search.png 와 동일하여 변경했습니다 ! 
+// TravelDestinations.jsx와 동일 이유 
+
 
 export default TravelBagDropdown;
