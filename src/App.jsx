@@ -1,37 +1,45 @@
-import ReactDOM from 'react-dom/client'
-import {BrowserRouter, Route, Routes} from "react-router-dom";
-import './index.css'
-import MainPage from './pages/MainPage';
-import Login from './pages/Login/Login';
-import SignupPage from './pages/Signup/SignupPage';
-import EmailSignupPage from './pages/Signup/EmailSignupPage';
+// import ReactDOM from 'react-dom/client'
+import {BrowserRouter as Router, Route, Routes, useNavigate} from "react-router-dom";
+import './index.css';
+import MainPage from './pages/MainPage.jsx';
+import Login from './pages/Login/Login.jsx';
+import SignupPage from './pages/Signup/SignupPage.jsx';
+import EmailSignupPage from './pages/Signup/EmailSignupPage.jsx';
 // import FindID from './pages/FindID';
-import FindIdPage from './pages/Find/FindIdPage';
-import FindPwPage from './pages/Find/FindPwPage';
-import TravelDestinations from './Navbar/TravelDestinations';
-import TravelBags from './Navbar/TravelBags';
+import FindIdPage from './pages/Find/FindIdPage.jsx';
+import FindPwPage from './pages/Find/FindPwPage.jsx';
+import TravelDestinations from './Navbar/TravelDestinations.jsx';
+import TravelBags from './Navbar/TravelBags.jsx';
 // import Search from './pages/Search';
-import Music from './pages/Music';
-import RePW from './pages/RePW';
-import Navbar from './Navbar/Navbar';
-import Footer from './components/Footer';
-import Contents from './pages/Contents';
-import SearchSection from './Navbar/SearchSection';
+// import Music from './pages/Music.jsx';
+import RePW from './pages/Find/RePW.jsx';
+import Navbar from './Navbar/Navbar.jsx';
+import Footer from './components/Footer.jsx';
+import Contents from './pages/Contents.jsx';
+import SearchSection from './Navbar/SearchSection.jsx';
+// import { useNavigate } from "react-router-dom";
 
 
-ReactDOM.createRoot(document.getElementById('root')).render(
-  <BrowserRouter> 
-   
+function SearchSectionWrapper() {
+  const navigate = useNavigate();
+  return <SearchSection onClose={() => navigate('/')} />;
+}
+
+
+ 
+
+function App() {
+  return (
+    <Router> 
       <Navbar/>
       <Routes>
+      
         <Route path="/" element={
           <>
             <MainPage/>
             <Contents/>
           </>
-         }/>
-          
-
+        }/>
         <Route path="/login" element={<Login/>}/>
         <Route path="/signup" element={<SignupPage />} />
         <Route path='/emailsignup' element={<EmailSignupPage/>}/>
@@ -43,11 +51,16 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <Route path="/travel-destinations" element={<TravelDestinations />} />
         <Route path="/travel-bags" element={<TravelBags />} />
         <Route path="/search" element={<SearchSection />} />
-        <Route path="/music" element={<Music />} />
-      </Routes>
-    
-     
-      <Footer/>
+        {/* <Route path="/search" element={<SearchSection />} /> */}
+        {/* <Route path="/music" element={<Music />} /> */}
       
-  </BrowserRouter>
-)
+      </Routes>
+      <Footer/>
+    </Router>
+  );
+
+}
+
+
+
+export default App;

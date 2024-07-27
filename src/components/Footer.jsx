@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import logo from '../img/logo.svg'; // 로고 이미지 경로를 적절히 수정해주세요
+import logo from '../components/pic/logo.svg'; // 로고 이미지 경로를 적절히 수정해주세요
 import { useState } from 'react'; 
 
 

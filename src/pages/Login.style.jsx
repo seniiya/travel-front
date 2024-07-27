@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Link } from 'react-router-dom';
-import check from '../img/check.svg';
+import check from '../components/pic/check.svg';
 
 export const loginpage = styled.div`
     display; flex;

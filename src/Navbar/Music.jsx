@@ -1,6 +1,6 @@
 
 import { useNavigate } from 'react-router-dom';
-import Dropdown from '../components/Dropdown';
+import Dropdown from '../components/Dropdown.jsx';
 import styled from 'styled-components';
 
 const MusicContent = styled.div`

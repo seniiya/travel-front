@@ -2,6 +2,7 @@ import { useState } from 'react';
 import styled from 'styled-components';
 import magnifierIcon from '../components/pic/큰돋보기.png'; 
 import PropTypes from 'prop-types'; // 돋보기 아이콘 이미지
+// import search from '../components/pic/search.png';
 
 const SearchContainer = styled.div`
   background-color: white;

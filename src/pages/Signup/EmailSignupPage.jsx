@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import logo from '../img/logo.svg';
+import logo from '../../components/pic/logo.svg';
 
 const PageContainer = styled.div`
   display: flex;
@@ -116,7 +116,7 @@ const EmailSignupPage = () => {
   const [isEmailVerified, setIsEmailVerified] = useState(false);
 
   const handleLogoClick = () => {
-    navigate('/mainpage');
+    navigate('/');
   };
 
   const handleEmailVerification = () => {

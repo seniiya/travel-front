@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import logo from '../img/logo.svg';
-import cancel from '../img/cancel.svg';
-import invisible from '../img/invisible.svg';
-import visible from '../img/visible.svg';
+import logo from '../../components/pic/logo.svg';
+import cancel from '../../components/pic/cancel.svg';
+import invisible from '../../components/pic/invisible.svg';
+import visible from '../../components/pic/visible.svg';
 
 const PageContainer = styled.div`
   display: flex;
@@ -148,7 +148,7 @@ const SignupPage = () => {
   const [errors, setErrors] = useState({});
 
   const handleLogoClick = () => {
-    navigate('/mainpage');
+    navigate('/');
   };
 
   const togglePasswordVisibility = () => {
@@ -290,7 +290,7 @@ const SignupPage = () => {
           <p>계정이 있으신가요?</p>
           <p>
             <FooterLink href="/login">로그인</FooterLink> |{' '}
-            <FooterLink href="/find-id">아이디 찾기</FooterLink>
+            <FooterLink href="/findid">아이디 찾기</FooterLink>
           </p>
         </SignupFooter>
       </FormContainer>

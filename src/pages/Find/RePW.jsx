@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 // import styled from 'styled-components';
-import logo from '../img/logo.svg';
-import copyright from '../img/copyright.svg';
-import visible from '../img/visible.svg';
-import invisible from '../img/invisible.svg';
-import * as A from "./Login.style";
+import logo from '../../components/pic/logo.svg';
+import copyright from '../../components/pic/copyright.svg';
+import visible from '../../components/pic/visible.svg';
+import invisible from '../../components/pic/invisible.svg';
+import * as A from "../Login.style.jsx";
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 
@@ -20,7 +20,7 @@ export default function RePW() {
     const navigate = useNavigate();
 
     const handleLogoClick = () => {
-        navigate('/mainpage');
+        navigate('/');
       };
 
     
@@ -115,7 +115,7 @@ export default function RePW() {
                         <A.SignText >계정을 찾으셨나요?</A.SignText>
                         <A.LookText>
                             <A.LoglookLink to="/login">로그인</A.LoglookLink> | {' '}
-                            <A.PwlookLink to="/find-id">아이디 찾기</A.PwlookLink>
+                            <A.PwlookLink to="/findid">아이디 찾기</A.PwlookLink>
                         </A.LookText>
                     </A.UnderText>
                    

@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import Dropdown from './Dropdown';
+import Dropdown from './Dropdown.jsx';
 
 function TravelDestinations() {
   const navigate = useNavigate();
@@ -73,8 +73,8 @@ function TravelDestinations() {
   );
 }
 
-TravelDestinations.propTypes = {
-  history: PropTypes.object.isRequired,
-};
+// TravelDestinations.propTypes = {
+//   history: PropTypes.object.isRequired,
+// };
 
 export default TravelDestinations;

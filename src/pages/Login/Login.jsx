@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 // import styled from 'styled-components';
-import logo from '../img/logo.svg';
-import copyright from '../img/copyright.svg';
-import visible from '../img/visible.svg';
-import invisible from '../img/invisible.svg';
-import cancel from '../img/cancel.svg';
-import * as A from "../Login.style";
+import logo from '../../components/pic/logo.svg';
+import copyright from '../../components/pic/copyright.svg';
+import visible from '../../components/pic/visible.svg';
+import invisible from '../../components/pic/invisible.svg';
+import cancel from '../../components/pic/cancel.svg';
+import * as A from "../Login.style.jsx";
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 
@@ -22,7 +22,7 @@ export default function Login() {
     const [ pwValue, setPwValue ] = useState("");
 
     const handleLogoClick = () => {
-        navigate('/mainpage');
+        navigate('/');
       };
 
 
