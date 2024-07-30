@@ -135,7 +135,3 @@ export default function RePW() {
         </A.loginpage>
     )
 }
-
-
-
-

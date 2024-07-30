@@ -147,7 +147,3 @@ export default function Login() {
         </A.loginpage>
     )
 }
-
-
-
-
