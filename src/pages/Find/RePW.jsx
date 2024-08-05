@@ -65,16 +65,11 @@ export default function RePW() {
                 <A.Logo src={logo} alt="Memoir Logo" onClick={handleLogoClick}/>
                 <A.Description>새로운 비밀번호로 변경해 주세요.</A.Description>
                 <form onSubmit={handleSubmit(onSubmit)}>
+
                     <A.InputForm>
                         
                         <A.InputContainer>
                      
-                                {/* <A.Input 
-                                    type={showPw ? 'text' : 'password'} 
-                                    placeholder='비밀번호'
-                                    value={pwValue}
-                                    onChange={handlePwChange}                            
-                                />   */}
                                 <A.Input 
                                     type={showPw ? 'text' : 'password'} 
                                     placeholder='비밀번호'
@@ -90,10 +85,7 @@ export default function RePW() {
 
                         
                         <A.InputContainer>
-                            {/* <A.Input type={reShowPw ? 'text' : 'password'} placeholder='비밀번호 확인'
-                                value={rePwValue}
-                                onChange={handleRePwChange}                            
-                            />   */}
+                            
                             <A.Input type={reShowPw ? 'text' : 'password'} 
                                 placeholder='비밀번호 확인'
                                 {...register("repassword", validateRule.repassword)}                            

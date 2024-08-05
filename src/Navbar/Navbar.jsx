@@ -230,8 +230,8 @@ function Navbar() {
           여행 가방
           <DropdownIcon src={dropdownIcon} alt="dropdown" className={showTravelBagDropdown ? 'open' : ''} />
         </Link>
-        <Link to="#">여행가 순위</Link>
-        <Link to="#">여행 기록</Link>
+        <Link to='/traveler-rank'>여행가 순위</Link>
+        <Link to="/popular-record">여행 기록</Link>
         </NavbarLinks>
         <NavbarLogo>
           <Link to="/" className='mainHome'/> 

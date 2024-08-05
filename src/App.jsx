@@ -17,8 +17,10 @@ import Navbar from './Navbar/Navbar.jsx';
 import Footer from './components/Footer.jsx';
 import Contents from './pages/Contents.jsx';
 import SearchSection from './Navbar/SearchSection.jsx';
+import PopularPage from "./pages/PopularPage.jsx";
 // import { useNavigate } from "react-router-dom";
 
+import TravelerRank from "./pages/TravelerRank.jsx";
 
 function SearchSectionWrapper() {
   const navigate = useNavigate();
@@ -35,12 +37,7 @@ function App() {
       <Navbar/>
       <Routes>
       
-        <Route path="/" element={
-          <>
-            <MainPage/>
-            <Contents/>
-          </>
-        }/>
+        <Route path="/" element={<><MainPage/><Contents/></>}/>
         <Route path="/login" element={<Login/>}/>
         <Route path="/signup" element={<SignupPage />} />
         <Route path='/emailsignup' element={<EmailSignupPage/>}/>
@@ -52,9 +49,10 @@ function App() {
         <Route path="/travel-destinations" element={<TravelDestinations />} />
         <Route path="/travel-bags" element={<TravelBags />} />
         <Route path="/search" element={<SearchSection />} />
-        {/* <Route path="/search" element={<SearchSection />} /> */}
         {/* <Route path="/music" element={<Music />} /> */}
-      
+
+        <Route path='/traveler-rank' element={<TravelerRank/>}/>
+        <Route path='/popular-record' element={<PopularPage/>}/>
       </Routes>
       <Footer/>
     </Router>
