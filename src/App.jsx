@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, useNavigate } from "react-router-dom";
 import './index.css';
 import MainPage from './pages/MainPage.jsx';
@@ -6,13 +7,14 @@ import SignupPage from './pages/Signup/SignupPage.jsx';
 import EmailSignupPage from './pages/Signup/EmailSignupPage.jsx';
 import FindIdPage from './pages/Find/FindIdPage.jsx';
 import FindPwPage from './pages/Find/FindPwPage.jsx';
-import TravelDestinations from './pages/TravelDestinations.jsx'; // 여기에 페이지 컴포넌트를 임포트
+import TravelDestinations from './pages/TravelDestinations.jsx';
 import TravelBags from './Navbar/TravelBags.jsx';
 import RePW from './pages/Find/RePW.jsx';
 import Navbar from './Navbar/Navbar.jsx';
 import Footer from './components/Footer.jsx';
 import Contents from './pages/Contents.jsx';
 import SearchSection from './Navbar/SearchSection.jsx';
+import Header from './components/Header.jsx';
 
 function SearchSectionWrapper() {
   const navigate = useNavigate();
@@ -20,9 +22,11 @@ function SearchSectionWrapper() {
 }
 
 function App() {
+  const [selectedDest, setSelectedDest] = useState('여행지 - 전체');
+
   return (
-    <Router> 
-      <Navbar/>
+    <Router>
+      <Navbar />
       <Routes>
         <Route path="/" element={<><MainPage /><Contents /></>} />
         <Route path="/login" element={<Login />} />
@@ -31,11 +35,11 @@ function App() {
         <Route path='/findid' element={<FindIdPage />} />
         <Route path='/findpw' element={<FindPwPage />} />
         <Route path='/repasswd' element={<RePW />} />
-        <Route path="/travel-destinations" element={<TravelDestinations />} /> {/* 경로 수정 */}
+        <Route path="/travel-destinations" element={<><Header selectedDest={selectedDest} setSelectedDest={setSelectedDest} /><TravelDestinations selectedDest={selectedDest} /></>} />
         <Route path="/travel-bags" element={<TravelBags />} />
         <Route path="/search" element={<SearchSectionWrapper />} />
       </Routes>
-      <Footer/>
+      <Footer />
     </Router>
   );
 }

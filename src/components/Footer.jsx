@@ -8,13 +8,11 @@ const FooterContainer = styled.footer`
   padding: 20px;
   display: flex;
   flex-direction: column;
-  position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
   z-index: 100;
   font-size: 16px;
-
   @media (max-width: 1200px) {
     font-size: 14px;
   }

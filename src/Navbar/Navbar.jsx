@@ -26,7 +26,6 @@ const NavbarContainer = styled.div`
   padding: 10px 20px;
   background-color: ${props => props.isScrolled ? 'rgba(255, 255, 255, 0.9)' : 'rgba(255, 255, 255, 0.7)'};
   backdrop-filter: blur(5px);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: background-color 0.3s ease;
   font-size: 16px;
   white-space: nowrap;
