@@ -8,7 +8,7 @@ import mark3 from '../components/pic/mark3.png';
 import headerbar from '../components/pic/headerbar.svg';
 import hearticon from '../components/pic/hearticon.svg';
 import fullheart from '../components/pic/fullheart.svg';
-import scrapicon from '../components/pic/scrapicon.svg';
+import scrap from '../components/pic/scrap.svg';
 import recordicon from '../components/pic/recordicon.svg';
 import movetop from '../components/pic/movetop.svg';
 
@@ -397,7 +397,7 @@ export default function TravelerRank() {
                         <span>{traveler.likes}</span>
                       </StatItem>
                       <StatItem>
-                        <img src={scrapicon} alt="scrap"/>
+                        <img src={scrap } alt="scrap"/>
                         <span>{traveler.comments}</span>
                       </StatItem>
                       <StatItem>
@@ -412,10 +412,10 @@ export default function TravelerRank() {
 
             </TravelersGrid>
 
-            <GoTop onClick={MoveToTop}>
+            <A.GoTop onClick={MoveToTop}>
               <img src={movetop}  alt="move to top"/>
-            </GoTop>
-            {/* 왜 안뜨묘 ㅠㅜ */}
+            </A.GoTop>
+            
 
 
 
@@ -433,7 +433,8 @@ const SectionWrapper = styled.div`
     justify-content: space-between;
     align-items: center;
     padding: 0 20px;
-    margin-bottom: 20px;
+    margin-bottom: 50px;
+    margin-top: 80px;
 `;
 
 const TravelersGrid = styled.div`
@@ -512,25 +513,7 @@ const StatItem = styled.div`
   }
 `;
 
-const GoTop = styled.div`
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    width: 50px;
-    height: 50px;
-    cursor: pointer;
 
-    img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-
-    box-shadow: inset -2px -3px 14px #FFFFFF;
-    filter: drop-shadow(1px 2px 7px rgba(0, 0, 0, 0.1));
-    backdrop-filter: blur(4px);
-
-`;
 
 
 

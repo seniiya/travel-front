@@ -22,6 +22,9 @@ export default function PopularPage() {
       window.scrollTo({ top: 0, behavior: 'smooth'})
     }
 
+    const travelersPerPage = 24;
+
+
     // content 데이터 정의 
     const contentCards = Array.from({ length: 24 }, (_, index) => ({
       id: index,
@@ -30,8 +33,13 @@ export default function PopularPage() {
       author: "김태엽",
       date: "2024-08-24",
       views: "999+",
+      like: "84",
+      scrap: "3",
       image: sampleDefault
     }));
+    // like scrap 이미지에 뜨게 
+    
+    const selectCard = contentCards.slice(0, travelersPerPage);
 
 
 // 최신순 오래된순 이름순 좋아요순 스크랩순 조회순
@@ -87,8 +95,8 @@ export default function PopularPage() {
               </A.Section>
 
               <WriteSection>
-                <A.SectionTxt to='/write'>
                 {/* 글쓰기 페이지로 이동 */}
+                <A.SectionTxt to='/write'>
                     글쓰기
                     <img src={recordicon} alt="record"/>
                 </A.SectionTxt>
@@ -97,7 +105,7 @@ export default function PopularPage() {
 
 
             <TravelersGrid>
-              {contentCards.map((card, index) => (
+              {selectCard.map((card, index) => (
                 <ContentCard 
                   key={card.id} 
                   onClick={() => setSelectedCard(index)} 
@@ -121,9 +129,9 @@ export default function PopularPage() {
 
         </A.Container>
 
-        <GoTop>
-        <img src={movetop} onClick={MoveToTop} />
-        </GoTop>
+        <A.GoTop>
+            <img src={movetop} onClick={MoveToTop} />
+        </A.GoTop>
     </>
     )
 }
@@ -133,15 +141,25 @@ const SectionWrapper = styled.div`
     justify-content: space-between;
     align-items: center;
     padding: 0 20px;
-    margin-bottom: 20px;
+    margin-bottom: 50px;
+    margin-top: 80px;
 `;
 
 const WriteSection = styled.div`
-    display: flex;
-    align-items: center;
-    padding: 0px;
-    gap: 10px;
-    margin-top: 250px;
+  display: flex;
+  align-items: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding-left: 15px;
+  font-size: 16px;
+  color: #b4b7b9;
+
+  img {
+    width: 20px;
+    height: 20px;
+    margin-left: 5px;
+  }
 `;
 
 
@@ -171,25 +189,11 @@ const TravelersGrid = styled.div`
       grid-template-rows: repeat(24, auto);
   }
 
-    // @media (max-width: 1024px) {
-    //     grid-template-columns: repeat(2, 1fr);
-    //     grid-template-rows: repeat(12, auto);
-    // }
-
-    // @media (max-width: 768px) {
-    //     grid-template-columns: repeat(2, 1fr);
-    //     grid-template-rows: repeat(12, auto);
-    // }
-
-    // @media (max-width: 480px) {
-    //     grid-template-columns: 1fr;
-    //     grid-template-rows: repeat(24, auto);
-    // }
 `;
 
 const ContentCard = styled.div`
     position: relative;
-    width: 97%;
+    width: 100%;
     background: white;
     border-radius: 10px;
     overflow: hidden;
@@ -238,20 +242,4 @@ const ContentCard = styled.div`
 
 `;
 
-const GoTop = styled.div`
-    /* Frame 9970 */
-
-    position: absolute;
-    width: 50px;
-    height: 50px;
-    left: 1695px;
-    top: 897px;
-    .img {
-        box-shadow: inset -2px -3px 14px #FFFFFF;
-        filter: drop-shadow(1px 2px 7px rgba(0, 0, 0, 0.1));
-        backdrop-filter: blur(4px);
-        /* Note: backdrop-filter has minimal browser support */
-    }
-
-`;
 

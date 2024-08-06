@@ -2,27 +2,12 @@ import styled from "styled-components";
 
 
 export const Container = styled.div`
-    // /* Frame 10087 */
-    // position: relative;
-    // position: absolute;
-    // width: 1400px;
-    // width: 100%
-    // max-width: 1400px;
-    // height: 2357px;
-    // left: calc(50% - 1400px/2);
-    // top: 376px;
 
-    // padding: 0 20px;
-    // box-sizing: border-box;
-    // display: flex;
-    // flex-direction: column;
-    // align-items: center;
-    // justify-content: center;
-    // width: 100%;
-    // min-height: 100vh;
     padding: 20px;
-    margin-top: 80px;
     overflow: hidden;
+    max-width: 1045px;
+    margin: 0 auto;
+    margin-top: 80px;
 
 `;
 
@@ -35,38 +20,34 @@ export const Section = styled.div`
     padding: 0px;
     gap: 10px;
 
-    margin-top: 250px;
-
-
-    margin-bottom: 20px;
-
 `;
 
 export const SectionTxt = styled.div`
-    /* 최신순 */
     
-    // width: 50px;
-    // height: 25px;
 
     font-family: 'Inter';
     font-style: normal;
     font-weight: 300;
-    font-size: 15px;
+    font-size: 18px;
     line-height: 130%;
-    // /* or 25px */
+ 
     display: flex;
     align-items: center;
     text-align: center;
     letter-spacing: -0.003em;
     text-transform: lowercase;
 
-    // /* MAIN */
-    // color: #B4B7B9;
+ 
     color: ${({$active}) => ($active ? '#005CF9': '#B4B7B9')};
     cursor: pointer;
 
     &:hover {
         color: #005CF9;
+    }
+
+    .separator {
+      cursor: default;
+      padding: 0 10px;
     }
 `;
 
@@ -84,14 +65,14 @@ export const SectionBar = styled.img`
     flex: none;
     flex-grow: 0;
 
-
+    cursor: default;
 `;
 
 export const Header = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
   margin-left: 50px;
 
   img {
@@ -115,23 +96,57 @@ export const Header = styled.div`
  export const HeaderBar = styled.div`
   /* Vector 672 */
 
-//   position: absolute;
-//   width: 1920px;
+  //   position: absolute;
+  //   width: 1920px;
+    height: 0px;
+    left: calc(50% - 1920px/2);
+    top: 0;
+
+  //   border: 1px solid #E0E2E6;
+
+  /* Vector 672 */
+
+  position: absolute;
+  width: 1920px;
   height: 0px;
   left: calc(50% - 1920px/2);
-  top: 0;
+  top: 220px;
 
-//   border: 1px solid #E0E2E6;
+  border: 1px solid #E0E2E6;
 
-/* Vector 672 */
 
-position: absolute;
-width: 1920px;
-height: 0px;
-left: calc(50% - 1920px/2);
-top: 262px;
 
-border: 1px solid #E0E2E6;
+`;
 
+export const GoTop = styled.button`
+
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    // box-shadow: inset -2px -3px 14px #FFFFFF;
+    // filter: drop-shadow(1px 2px 7px rgba(0, 0, 0, 0.1));
+    // backdrop-filter: blur(4px);
+
+    position: fixed;
+    bottom: 350px;
+    right: 80px;
+    background-color: rgba(255, 255, 255, 0);
+    color: #005cf9;
+    border: none;
+    border-radius: 1000px;
+    cursor: pointer;
+    font-size: 16px;
+    z-index: 1000;
+    width: 30px;
+    height: 30px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+    &:hover {
+      background-color: rgba(255, 255, 250, 0.5);
+    }
 
 `;
