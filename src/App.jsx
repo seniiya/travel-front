@@ -7,7 +7,7 @@ import SignupPage from './pages/Signup/SignupPage.jsx';
 import EmailSignupPage from './pages/Signup/EmailSignupPage.jsx';
 import FindIdPage from './pages/Find/FindIdPage.jsx';
 import FindPwPage from './pages/Find/FindPwPage.jsx';
-import TravelDestinations from './pages/TravelDestinations.jsx';
+import TravelDestinations from './pages/Destinations.jsx';
 import TravelBags from './Navbar/TravelBags.jsx';
 import RePW from './pages/Find/RePW.jsx';
 import Navbar from './Navbar/Navbar.jsx';
@@ -26,7 +26,7 @@ function App() {
 
   return (
     <Router>
-      <Navbar />
+      <Navbar setSelectedDest={setSelectedDest} />
       <Routes>
         <Route path="/" element={<><MainPage /><Contents /></>} />
         <Route path="/login" element={<Login />} />

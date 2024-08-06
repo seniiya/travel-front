@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import mark1 from '../components/pic/mark1.png';
+import mark2 from '../components/pic/mark2.png';
 import dropdownIcon from '../components/pic/화살표.png';
 
 const HeaderWrapper = styled.header`
@@ -132,7 +132,7 @@ function Header({ selectedDest, setSelectedDest }) {
   return (
     <HeaderWrapper>
       <SectionHeader>
-        <img src={mark1} alt="마크" />
+        <img src={mark2} alt="마크" />
         <div>
           <h2>{getMainCategory(selectedDest)} - {getSubCategory(selectedDest)}</h2>
           <p>올 여름 어디로 떠나 볼까요?</p>

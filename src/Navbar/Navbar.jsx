@@ -183,7 +183,7 @@ const MusicText = styled.span`
   }
 `;
 
-function Navbar() {
+function Navbar({ setSelectedDest }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const [showTravelBagDropdown, setShowTravelBagDropdown] = useState(false);
@@ -257,7 +257,7 @@ function Navbar() {
           </NavbarIcons>
         </div>
       </NavbarContainer>
-      {showDropdown && <Dropdown onClose={() => setShowDropdown(false)} />}
+      {showDropdown && <Dropdown onClose={() => setShowDropdown(false)} setSelectedDest={setSelectedDest} />}
       {showTravelBagDropdown && <TravelBagDropdown onClose={() => setShowTravelBagDropdown(false)} />}
       {showSearchSection && <SearchSection onClose={() => setShowSearchSection(false)} />}
     </NavbarWrapper>
