@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import axios from 'axios';
 import MainBack from '../components/pic/MainBack.png';
 import logo2 from '../components/pic/logo2.png';
 import folder from '../components/pic/folder.png';
-
 
 const MainContainer = styled.div`
   position: relative;
@@ -97,6 +97,33 @@ const createFolder = (text) => (
 );
 
 const MainPage = () => {
+  const [allTravelers, setAllTravelers] = useState(0);
+  const [newTravelers, setNewTravelers] = useState(0);
+  const [records, setRecords] = useState(0);
+  const [totalDays, setTotalDays] = useState(0);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [allRes, newRes, recordsRes, totalDaysRes] = await Promise.all([
+          axios.get('/api/allTravelers'),
+          axios.get('/api/newTravelers'),
+          axios.get('/api/records'),
+          axios.get('/api/totalDays')
+        ]);
+
+        setAllTravelers(allRes.data.count);
+        setNewTravelers(newRes.data.count);
+        setRecords(recordsRes.data.count);
+        setTotalDays(totalDaysRes.data.days);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <MainContainer>
       <BackgroundImage src={MainBack} alt="배경" />
@@ -104,16 +131,12 @@ const MainPage = () => {
       <Heading style={{ top: '350px' }}>여행가들의 기록을 따라 떠나보세요</Heading>
       <Heading style={{ top: '380px' }}>기록을 통해 나만의 (memoir)를 완성해 보세요</Heading>
       <FolderContainer>
-        {createFolder('• 모든 여행가')}
-        {createFolder('• 신규 여행가')}
-        {createFolder('• 쌓인 기록')}
-        {createFolder('• 총 기록일')}
-      </FolderContainer>
-      
-    </MainContainer>
-
-
+        {createFolder(`• 모든 여행가 (${allTravelers})`)};
+        {createFolder(`• 신규 여행가 (${newTravelers})`)};
+        {createFolder(`• 쌓인 기록 (${records})`)};
+        {createFolder(`• 총 기록일 (${totalDays})`)};
+    </FolderContainer>
+  </MainContainer>
   );
 };
-
 export default MainPage;

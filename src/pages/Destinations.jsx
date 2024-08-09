@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import axios from 'axios';
 import write from '../components/pic/write.png';
 import sampleDefault from '../components/pic/samples/sample.jpeg';
 import like from '../components/pic/like.png';
@@ -110,51 +111,24 @@ const Pagination = styled.div`
   }
 `;
 
-const destinations = [
-  { id: 1, title: '여행지 1', image: sampleDefault, content: '여행지 1 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다', nickname: '김태엽', date: '2021-08-20', views: '998', likes: 54, scraps: 12, dest: '대한민국 - 서울 · 경기' },
-  { id: 2, title: '여행지 2', image: sampleDefault, content: '여행지 2 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다', nickname: '김태엽', date: '2021-08-21', views: '999', likes: 65, scraps: 15, dest: '북아메리카 - 미국 · 서부' },
-  { id: 3, title: '여행지 3', image: sampleDefault, content: '여행지 3 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다', nickname: '김태엽', date: '2021-08-22', views: '912', likes: 66, scraps: 8, dest: '유럽 - 동유럽' },
-  { id: 4, title: '여행지 4', image: sampleDefault, content: '여행지 4 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다', nickname: '김태엽', date: '2021-08-23', views: '91', likes: 67, scraps: 5, dest: '아시아 - 일본' },
-  { id: 5, title: '여행지 5', image: sampleDefault, content: '여행지 5 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다', nickname: '김태엽', date: '2021-08-24', views: '9', likes: 68, scraps: 7, dest: '아프리카 - 모로코' },
-  { id: 6, title: '여행지 6', image: sampleDefault, content: '여행지 6 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다', nickname: '김태엽', date: '2021-08-25', views: '99999', likes: 69, scraps: 21, dest: '유럽 - 북유럽' },
-  { id: 7, title: '여행지 7', image: sampleDefault, content: '여행지 7 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다', nickname: '김태엽', date: '2021-08-26', views: '999999', likes: 70, scraps: 33, dest: '북아메리카 - 미국 · 동부' },
-  { id: 8, title: '여행지 8', image: sampleDefault, content: '여행지 8 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다', nickname: '김태엽', date: '2021-08-27', views: '99999', likes: 71, scraps: 14, dest: '대한민국 - 제주도' },
-  { id: 9, title: '여행지 9', image: sampleDefault, content: '여행지 9 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다', nickname: '김태엽', date: '2021-08-28', views: '99999', likes: 72, scraps: 25, dest: '중동 - 터키' },
-  { id: 10, title: '여행지 10', image: sampleDefault, content: '여행지 10 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다', nickname: '김태엽', date: '2022-08-20', views: '999', likes: 73, scraps: 16, dest: '대한민국 - 경상남도' },
-  { id: 11, title: '여행지 11', image: sampleDefault, content: '여행지 11 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다', nickname: '김태엽', date: '2022-08-21', views: '99999', likes: 74, scraps: 20, dest: '남아메리카 - 아르헨티나' },
-  { id: 12, title: '여행지 12', image: sampleDefault, content: '여행지 12 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다', nickname: '김태엽', date: '2022-08-22', views: '99999', likes: 75, scraps: 22, dest: '호주 - 호주' },
-  { id: 13, title: '여행지 13', image: sampleDefault, content: '여행지 13 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다', nickname: '김태엽', date: '2022-08-23', views: '99999', likes: 76, scraps: 18, dest: '대한민국 - 강원도' },
-  { id: 14, title: '여행지 14', image: sampleDefault, content: '여행지 14 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다', nickname: '김태엽', date: '2022-08-24', views: '99999', likes: 77, scraps: 17, dest: '북아메리카 - 캐나다' },
-  { id: 15, title: '여행지 15', image: sampleDefault, content: '여행지 15 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다', nickname: '김태엽', date: '2022-08-25', views: '99999', likes: 78, scraps: 13, dest: '아시아 - 베트남' },
-  { id: 16, title: '여행지 16', image: sampleDefault, content: '여행지 16 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다', nickname: '김태엽', date: '2022-08-26', views: '99999', likes: 79, scraps: 11, dest: '남아메리카 - 칠레' },
-  { id: 17, title: '여행지 17', image: sampleDefault, content: '여행지 17 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다', nickname: '김태엽', date: '2022-08-27', views: '99999', likes: 80, scraps: 19, dest: '유럽 - 서유럽' },
-  { id: 18, title: '여행지 18', image: sampleDefault, content: '여행지 18 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다', nickname: '김태엽', date: '2022-08-28', views: '99999', likes: 81, scraps: 26, dest: '남아메리카 - 페루' },
-  { id: 19, title: '여행지 19', image: sampleDefault, content: '여행지 19 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다', nickname: '김태엽', date: '2022-08-29', views: '99999', likes: 82, scraps: 23, dest: '북아메리카 - 멕시코' },
-  { id: 20, title: '여행지 20', image: sampleDefault, content: '여행지 20 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다', nickname: '김태엽', date: '2023-08-20', views: '999', likes: 83, scraps: 15, dest: '대한민국 - 충청남도' },
-  { id: 21, title: '여행지 21', image: sampleDefault, content: '여행지 21 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다', nickname: '김태엽', date: '2023-08-21', views: '999', likes: 84, scraps: 10, dest: '중동 - 기타' },
-  { id: 22, title: '여행지 22', image: sampleDefault, content: '여행지 22 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다', nickname: '김태엽', date: '2023-08-22', views: '999', likes: 85, scraps: 12, dest: '유럽 - 기타' },
-  { id: 23, title: '여행지 23', image: sampleDefault, content: '여행지 23 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다', nickname: '김태엽', date: '2023-08-23', views: '999', likes: 86, scraps: 8, dest: '아프리카 - 기타' },
-  { id: 24, title: '여행지 24', image: sampleDefault, content: '여행지 24 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다', nickname: '김태엽', date: '2023-08-24', views: '999', likes: 87, scraps: 9, dest: '아시아 - 기타' },
-  { id: 25, title: '여행지 25', image: sampleDefault, content: '여행지 25 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다', nickname: '김태엽', date: '2023-08-25', views: '999', likes: 88, scraps: 13, dest: '호주 - 기타' },
-  { id: 26, title: '여행지 26', image: sampleDefault, content: '여행지 26 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다', nickname: '김태엽', date: '2023-08-26', views: '999', likes: 89, scraps: 6, dest: '대한민국 - 경상북도' },
-  { id: 27, title: '여행지 27', image: sampleDefault, content: '여행지 27 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다', nickname: '김태엽', date: '2023-08-27', views: '999', likes: 90, scraps: 20, dest: '남아메리카 - 브라질' },
-  { id: 28, title: '여행지 28', image: sampleDefault, content: '여행지 28 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다', nickname: '김태엽', date: '2023-08-28', views: '999', likes: 91, scraps: 14, dest: '대한민국 - 서울 · 경기' },
-  { id: 29, title: '여행지 29', image: sampleDefault, content: '여행지 29 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다', nickname: '김태엽', date: '2023-08-29', views: '999', likes: 92, scraps: 18, dest: '아프리카 - 이집트' },
-  { id: 30, title: '여행지 30', image: sampleDefault, content: '여행지 30 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다', nickname: '김태엽', date: '2024-08-20', views: '999', likes: 93, scraps: 22, dest: '아시아 - 중국' },
-  { id: 31, title: '여행지 31', image: sampleDefault, content: '여행지 31 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다', nickname: '김태엽', date: '2024-08-21', views: '999', likes: 94, scraps: 7, dest: '호주 - 하와이' },
-  { id: 32, title: '여행지 32', image: sampleDefault, content: '여행지 32 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다', nickname: '김태엽', date: '2024-08-22', views: '999', likes: 95, scraps: 15, dest: '대한민국 - 전라남도' },
-  { id: 33, title: '여행지 33', image: sampleDefault, content: '여행지 33 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다', nickname: '김태엽', date: '2024-08-23', views: '999', likes: 96, scraps: 13, dest: '대한민국 - 충청북도' },
-  { id: 34, title: '여행지 34', image: sampleDefault, content: '여행지 34 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다', nickname: '김태엽', date: '2024-08-24', views: '999', likes: 97, scraps: 16, dest: '북아메리카 - 기타' },
-  { id: 35, title: '여행지 35', image: sampleDefault, content: '여행지 35 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다', nickname: '김태엽', date: '2024-08-25', views: '999', likes: 98, scraps: 19, dest: '남아메리카 - 기타' },
-  { id: 36, title: '여행지 36', image: sampleDefault, content: '여행지 36 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다', nickname: '김태엽', date: '2024-08-26', views: '999', likes: 99, scraps: 11, dest: '아시아 - 필리핀' },
-  { id: 37, title: '여행지 37', image: sampleDefault, content: '여행지 37 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다 내용입니다', nickname: '김태엽', date: '2024-08-27', views: '999', likes: 100, scraps: 9, dest: '중동 - 사우디' },
-  // 나머지 여행지 데이터 이후에 추가
-];
-
-function Destinations({ selectedDest }) {
+const Destinations = ({ selectedDest }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortCriteria, setSortCriteria] = useState('newest');
+  const [destinations, setDestinations] = useState([]);
   const destinationsPerPage = 16;
+
+  useEffect(() => {
+    const fetchDestinations = async () => {
+      try {
+        const response = await axios.get('/api/destinations');
+        setDestinations(response.data.destinations);
+      } catch (error) {
+        console.error('Error fetching destinations:', error);
+      }
+    };
+
+    fetchDestinations();
+  }, []);
 
   const filteredDestinations = selectedDest === '여행지 - 전체'
     ? destinations
