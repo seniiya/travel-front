@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
-import axios from 'axios';
 import Draggable from 'react-draggable';
 import mark1 from '../components/pic/mark1.png';
 import mark2 from '../components/pic/mark2.png';
@@ -9,7 +8,6 @@ import mark4 from '../components/pic/mark4.png';
 import plane1 from '../components/pic/plane1.png';
 import plane2 from '../components/pic/plane2.png';
 import folder from '../components/pic/folder.png';
-import sampleDefault from '../components/pic/samples/sample.jpeg'; /* 서버에서 받아오게 */
 
 const Container = styled.div`
   display: flex;
@@ -135,6 +133,26 @@ const ContentCard = styled.div`
   }
 `;
 
+const BagContentCard = styled(ContentCard)`
+  position: relative;
+  
+  &::before {
+    content: '#{Tag}'; 
+    position: absolute;
+    font-size: 12px;
+    padding: 5px 10px;
+    width: 36px;
+    height: 15px;
+    top: 150px;
+    left: 10px;
+    background: #FFFFFF;
+    font-size: 12px;
+    padding: 5px 10px;
+    border-radius: 20px;
+    border: 0.5px solid #A8C5F6;
+  }
+`;
+
 const FolderContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -252,7 +270,7 @@ const TravelerCard = styled.div`
       font-size: 12px;
       color: #888;
     }
-}
+  }
 `;
 
 const PageButtonContainer = styled.div`
@@ -285,6 +303,10 @@ const PageButton = styled.button`
 `;
 
 const Contents = () => {
+  const [weeklyRecords, setWeeklyRecords] = useState([]);
+  const [destinations, setDestinations] = useState([]);
+  const [worldTravelers, setWorldTravelers] = useState([]);
+  const [travelBags, setTravelBags] = useState([]);
   const [isHovered1, setIsHovered1] = useState(false);
   const [isHovered2, setIsHovered2] = useState(false);
   const [isHovered3, setIsHovered3] = useState(false);
@@ -295,77 +317,77 @@ const Contents = () => {
   const [isPaused3, setIsPaused3] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const [weeklyRecords, setWeeklyRecords] = useState([]);
-  const [travelFolders, setTravelFolders] = useState([]);
-  const [worldTravelers, setWorldTravelers] = useState([]);
-  const [travelBags, setTravelBags] = useState([]);
-
   useEffect(() => {
-    const fetchWeeklyRecords = async () => {
-      try {
-        const response = await axios.get('/api/weeklyRecords');
-        setWeeklyRecords(response.data.records);
-      } catch (error) {
-        console.error('Error fetching weekly records:', error);
-      }
-    };
+    fetch('/api/weeklyRecords')
+      .then(response => response.json())
+      .then(data => setWeeklyRecords(data))
+      .catch(error => console.error('Error fetching weekly records:', error));
 
-    const fetchTravelFolders = async () => {
-      try {
-        const response = await axios.get('/api/travelFolders');
-        setTravelFolders(response.data.folders);
-      } catch (error) {
-        console.error('Error fetching travel folders:', error);
-      }
-    };
+    fetch('/api/destinations')
+      .then(response => response.json())
+      .then(data => setDestinations(data))
+      .catch(error => console.error('Error fetching destinations:', error));
 
-    const fetchWorldTravelers = async () => {
-      try {
-        const response = await axios.get('/api/worldTravelers');
-        setWorldTravelers(response.data.travelers);
-      } catch (error) {
-        console.error('Error fetching world travelers:', error);
-      }
-    };
+    fetch('/api/worldTravelers')
+      .then(response => response.json())
+      .then(data => setWorldTravelers(data))
+      .catch(error => console.error('Error fetching world travelers:', error));
 
-    const fetchTravelBags = async () => {
-      try {
-        const response = await axios.get('/api/travelBags');
-        setTravelBags(response.data.bags);
-      } catch (error) {
-        console.error('Error fetching travel bags:', error);
-      }
-    };
-
-    fetchWeeklyRecords();
-    fetchTravelFolders();
-    fetchWorldTravelers();
-    fetchTravelBags();
+    fetch('/api/travelBags')
+      .then(response => response.json())
+      .then(data => setTravelBags(data))
+      .catch(error => console.error('Error fetching travel bags:', error));
   }, []);
 
-  const shuffledImages = getShuffledImages(travelFolders.length);
-  const [folderImages, setFolderImages] = useState(shuffledImages);
+  const weeklyRecordCards = weeklyRecords.map((record, index) => (
+    <ContentCard key={record.id} onClick={() => setSelectedCard(index)} className={selectedCard === index ? 'active' : ''}>
+      <img src={record.image} alt="샘플" />
+      <div className="content">
+        <h3>{record.title}</h3>
+        <p>{record.content}</p>
+        <div className="info">
+          <span>{record.nickname} | {record.date}</span>
+          <span>조회수 {record.views}</span>
+        </div>
+      </div>
+    </ContentCard>
+  ));
 
-  const handleMouseEnterFolder = (index) => {
-    const newImages = [...folderImages];
-    const currentImage = newImages[index];
-    let randomImage = getRandomImage(newImages);
+  const bagCards = travelBags.map((bag, index) => (
+    <BagContentCard key={bag.id} onClick={() => setSelectedCard(index)} className={selectedCard === index ? 'active' : ''}>
+      <img src={bag.image} alt="샘플" />
+      <div className="content">
+        <h3>{bag.title}</h3>
+        <p>{bag.content}</p>
+        <div className="info">
+          <span>조회수 {bag.views}</span>
+          <span>좋아요 {bag.likes}</span>
+          <span>스크랩 {bag.scraps}</span>
+        </div>
+      </div>
+    </BagContentCard>
+  ));
 
-    while (randomImage === currentImage) {
-      randomImage = getRandomImage(newImages);
-    }
-
-    newImages[index] = randomImage;
-    setFolderImages(newImages);
-  };
-
-  const travelersPerPage = 6;
-  const maxPage = Math.ceil(worldTravelers.length / travelersPerPage);
-  const startIdx = (currentPage - 1) * travelersPerPage;
-  const selectedTravelers = worldTravelers.slice(startIdx, startIdx + travelersPerPage);
+  const selectedTravelers = worldTravelers.slice(
+    (currentPage - 1) * 6,
+    currentPage * 6
+  ).map((traveler) => (
+    <TravelerCard key={traveler.useId} onClick={() => setSelectedTravelerCard(traveler.useId)} className={selectedTravelerCard === traveler.useId ? 'active' : ''}>
+      <img src={traveler.profilePhotoUrl} alt={`${traveler.nickname}`} />
+      <div className="traveler-info">
+        <h2>{traveler.nickname}</h2>
+        <p>{traveler.introduction}</p>
+        <div className="traveler-stats">
+          <span>좋아요 {traveler.likes}</span>
+          <span>스크랩 {traveler.scraps}</span>
+          <span>답글 {traveler.replies}</span>
+        </div>
+      </div>
+    </TravelerCard>
+  ));
 
   const handleNextPage = () => {
-    if (currentPage < maxPage) {
+    if (currentPage < Math.ceil(worldTravelers.length / 6)) {
       setCurrentPage(currentPage + 1);
     }
   };
@@ -386,48 +408,20 @@ const Contents = () => {
             <p>7일 동안의 인기 있었던 기록들이에요.</p>
           </div>
         </SectionHeader>
-        <Draggable
-          axis="x"
-          onStart={() => setIsPaused1(true)}
-          onStop={() => setIsPaused1(false)}
-        >
+        <Draggable axis="x" onStart={() => setIsPaused1(true)} onStop={() => setIsPaused1(false)}>
           <div>
-            <SectionContent
-              duration={30}
-              onMouseEnter={() => setIsPaused1(true)}
-              onMouseLeave={() => setIsPaused1(false)}
-              isPaused={isPaused1}
-            >
-              {weeklyRecords.map((record, index) => (
-                <ContentCard
-                  key={index}
-                  onClick={() => setSelectedCard(index)}
-                  className={selectedCard === index ? 'active' : ''}
-                >
-                  <img src={record.image || sampleDefault} alt={record.title} />
-                  <div className="content">
-                    <h3>{record.title}</h3>
-                    <p>{record.content}</p>
-                    <div className="info">
-                      <span>{record.nickname} | {record.date}</span>
-                      <span>조회수 {record.views}</span>
-                      <span>좋아요 {record.likes}</span>
-                      <span>스크랩 {record.scraps}</span>
-                    </div>
-                  </div>
-                </ContentCard>
-              ))}
+            <SectionContent duration={30} onMouseEnter={() => setIsPaused1(true)} onMouseLeave={() => setIsPaused1(false)} isPaused={isPaused1}>
+              {weeklyRecordCards}
             </SectionContent>
           </div>
         </Draggable>
       </SectionContainer>
-      <StyledButton
-        onMouseEnter={() => setIsHovered1(true)}
-        onMouseLeave={() => setIsHovered1(false)}
-      >
+
+      <StyledButton onMouseEnter={() => setIsHovered1(true)} onMouseLeave={() => setIsHovered1(false)}>
         금주의 기록 전체보기
         <img src={isHovered1 ? plane2 : plane1} alt="비행기" />
       </StyledButton>
+
       <SectionContainer>
         <SectionHeader>
           <img src={mark2} alt="마크" />
@@ -437,25 +431,18 @@ const Contents = () => {
           </div>
         </SectionHeader>
         <FolderContainer>
-          {travelFolders.map((folderItem, index) => (
+          {destinations.map((destination, index) => (
             <FolderCard key={index}>
               <div className="image-wrapper">
-                <img
-                  src={folderImages[index]}
-                  alt={folderItem.name}
-                  onMouseEnter={() => handleMouseEnterFolder(index)}
-                  className="current"
-                />
+                <img src={destination.photoUrl} alt={destination.name} className="current" />
               </div>
-              <div>{folderItem.name}</div>
+              <div>{destination.name}</div>
             </FolderCard>
           ))}
         </FolderContainer>
       </SectionContainer>
-      <StyledButton
-        onMouseEnter={() => setIsHovered2(true)}
-        onMouseLeave={() => setIsHovered2(false)}
-      >
+
+      <StyledButton onMouseEnter={() => setIsHovered2(true)} onMouseLeave={() => setIsHovered2(false)}>
         여행지 전체보기
         <img src={isHovered2 ? plane2 : plane1} alt="비행기" />
       </StyledButton>
@@ -469,37 +456,19 @@ const Contents = () => {
           </div>
         </SectionHeader>
         <TravelersGrid>
-          {selectedTravelers.map(traveler => (
-            <TravelerCard
-              key={traveler.id}
-              onClick={() => setSelectedTravelerCard(traveler.id)}
-              className={selectedTravelerCard === traveler.id ? 'active' : ''}
-            >
-              <img src={traveler.image} alt={`${traveler.name}`} />
-              <div className="traveler-info">
-                <h2>{traveler.name}</h2>
-                <p>{traveler.introduction}</p>
-                <div className="traveler-stats">
-                  <span>좋아요 {traveler.likes}</span>
-                  <span>스크랩 {traveler.scraps}</span>
-                  <span>답글 {traveler.replies}</span>
-                </div>
-              </div>
-            </TravelerCard>
-          ))}
+          {selectedTravelers}
         </TravelersGrid>
         <PageButtonContainer>
           <PageButton onClick={handlePrevPage} disabled={currentPage === 1}>{'<'}</PageButton>
-          <PageButton onClick={handleNextPage} disabled={currentPage === maxPage}>{'>'}</PageButton>
+          <PageButton onClick={handleNextPage} disabled={currentPage === Math.ceil(worldTravelers.length / 6)}>{'>'}</PageButton>
         </PageButtonContainer>
       </SectionContainer>
-      <StyledButton
-        onMouseEnter={() => setIsHovered3(true)}
-        onMouseLeave={() => setIsHovered3(false)}
-      >
+
+      <StyledButton onMouseEnter={() => setIsHovered3(true)} onMouseLeave={() => setIsHovered3(false)}>
         세계 여행가 전체보기
         <img src={isHovered3 ? plane2 : plane1} alt="비행기" />
       </StyledButton>
+
       <SectionContainer>
         <SectionHeader>
           <img src={mark4} alt="마크" />
@@ -508,45 +477,16 @@ const Contents = () => {
             <p>여행가들의 가방 속 빠질 수 없는 이것!</p>
           </div>
         </SectionHeader>
-        <Draggable
-          axis="x"
-          onStart={() => setIsPaused3(true)}
-          onStop={() => setIsPaused3(false)}
-        >
+        <Draggable axis="x" onStart={() => setIsPaused3(true)} onStop={() => setIsPaused3(false)}>
           <div>
-            <SectionContent
-              duration={50}
-              onMouseEnter={() => setIsPaused3(true)}
-              onMouseLeave={() => setIsPaused3(false)}
-              isPaused={isPaused3}
-            >
-              {travelBags.map((bag, index) => (
-                <ContentCard
-                  key={index}
-                  onClick={() => setSelectedCard(index)}
-                  className={selectedCard === index ? 'active' : ''}
-                >
-                  <img src={bag.image || sampleDefault} alt={bag.title} />
-                  <div className="content">
-                    <h3>{bag.title}</h3>
-                    <p>{bag.content}</p>
-                    <div className="info">
-                      <span>조회수 {bag.views}</span>
-                      <span>좋아요 {bag.likes}</span>
-                      <span>스크랩 {bag.scraps}</span>
-                      <span>태그 {bag.tags.join(', ')}</span>
-                    </div>
-                  </div>
-                </ContentCard>
-              ))}
+            <SectionContent duration={50} onMouseEnter={() => setIsPaused3(true)} onMouseLeave={() => setIsPaused3(false)} isPaused={isPaused3}>
+              {bagCards}
             </SectionContent>
           </div>
         </Draggable>
       </SectionContainer>
-      <StyledButton
-        onMouseEnter={() => setIsHovered4(true)}
-        onMouseLeave={() => setIsHovered4(false)}
-      >
+
+      <StyledButton onMouseEnter={() => setIsHovered4(true)} onMouseLeave={() => setIsHovered4(false)}>
         여행가방 전체보기
         <img src={isHovered4 ? plane2 : plane1} alt="비행기" />
       </StyledButton>
@@ -555,4 +495,3 @@ const Contents = () => {
 };
 
 export default Contents;
-

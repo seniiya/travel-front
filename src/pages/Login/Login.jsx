@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 // import styled from 'styled-components';
-import logo from '../img/logo.svg';
-import copyright from '../img/copyright.svg';
-import visible from '../img/visible.svg';
-import invisible from '../img/invisible.svg';
-import cancel from '../img/cancel.svg';
-import * as A from "../Login.style";
+import logo from '../../components/pic/logo.svg';
+import copyright from '../../components/pic/copyright.svg';
+import visible from '../../components/pic/visible.svg';
+import invisible from '../../components/pic/invisible.svg';
+import cancel from '../../components/pic/cancel.svg';
+import * as A from "../Login.style.jsx";
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 
@@ -22,10 +22,11 @@ export default function Login() {
     const [ pwValue, setPwValue ] = useState("");
 
     const handleLogoClick = () => {
-        navigate('/mainpage');
+        navigate('/');
       };
 
 
+    // 유효성
     const validationRules = {
         id: {
             required: true,
@@ -39,19 +40,49 @@ export default function Login() {
             pattern:  /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/
         }
     };
-    // 영문자 + 숫자 
+    // 영문자 + 숫자 8자리이상
 
 
-    const onSubmit = (data) => {
+    const onSubmit = async (data) => {
         console.log("Login attempt:", data);
 
         // 프론트엔드 유효성 검사
         if (validationRules.id.pattern.test(data.id) &&
             validationRules.pw.pattern.test(data.pw)) {
+
             
-            console.log("Login successful");
-            // 로그인 성공 시 메인 페이지로 이동
-            navigate('/');
+            try {
+                const response = await fetch ('/api/v1/auth/signIn', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        userid: data.id,
+                        password: data.pw
+                    })
+                });
+
+                const result = await response.json(); 
+
+                if (response.ok && result.isSuccess) {
+                    console.log("login successful:", result.message);
+
+                    // 로그인 성공 시 토큰 저장 
+                    localStorage.setItem('token', result.result.token);
+                    localStorage.setItem('userid', result.result.userid);
+
+                    // 성공 시 메인 페이지로 이동 (오른쪽 상단에 +)
+                    navigate('/');
+                } else {
+                    console.log("login failed:", result.message);
+                    setLoginError(result.message);
+                }
+            } catch (error) {
+                console.error("Error during login:", error);
+                setLoginError("서버와 통신 중 오류가 발생했습니다. 나중에 다시 시도해주세요.");
+            }
+               
         } else {
             setLoginError("아이디(로그인 전용 아이디) 또는 비밀번호가 잘못되었습니다. 아이디와 비밀번호를 정확히 입력해 주세요.");
         }
@@ -80,7 +111,6 @@ export default function Login() {
                 <A.LoginMain>
                     <A.Logo src={logo} alt="Memoir Logo" onClick={handleLogoClick}/>
                     <form onSubmit = {handleSubmit(onSubmit)}>
-                    {/* <form onSubmit = {onSubmit}> */}
                     <A.InputForm>
                         <A.InputContainer>
                             <A.InputWrapper>
@@ -90,7 +120,7 @@ export default function Login() {
                                     type='text' 
                                     placeholder='아이디'
                                     value={idValue}
-                                    onChange={handleIdChange} // 얘네 왜 넣어주지 
+                                    onChange={handleIdChange} 
                                 />
                                 {idValue && (
                                     <A.IconClear src={cancel} alt="Cancel Icon" onClick={clearIdInput}/>
@@ -137,13 +167,13 @@ export default function Login() {
             <A.UnderContainer>
                 <A.UnderLinks>
                     {/* to='' 링크 넣어주기 */}
-                    <A.Underlink>이용약관</A.Underlink> | {' '}
-                    <A.Underlink>개인정보 처리방침</A.Underlink> |  {' '}
-                    <A.Underlink>고객센터</A.Underlink>  |  {' '}
-                    <A.Underlink>Contact Us</A.Underlink>
+                    <A.Underlink to='/terms'>이용약관</A.Underlink> | {' '}
+                    <A.Underlink to='/privacy'>개인정보 처리방침</A.Underlink> |  {' '}
+                    <A.Underlink to='/support'>고객센터</A.Underlink>  |  {' '}
+                    <A.Underlink to='/contact'>Contact Us</A.Underlink>
                 </A.UnderLinks>
                     <img src={copyright} alt='Memoir copyright'/>
             </A.UnderContainer>
         </A.loginpage>
     )
-}
+};
