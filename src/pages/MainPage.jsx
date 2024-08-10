@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import axios from 'axios';
 import MainBack from '../components/pic/MainBack.png';
 import logo2 from '../components/pic/logo2.png';
 import folder from '../components/pic/folder.png';
@@ -72,78 +73,61 @@ const FolderContainer = styled.div`
 const FolderCard = styled.div`
   position: relative;
   width: 210px;
-  height: 160px;
+  height: 180px;
   background: url(${folder}) no-repeat center center;
   background-size: 120% 120%;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
   color: #B6CEF7;
+  font-size: 15px;
   font-weight: bold;
 
   div {
+    position: absolute;
+    top: 30px;
+    left: 25px;
     text-align: center;
   }
 
-  .text {
+  span {
     position: absolute;
-    top: 30px;
-    left: 28px;
-    font-size: 14px;
-    color: #446BAE;
-    font-weight: 400;
-  }
-
-  .number {
-    font-size: 20px;
+    bottom: 68px;
+    left: 83px;
+    font-size: 24px;
     font-weight: 500;
-    margin-top: 20px;
-    color: #446BAE;
+    color: #B6CEF7;  /* 기본 색상 */
+    transition: color 0.3s ease;  /* 색상 변화 애니메이션 */
   }
 
-  &:hover .number {
-    color: #005CF9;
+  &:hover span {
+    color: #005CF9;  /* hover 시 색상 */
   }
 `;
 
-const createFolder = (text, number) => (
-  <FolderCard key={text}>
-    <div className="text">{text}</div>
-    <div className="number">{number}명</div>
-  </FolderCard>
-);
-
 const MainPage = () => {
-  const [allTravelers, setAllTravelers] = useState(0);
-  const [newTravelers, setNewTravelers] = useState(0);
-  const [records, setRecords] = useState(0);
-  const [totalDays, setTotalDays] = useState(0);
+  const [serverLogs, setServerLogs] = useState({
+    allUsers: 0,
+    recentSignupUsers: 0,
+    allPosts: 0,
+    runningDays: 0,
+  });
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchServerLogs = async () => {
       try {
-        const allTravelersResponse = await fetch('/api/allTravelers');
-        const newTravelersResponse = await fetch('/api/newTravelers');
-        const recordsResponse = await fetch('/api/records');
-        const totalDaysResponse = await fetch('/api/totalDays');
-
-        const allTravelersData = await allTravelersResponse.json();
-        const newTravelersData = await newTravelersResponse.json();
-        const recordsData = await recordsResponse.json();
-        const totalDaysData = await totalDaysResponse.json();
-
-        setAllTravelers(allTravelersData.count);
-        setNewTravelers(newTravelersData.count);
-        setRecords(recordsData.count);
-        setTotalDays(totalDaysData.days);
-
+        const response = await axios.get('/api/v1/main/serverLogs');
+        if (response.data.isSuccess) {
+          setServerLogs(response.data.result);
+        } else {
+          console.error('API 요청 실패:', response.data.message);
+        }
       } catch (error) {
-        console.error("Error", error);
+        console.error('서버 로그를 가져오는 중 오류가 발생했습니다:', error);
       }
     };
 
-    fetchData();
+    fetchServerLogs();
   }, []);
 
   return (
@@ -153,10 +137,22 @@ const MainPage = () => {
       <Heading style={{ top: '350px' }}>여행가들의 기록을 따라 떠나보세요</Heading>
       <Heading style={{ top: '380px' }}>기록을 통해 나만의 (memoir)를 완성해 보세요</Heading>
       <FolderContainer>
-        {createFolder('• 모든 여행가', allTravelers)}
-        {createFolder('• 신규 여행가', newTravelers)}
-        {createFolder('• 쌓인 기록', records)}
-        {createFolder('• 총 기록일', totalDays)}
+        <FolderCard>
+          <div>• 모든 여행가</div>
+          <span>{serverLogs.allUsers}명</span>
+        </FolderCard>
+        <FolderCard>
+          <div>• 신규 여행가</div>
+          <span>{serverLogs.recentSignupUsers}명</span>
+        </FolderCard>
+        <FolderCard>
+          <div>• 쌓인 기록</div>
+          <span>{serverLogs.allPosts}명</span>
+        </FolderCard>
+        <FolderCard>
+          <div>• 총 기록일</div>
+          <span>{serverLogs.runningDays}일</span>
+        </FolderCard>
       </FolderContainer>
     </MainContainer>
   );

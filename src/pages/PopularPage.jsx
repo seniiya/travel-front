@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import sectionbar from '../components/pic/sectionbar.svg';
 import * as A from "../pages/TravelPage.style";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 import mark1 from '../components/pic/mark1.png';
 import headerbar from '../components/pic/headerbar.svg';
@@ -101,10 +101,10 @@ export default function PopularPage() {
 
               <WriteSection>
                 {/* 글쓰기 페이지로 이동 */}
-                <A.SectionTxt to='/write'>
+                <SectionTxt to='/write'>
                     글쓰기
                     <img src={recordicon} alt="record"/>
-                </A.SectionTxt>
+                </SectionTxt>
               </WriteSection>
             </SectionWrapper>
 
@@ -158,6 +158,35 @@ export default function PopularPage() {
     </>
     )
 }
+
+const SectionTxt = styled(Link)`
+    
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 300;
+    font-size: 18px;
+    line-height: 130%;
+ 
+    display: flex;
+    align-items: center;
+    text-align: center;
+    letter-spacing: -0.003em;
+    text-transform: lowercase;
+    text-decoration: none;
+
+ 
+    color: ${({$active}) => ($active ? '#005CF9': '#B4B7B9')};
+    cursor: pointer;
+
+    &:hover {
+        color: #005CF9;
+    }
+
+    .separator {
+      cursor: default;
+      padding: 0 10px;
+    }
+`;
 
 const SectionWrapper = styled.div`
     display: flex;

@@ -95,10 +95,7 @@ export const Header = styled.div`
 `;
 
  export const HeaderBar = styled.div`
-  /* Vector 672 */
-
-  //   position: absolute;
-  //   width: 1920px;
+  
     height: 0px;
     left: calc(50% - 1920px/2);
     top: 0;
@@ -128,9 +125,6 @@ export const GoTop = styled.button`
         object-fit: cover;
     }
 
-    // box-shadow: inset -2px -3px 14px #FFFFFF;
-    // filter: drop-shadow(1px 2px 7px rgba(0, 0, 0, 0.1));
-    // backdrop-filter: blur(4px);
 
     position: fixed;
     bottom: 350px;

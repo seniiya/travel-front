@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import logo from '../../components/pic/logo.svg';
 
 const PageContainer = styled.div`
@@ -111,7 +112,9 @@ const FindIdPage = () => {
   const [email, setEmail] = useState('');
   const [verificationCode, setVerificationCode] = useState('');
   const [emailError, setEmailError] = useState('');
-  const [codeError, setCodeError] = useState('');
+  const [authError, setAuthError] = useState('');
+  // const [codeError, setCodeError] = useState('');
+  const [isEmailSent, setIsEmailSent] = useState(false);
 
   const handleLogoClick = () => {
     navigate('/');
@@ -128,28 +131,44 @@ const FindIdPage = () => {
     }
   };
 
-  const validateCode = () => {
-    if (verificationCode !== '123456') {
-      setCodeError('인증번호가 올바르지 않습니다. 확인 후 다시 입력해 주세요.');
-      return false;
-    } else {
-      setCodeError('');
-      return true;
-    }
-  };
 
-  const handleEmailVerification = (e) => {
+  const handleEmailVerification = async (e) => {
     e.preventDefault();
     if (validateEmail()) {
-      window.alert('인증번호를 발송했습니다. 인증번호가 오지 않으면 입력하신 정보를 다시 한번 확인해 주세요.');
+      try {
+        const response = await axios.post('/api/v1/auth/mailSend', { email });
+        if (response.data.isSuccess) {
+          setIsEmailSent(true);
+          window.alert('인증번호를 발송했습니다. 이메일을 확인해 주세요.');
+        }
+      } catch (error) {
+        console.log('이메일 인증 요청 오류: ', error);
+      }
     }
   };
 
-  const handleIdSearch = (e) => {
+
+
+  const handleIdSearch = async (e) => {
     e.preventDefault();
-    if (validateCode()) {
-      const userId = 'pre***y'; // Replace this with actual logic to fetch user ID
-      window.alert(`www.memoir.com 내용: 메일 인증이 완료 되었습니다. 회원님의 아이디는 ${userId} 입니다.`);
+    if (!authNum) {
+      setAuthError('인증번호를 입력해 주세요.');
+      return;
+    }
+
+    try { 
+      const checkResponse = await axios.post('/api/v1/auth/mailCheck', { email, authNum });
+      if (checkResponse.data.isSuccess) {
+        const findIdResponse = await axios.post('/api/v1/user/findUserId', { email });
+        if (findIdResponse.data.isSuccess) {
+          const userId = findIdResponse.data.result.userid;
+          window.alert(`www.memoir.com 내용: 메일 인증이 완료 되었습니다. 회원님의 아이디는 ${userId} 입니다.`);
+        }
+      } else {
+        setAuthError('인증번호가 올바르지 않습니다. 확인 후 다시 입력해 주세요.');
+      }
+    } catch (error) {
+      console.log('아이디 찾기 오류 : ', error);
     }
   };
 
@@ -166,7 +185,8 @@ const FindIdPage = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
-            <IconButton onClick={handleEmailVerification}>인증하기</IconButton>
+            {/* 버튼 작동 안되면 disabled 없애기   */}
+            <IconButton onClick={handleEmailVerification} >인증하기</IconButton>
           </InputWrapper>
           {emailError && <ErrorMessage>{emailError}</ErrorMessage>}
           <InputWrapper>
@@ -177,7 +197,8 @@ const FindIdPage = () => {
               onChange={(e) => setVerificationCode(e.target.value)}
             />
           </InputWrapper>
-          {codeError && <ErrorMessage>{codeError}</ErrorMessage>}
+        
+          {authError && <ErrorMessage>{authError}</ErrorMessage>}
           <Button onClick={handleIdSearch}>아이디 찾기</Button>
         </RegisterForm>
         <Footer>

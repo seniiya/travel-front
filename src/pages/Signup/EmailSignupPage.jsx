@@ -130,15 +130,16 @@ const EmailSignupPage = () => {
 
   const handleEmailVerification = async () => {
     try {
-      const response = await axios.post('/api/v1/auth/mail-send', { email });
+      const response = await axios.post('http://localhost:8080/api/v1/auth/mailSend', { email });
       if (response.data.authNum) {
         setIsEmailSent(true);
         setError('');
         alert('인증번호가 이메일로 전송되었습니다.');
       }
     } catch (error) {
-      setError('이메일 인증 과정에서 오류가 발생했습니다.');
       console.error('Email verification error:', error);
+      setError('이메일 인증 과정에서 오류가 발생했습니다.');
+      
     }
   };
 
@@ -197,8 +198,14 @@ const EmailSignupPage = () => {
               type="text"
               placeholder="인증번호"
               value={verificationCode}
-              onChange={(e) => setVerificationCode(e.target.value)}
+              // onChange={(e) => setVerificationCode(e.target.value)}
+              // disabled={!isEmailSent}
+              onChange={(e) => {
+                console.log('Verification code changed:', e.target.value);
+                setVerificationCode(e.target.value);
+              }}
               disabled={!isEmailSent}
+              // 입력이 안 된다면 isemailsent 주석처리 후 실행
             />
           </InputWrapper>
           {/* 추가 */}

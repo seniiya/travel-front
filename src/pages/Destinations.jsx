@@ -1,15 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
-// import write from '../components/pic/write.png';
-import write from '../components/pic/recordicon.svg'; 
-import sampleDefault from '../components/pic/samples/sample.jpeg';
-// import like from '../components/pic/like.png';
-import like from '../components/pic/whiteLike.svg';
-// import scrap from '../components/pic/scrap.png';
-import scrap from '../components/pic/whiteScrap.svg';
-// import link_src from '../components/pic/link.svg';
-import link_src from '../components/pic/whiteLink.svg';
+import write from '../components/pic/write.png';
+import like from '../components/pic/like.png';
+import scrap from '../components/pic/scrap.png';
+import link_src from '../components/pic/link.svg';
+import img from '../components/pic/default.png';  // 기본 이미지
 
 const PageContainer = styled.div`
   padding: 20px;
@@ -115,95 +111,32 @@ const Pagination = styled.div`
   }
 `;
 
-const Destinations = ({ selectedDest }) => {
+function Destinations({ selectedDest }) {
   const [currentPage, setCurrentPage] = useState(1);
-  const [sortCriteria, setSortCriteria] = useState('newest');
+  const [sortCriteria, setSortCriteria] = useState('latest');
   const [destinations, setDestinations] = useState([]);
-  const destinationsPerPage = 16;
+  const [minPageIdx, setMinPageIdx] = useState(1);
+  const [maxPageIdx, setMaxPageIdx] = useState(1);
 
-  // 오류처리 수정 
   useEffect(() => {
-    const fetchDestinations = async () => {
-      try {
-        const response = await axios.get('/api/destinations');
-        if (response.data && Array.isArray(response.data.destinations)) {
-          setDestinations(response.data.destinations);
-        } else {
-          console.error('Invalid data format received from API');
-          setDestinations([]);
-        }
-      } catch (error) {
-        console.error('Error fetching destinations:', error);
-        setDestinations([]);
-      }
-    };
-  
     fetchDestinations();
-  }, []);
-  // 수정
-  const filteredDestinations = React.useMemo(() => {
-    if (!Array.isArray(destinations)) return [];
-    
-    if (selectedDest === '여행지 - 전체') {
-      return destinations;
-    } else if (selectedDest.endsWith('전체')) {
-      return destinations.filter(destination => destination.dest && destination.dest.includes(selectedDest.split(' - ')[0]));
-    } else {
-      return destinations.filter(destination => destination.dest === selectedDest);
+  }, [sortCriteria, currentPage, selectedDest]);
+
+  const fetchDestinations = async () => {
+    try {
+      const response = await axios.get('/api/v1/travelPost/allPosts', {
+        params: {
+          orderBy: sortCriteria,
+          page: currentPage,
+        },
+      });
+      const { posts, minPageIdx, maxPageIdx } = response.data.result;
+      setDestinations(posts);
+      setMinPageIdx(minPageIdx);
+      setMaxPageIdx(maxPageIdx);
+    } catch (error) {
+      console.error('여행지 데이터를 가져오는 중 오류가 발생했습니다:', error);
     }
-  }, [destinations, selectedDest]);
-
-  const sortedDestinations = React.useMemo(() => {
-    if (!Array.isArray(filteredDestinations)) return [];
-    
-    return [...filteredDestinations].sort((a, b) => {
-      if (sortCriteria === 'newest') {
-        return new Date(b.date) - new Date(a.date);
-      } else if (sortCriteria === 'oldest') {
-        return new Date(a.date) - new Date(b.date);
-      } else if (sortCriteria === 'name') {
-        return a.title.localeCompare(b.title);
-      } else if (sortCriteria === 'likes') {
-        return b.likes - a.likes;
-      } else if (sortCriteria === 'scraps') {
-        return b.scraps - a.scraps;
-      } else if (sortCriteria === 'views') {
-        return parseInt(b.views) - parseInt(a.views);
-      }
-      return 0;
-    });
-  }, [filteredDestinations, sortCriteria]);
-  const indexOfLastDestination = currentPage * destinationsPerPage;
-  const indexOfFirstDestination = indexOfLastDestination - destinationsPerPage;
-  const currentDestinations = sortedDestinations.slice(indexOfFirstDestination, indexOfLastDestination);
-
-  const pageNumbers = [];
-  for (let i = 1; i <= Math.ceil(sortedDestinations.length / destinationsPerPage); i++) {
-    pageNumbers.push(i);
-  }
-
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const handleNextPage = () => {
-    setCurrentPage((prevPage) => Math.min(prevPage + 1, pageNumbers.length));
-    scrollToTop();
-  };
-
-  const handlePreviousPage = () => {
-    setCurrentPage((prevPage) => Math.max(prevPage - 1, 1));
-    scrollToTop();
-  };
-
-  const handleFirstPage = () => {
-    setCurrentPage(1);
-    scrollToTop();
-  };
-
-  const handleLastPage = () => {
-    setCurrentPage(pageNumbers.length);
-    scrollToTop();
   };
 
   const handleSortChange = (criteria) => {
@@ -212,21 +145,75 @@ const Destinations = ({ selectedDest }) => {
     scrollToTop();
   };
 
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleNextPage = () => {
+    setCurrentPage((prevPage) => Math.min(prevPage + 1, maxPageIdx));
+    scrollToTop();
+  };
+
+  const handlePreviousPage = () => {
+    setCurrentPage((prevPage) => Math.max(prevPage - 1, minPageIdx));
+    scrollToTop();
+  };
+
+  const handleFirstPage = () => {
+    setCurrentPage(minPageIdx);
+    scrollToTop();
+  };
+
+  const handleLastPage = () => {
+    setCurrentPage(maxPageIdx);
+    scrollToTop();
+  };
+
   return (
     <PageContainer id="travel-destinations-container">
       <SortingContainer>
         <SortOptions>
-          <span className={sortCriteria === 'newest' ? 'active' : ''} onClick={() => handleSortChange('newest')}>최신순</span>
+          <span
+            className={sortCriteria === 'latest' ? 'active' : ''}
+            onClick={() => handleSortChange('latest')}
+          >
+            최신순
+          </span>
           <span className="separator">|</span>
-          <span className={sortCriteria === 'oldest' ? 'active' : ''} onClick={() => handleSortChange('oldest')}>오래된순</span>
+          <span
+            className={sortCriteria === 'oldest' ? 'active' : ''}
+            onClick={() => handleSortChange('oldest')}
+          >
+            오래된순
+          </span>
           <span className="separator">|</span>
-          <span className={sortCriteria === 'name' ? 'active' : ''} onClick={() => handleSortChange('name')}>이름순</span>
+          <span
+            className={sortCriteria === 'views' ? 'active' : ''}
+            onClick={() => handleSortChange('views')}
+          >
+            조회수순
+          </span>
           <span className="separator">|</span>
-          <span className={sortCriteria === 'likes' ? 'active' : ''} onClick={() => handleSortChange('likes')}>좋아요순</span>
+          <span
+            className={sortCriteria === 'likes' ? 'active' : ''}
+            onClick={() => handleSortChange('likes')}
+          >
+            좋아요순
+          </span>
           <span className="separator">|</span>
-          <span className={sortCriteria === 'scraps' ? 'active' : ''} onClick={() => handleSortChange('scraps')}>스크랩순</span>
+          <span
+            className={sortCriteria === 'name' ? 'active' : ''}
+            onClick={() => handleSortChange('name')}
+          >
+            이름순
+          </span>
           <span className="separator">|</span>
-          <span className={sortCriteria === 'views' ? 'active' : ''} onClick={() => handleSortChange('views')}>조회순</span>
+          <span
+            className={sortCriteria === 'scraps' ? 'active' : ''}
+            onClick={() => handleSortChange('scraps')}
+          >
+            스크랩순
+          </span>
         </SortOptions>
         <WriteButton>
           글쓰기
@@ -234,41 +221,41 @@ const Destinations = ({ selectedDest }) => {
         </WriteButton>
       </SortingContainer>
       <CardGrid>
-        {currentDestinations.map(destination => (
+        {destinations.map(destination => (
           <StyledCard key={destination.id} destination={destination} />
         ))}
       </CardGrid>
       <Pagination>
-        <button onClick={handleFirstPage} disabled={currentPage === 1}>
+        <button onClick={handleFirstPage} disabled={currentPage === minPageIdx}>
           &lt;&lt;
         </button>
-        <button onClick={handlePreviousPage} disabled={currentPage === 1}>
+        <button onClick={handlePreviousPage} disabled={currentPage === minPageIdx}>
           &lt;
         </button>
-        {pageNumbers.map(number => (
+        {Array.from({ length: maxPageIdx - minPageIdx + 1 }, (_, index) => (
           <span
-            key={number}
-            className={currentPage === number ? 'active' : ''}
+            key={minPageIdx + index}
+            className={currentPage === minPageIdx + index ? 'active' : ''}
             onClick={() => {
-              setCurrentPage(number);
+              setCurrentPage(minPageIdx + index);
               scrollToTop();
             }}
           >
-            {number}
+            {minPageIdx + index}
           </span>
         ))}
-        <button onClick={handleNextPage} disabled={currentPage === pageNumbers.length}>
+        <button onClick={handleNextPage} disabled={currentPage === maxPageIdx}>
           &gt;
         </button>
-        <button onClick={handleLastPage} disabled={currentPage === pageNumbers.length}>
+        <button onClick={handleLastPage} disabled={currentPage === maxPageIdx}>
           &gt;&gt;
         </button>
       </Pagination>
       <ScrollToTopButton onClick={scrollToTop}>↑</ScrollToTopButton>
-      <FixedButtonLeft onClick={handlePreviousPage} disabled={currentPage === 1}>
+      <FixedButtonLeft onClick={handlePreviousPage} disabled={currentPage === minPageIdx}>
         &lt;
       </FixedButtonLeft>
-      <FixedButtonRight onClick={handleNextPage} disabled={currentPage === pageNumbers.length}>
+      <FixedButtonRight onClick={handleNextPage} disabled={currentPage === maxPageIdx}>
         &gt;
       </FixedButtonRight>
     </PageContainer>
@@ -280,18 +267,24 @@ const StyledCard = ({ destination }) => {
     return parseInt(views) >= 999 ? '999+' : views;
   };
 
+  const imageUrl = destination.repImage
+    ? destination.repImage.startsWith('http')
+      ? destination.repImage
+      : `${process.env.REACT_APP_BASE_URL}${destination.repImage.replace(/\\/g, '/')}`
+    : img; // 기본 이미지 사용
+
   return (
     <Card>
-      <CardImage src={destination.image} alt={destination.title} />
+      <CardImage src={imageUrl} alt={destination.title} />
       <Overlay>
         <LikesScraps>
           <span>
             <img src={like} alt="like" />
-            {destination.likes}
+            {destination.likeCount}
           </span>
           <span>
             <img src={scrap} alt="scrap" />
-            {destination.scraps || 0}
+            {destination.scrapCount || 0}
           </span>
           <span>
             <img src={link_src} alt="link" />
@@ -304,11 +297,11 @@ const StyledCard = ({ destination }) => {
       </CardContent>
       <CardFooter>
         <CardFooterLeft>
-          <span>{destination.nickname}</span>
-          <span>| {destination.date}</span>
+          <span>{destination.user.nickname}</span>
+          <span>| {destination.createDate}</span>
         </CardFooterLeft>
         <CardFooterRight>
-          <span>조회수 {formatViews(destination.views)}</span>
+          <span>조회수 {formatViews(destination.viewCount)}</span>
         </CardFooterRight>
       </CardFooter>
     </Card>
