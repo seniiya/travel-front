@@ -65,30 +65,53 @@ export default function TravelerRank() {
     const worldTravelers = [
         {
           id: 1,
-          name: '김태엽',
-          description: '안녕하세요! 저는 여행을 사랑하는 25살 김태엽입니다. 새로운 장소를 탐험하고, 다양한 문화를 경험하며, 전 세계 사람들과 소통하는 것을 즐깁니다...',
+          name: '김태엽1',
+          description: '안녕하세요, 25살의 여행가 김태엽입니다. 📸 ✈️호주의 문화와 풍경을 사랑하며, 필름 카메라로 순간을 담는 것을 즐깁니다.여행을 통해 얻은 경험을 사진과 이야기로 나누고 싶어요. 많은 분들에게 영감을 주는 것이 제 꿈입니다. 잘 부탁드려요! 🙏✨',
           likes: '3.2만',
           comments: 1312,
           shares: 5,
-          imgSrc: sampleDefault 
+          imgSrc: sampleDefault,
+          sns: [
+            'https://www.youtube.com/channel/UCET3I7YOuGTO31OlYdg2B_w',
+            'https://x.com/_sskofficial',
+            'https://www.instagram.com/SJKUKSEE/'
+          ],
+          location: '서울',
+          dateofissue:'2024-07-24',
+          favcountry: '호주',
+          // introduce: 
         },
         {
           id: 2,
-          name: '김태엽',
+          name: '김태엽2',
           description: '안녕하세요! 저는 여행을 사랑하는 25살 김태엽입니다. 새로운 장소를 탐험하고, 다양한 문화를 경험하며, 전 세계 사람들과 소통하는 것을 즐깁니다...',
           likes: '3.2만',
           comments: 1312,
           shares: 5,
-          imgSrc: sampleDefault2 
+          imgSrc: sampleDefault2, 
+          sns: [
+            'https://www.youtube.com/channel/UCET3I7YOuGTO31OlYdg2B_w',
+            'https://x.com/_sskofficial'
+          ],
+          location: '울산',
+          dateofissue:'2024-07-24',
+          favcountry: '한국',
         },
         {
           id: 3,
-          name: '김태엽',
+          name: '김태엽3',
           description: '안녕하세요! 저는 여행을 사랑하는 25살 김태엽입니다. 새로운 장소를 탐험하고, 다양한 문화를 경험하며, 전 세계 사람들과 소통하는 것을 즐깁니다...',
           likes: '3.2만',
           comments: 1312,
           shares: 5,
-          imgSrc: sampleDefault3 
+          imgSrc: sampleDefault3,
+          sns: [
+            'https://www.youtube.com/channel/UCET3I7YOuGTO31OlYdg2B_w',
+            'https://x.com/_sskofficial'
+          ],
+          location: '울산',
+          dateofissue:'2024-07-24',
+          favcountry: '한국', 
         },
         {
           id: 4,
@@ -97,7 +120,15 @@ export default function TravelerRank() {
           likes: '3.2만',
           comments: 1312,
           shares: 5,
-          imgSrc: sampleDefault4 
+          imgSrc: sampleDefault4,
+          sns: [
+            'https://www.youtube.com/channel/UCET3I7YOuGTO31OlYdg2B_w',
+            'https://x.com/_sskofficial',
+            'https://www.instagram.com/SJKUKSEE/'
+          ],
+          location: '서울',
+          dateofissue:'2024-07-24',
+          favcountry: '호주',
         },
         {
           id: 5,
@@ -339,16 +370,17 @@ export default function TravelerRank() {
 
     return (
         <A.Container>
-          <A.Header>
+          <Header>
             <img src={mark3} alt="mark3"/>
             <div>
               <h2>세계 여행가</h2>
               <p>많은 좋아요와 스크랩 수를 보유한 여행가에요.</p>
             </div>
-          </A.Header>
-            <A.HeaderBar src={headerbar} alt="header bar"/>
+          </Header>
+            <HeaderBar src={headerbar} alt="header bar"/>
 
-          <SectionWrapper>
+          <TravelerSection>
+            <SectionWrapper>
             <A.Section>
                 <A.SectionTxt     
                     $active={isActiveSection === 'rank'}
@@ -380,7 +412,8 @@ export default function TravelerRank() {
                 기록순
                 </A.SectionTxt>
             </A.Section>
-          </SectionWrapper>
+            </SectionWrapper>
+
             <TravelersGrid>
               {selectedTravelers.map((traveler, index) => (
                 <TravelerCard
@@ -390,7 +423,12 @@ export default function TravelerRank() {
                   <img src={traveler.imgSrc} alt={`${traveler.name}`} />
                   <div className="traveler-info">
                     <h2>{index + 1}. {traveler.name}</h2>
-                    <p>{traveler.description}</p>
+                    {/* 소개글 최대 100자, 요소에는 80자 이상 시 ... 보이게 */}
+                    <p>
+                      {traveler.description.length > 80
+                        ? `${traveler.description.slice(0, 80)}. . .`
+                       : traveler.description}
+                    </p>
                     <div className="traveler-stats">
                       <StatItem>
                         <img src={hearticon} alt="like"/>
@@ -411,6 +449,7 @@ export default function TravelerRank() {
               ))}
 
             </TravelersGrid>
+          </TravelerSection>
 
             <A.GoTop onClick={MoveToTop}>
               <img src={movetop}  alt="move to top"/>
@@ -420,28 +459,106 @@ export default function TravelerRank() {
 
 
         {selectedTraveler && (
-          <TravelerModal onClose={handelCloseModal}>
-              <TravelerDtails traveler={selectedTraveler}/>
+          <TravelerModal onClose={handelCloseModal} traveler={selectedTraveler}>
+              {/* <TravelerDtails traveler={selectedTraveler}/> */}
           </TravelerModal>
         )}
         </A.Container>
     )
 }
 
+const Header = styled.div`
+  /* Frame 10057 */
+
+  /* Auto layout */
+  display: flex;
+  // flex-direction: column;
+  // align-items: flex-start;
+  // padding: 0px;/
+  gap: 25px;
+  align-items: center;
+  // gap: 10px;
+  // margin-bottom: 20px;
+  // margin-left: 50px;
+
+  position: absolute;
+  width: 1540px;
+  height: 100px;
+  left: 190px;
+  top: 137px;
+
+  h2 {
+    font-size: 28px;
+    margin: 0;
+  }
+
+  p {
+    font-size: 20px;
+    margin: 0;
+    color: gray;
+  }
+
+`;
+
+const HeaderBar = styled.div`
+  /* Vector 672 */
+
+  position: absolute;
+  width: 1920px;
+  height: 0px;
+  left: calc(50% - 1920px/2);
+  top: 262px;
+
+  border: 1px solid #E0E2E6;
+
+`;
+
+const TravelerSection = styled.div`
+  /* Frame 10087 */
+
+  position: absolute;
+  width: 1400px;
+  height: 2357px;
+  left: calc(50% - 1400px/2);
+  top: 376px;
+`;
+
+
 const SectionWrapper = styled.div`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 20px;
-    margin-bottom: 50px;
-    margin-top: 80px;
+    // display: flex;
+    // justify-content: space-between;
+    // align-items: center;
+    // padding: 0 20px;
+    // margin-bottom: 50px;
+    // margin-top: 80px;
+    /* Component 52 */
+
+  /* Auto layout */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0px;
+  gap: 40px;
+
+  position: absolute;
+  width: 1400px;
+  height: 25px;
+  left: 0px;
+  top: 0px;
 `;
 
 const TravelersGrid = styled.div`
-  display: flex;
-  flex-wrap: wrap;
+  // display: flex;
+  display: grid;
+  // flex-wrap: wrap;
   justify-content: center;
+  grid-template-columns: repeat(3, 1fr);
+  // margin: 0 auto;
+  max-width: 1400px;
   gap: 50px;
+  margin-top: 50px;
+
+  // background: black;
 `;
 
 const TravelerCard = styled.div`
@@ -517,15 +634,15 @@ const StatItem = styled.div`
 
 
 
-const TravelerDtails = ({ traveler }) => (
-  <div>
-      <img src={traveler.imgSrc} alt={`${traveler.name}`} />
-      <h2>{traveler.name}</h2>
-      <p>{traveler.description}</p>
-      <div className="traveler-stats">
-          <span>좋아요 {traveler.likes}</span>
-          <span>댓글 {traveler.comments}</span>
-          <span>공유 {traveler.shares}</span>
-      </div>
-  </div>
-);
+// const TravelerDtails = ({ traveler }) => (
+//   <div>
+//       <img src={traveler.imgSrc} alt={`${traveler.name}`} />
+//       <h2>{traveler.name}</h2>
+//       <p>{traveler.description}</p>
+//       <div className="traveler-stats">
+//           <span>좋아요 {traveler.likes}</span>
+//           <span>댓글 {traveler.comments}</span>
+//           <span>공유 {traveler.shares}</span>
+//       </div>
+//   </div>
+// );

@@ -8,7 +8,7 @@ import cancel from '../../components/pic/cancel.svg';
 import * as A from "../Login.style.jsx";
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-
+import axios from 'axios';
 
 
 
@@ -44,7 +44,7 @@ export default function Login() {
 
 
     const onSubmit = async (data) => {
-        console.log("Login attempt:", data);
+        // console.log("Login attempt:", data);
 
         // 프론트엔드 유효성 검사
         if (validationRules.id.pattern.test(data.id) &&
@@ -52,20 +52,15 @@ export default function Login() {
 
             
             try {
-                const response = await fetch ('/api/v1/auth/signIn', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        userid: data.id,
-                        password: data.pw
-                    })
+                const response = await axios.post ('/api/v1/auth/sign-in', {
+                    userid: data.id,
+                    password: data.pw
                 });
 
-                const result = await response.json(); 
+                const result = response.data;
 
-                if (response.ok && result.isSuccess) {
+                // 로그인 성공여부 (isSuccess 없음 빼기) 
+                if (response.status === 200 && result.isSuccess && result.result.token !== "") {
                     console.log("login successful:", result.message);
 
                     // 로그인 성공 시 토큰 저장 
@@ -76,15 +71,20 @@ export default function Login() {
                     navigate('/');
                 } else {
                     console.log("login failed:", result.message);
-                    setLoginError(result.message);
+                    // 토큰이 빈 문자열일 경우에도 로그인 실패로 처리 
+                    setLoginError("로그인에 실패했습니다. 다시 시도해주세요.");
                 }
             } catch (error) {
                 console.error("Error during login:", error);
-                setLoginError("서버와 통신 중 오류가 발생했습니다. 나중에 다시 시도해주세요.");
+                if(error.response) {
+                    setLoginError(error.response.data.message || "로그인 중 문제가 발생했습니다.");
+                } else {
+                    setLoginError("서버와 통신 중 오류가 발생했습니다. 나중에 다시 시도해주세요.");
+                }
             }
                
         } else {
-            setLoginError("아이디(로그인 전용 아이디) 또는 비밀번호가 잘못되었습니다. 아이디와 비밀번호를 정확히 입력해 주세요.");
+            setLoginError("아이디(로그인 전용 아이디) 또는 비밀번호가 잘못되었습니다. 아이디와 비밀번호를 정확히 입력해 주세요.")
         }
     };
 
@@ -154,7 +154,8 @@ export default function Login() {
                     </A.CheckboxContainer>
                     <A.Button type="submit">로그인</A.Button>
                     <A.UnderText>
-                        <A.SignText to='/signup'>회원가입</A.SignText>
+                        <A.SignText to='/emailsignup'>회원가입</A.SignText>
+                        {/* 이메일 인증 후 회원가입 창으로 넘어감  */}
                         <A.LookText>
                             <A.LoglookLink to="/findid">아이디 찾기</A.LoglookLink> | {' '}
                             <A.PwlookLink to="/findpw">비밀번호 찾기</A.PwlookLink>
@@ -177,7 +178,6 @@ export default function Login() {
         </A.loginpage>
     )
 };
-
 
 
 

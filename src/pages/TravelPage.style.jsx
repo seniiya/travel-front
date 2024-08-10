@@ -9,6 +9,7 @@ export const Container = styled.div`
     margin: 0 auto;
     margin-top: 80px;
 
+    
 `;
 
 export const Section = styled.div`

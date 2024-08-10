@@ -94,13 +94,8 @@ export const LoginMain = styled.div`
     gap: 10px;
     // width: 100%;
 
-    // /* Frame 10018 */
-
     position: absolute;
-    // width: 584px;
-    // height: 457.55px;
-    // left: 0px;
-    // top: 0px;
+
 `;
 
 // 비번 변경 페이지 
@@ -116,10 +111,7 @@ export const RePWMain = styled.div`
     // /* Frame 10018 */
 
     position: absolute;
-    // width: 584px;
-    // height: 457.55px;
-    // left: 0px;
-    // top: 0px;
+
 `;
 
 export const Logo = styled.img`
@@ -229,17 +221,7 @@ export const CheckboxContainer = styled.div`
 `;
 
 export const Checkbox = styled.input.attrs({type:'checkbox'})`
-//   width: 20px;
-//   height: 20px;
-//   border-radius: 100%;
-//   border: 1px solid #ccc;
-//   appearance: none;
-//   -webkit-appearance: none;
-//   flex: none;
-//   order: 0;
-//   flex-grow: 0;
-//   outline: none;
-//   cursor: pointer;
+
   width: 20px;
   height: 20px;
   border-radius: 100%;
@@ -451,11 +433,12 @@ export const UnderContainer = styled.footer`
     
 `;
 
-export const UnderLinks = styled.div`
+export const UnderLinks = styled(Link)`
     display: flex;
     gap: 10px;
     margin-bottom: 10px;
     text-align: center;
+    text-decoration: none;
 `;
 
 export const Underlink = styled.div`

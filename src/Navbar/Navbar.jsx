@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import search from '../components/pic/search.png';
 import logo1 from '../components/pic/logo1.png';
@@ -8,6 +8,7 @@ import Dropdown from './Dropdown';
 import TravelBagDropdown from './TravelBagDropdown';
 import dropdownIcon from '../components/pic/화살표.png';
 import SearchSection from './SearchSection';
+import Music from './Music';
 
 const NavbarWrapper = styled.div`
   position: fixed;
@@ -32,15 +33,14 @@ const NavbarContainer = styled.div`
   white-space: nowrap;
   flex-direction: column;
 
-
   @media (max-width: 1200px) {
     font-size: 14px;
-    padding: 8px 15px
+    padding: 8px 15px;
   }
 
   @media (max-width: 992px) {
     font-size: 12px;
-    padding: 6px 10px
+    padding: 6px 10px;
   }
 
   @media (max-width: 768px) {
@@ -51,7 +51,9 @@ const NavbarContainer = styled.div`
 
 const NavbarLinks = styled.div`
   display: flex;
-  align-items: center;
+  align-items: center; 
+  gap: 30px;
+  color: #007bff;
 
   a {
     margin: 0 20px;
@@ -166,7 +168,6 @@ const MusicIcon = styled.div`
   background-repeat: no-repeat;
   background-position: center;
 
-
   @media (max-width: 768px) {
     width: 16px;
     height: 16px;
@@ -181,7 +182,6 @@ const MusicText = styled.span`
   text-overflow: ellipsis;
   max-width: 150px;
 
-
   @media (max-width: 768px) {
     max-width: 100px;
   }
@@ -191,9 +191,12 @@ function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const [showTravelBagDropdown, setShowTravelBagDropdown] = useState(false);
+  const [clickCount, setClickCount] = useState(0);
+  const [travelBagClickCount, setTravelBagClickCount] = useState(0);
+  const navigate = useNavigate();
   const currentSong = "노래 제목 예시 노래 제...";
   const [showSearchSection, setShowSearchSection] = useState(false);
-
+  const [showMusicPlayer, setShowMusicPlayer] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -211,47 +214,77 @@ function Navbar() {
     };
   }, []);
 
+  useEffect(() => {
+    if (clickCount === 2) {
+      navigate('/travel-destinations');
+      setClickCount(0);
+    }
+
+    const timer = setTimeout(() => {
+      setClickCount(0);
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [clickCount, navigate]);
+
+  useEffect(() => {
+    if (travelBagClickCount === 2) {
+      navigate('/travel-destinations-bag');
+      setTravelBagClickCount(0);
+    }
+
+    const timer = setTimeout(() => {
+      setTravelBagClickCount(0);
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [travelBagClickCount]);
+
+
+ 
   return (
     <NavbarWrapper>
-    <NavbarContainer isScrolled={isScrolled}>
-    <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
-      <NavbarLinks>
-        <Link to="/travel-destinations" onClick={() => {
-          setShowDropdown(!showDropdown);
-          setShowTravelBagDropdown(false);
-        }}>
-          여행지
-          <DropdownIcon src={dropdownIcon} alt="dropdown" className={showDropdown ? 'open' : ''} />
-        </Link>
-        <Link to="/travel-bags" onClick={() => {
-          setShowTravelBagDropdown(!showTravelBagDropdown);
-          setShowDropdown(false);
-        }}>
-          여행 가방
-          <DropdownIcon src={dropdownIcon} alt="dropdown" className={showTravelBagDropdown ? 'open' : ''} />
-        </Link>
-        <Link to='/traveler-rank'>여행가 순위</Link>
-        <Link to="/popular-record">여행 기록</Link>
-        </NavbarLinks>
-        <NavbarLogo>
-          <Link to="/" className='mainHome'/> 
-          {/* 로고 클릭하면 "/" 메인페이지로 이동하도록 ! */}
-        </NavbarLogo>
-        <NavbarIcons>
-          <SearchIcon onClick={() => setShowSearchSection(!showSearchSection)} />
-          <LoginButton to="/login">로그인</LoginButton>
-          <MusicButton to="/music">
-            <MusicIcon />
-            <MusicText>{currentSong}</MusicText>
-          </MusicButton>
-        </NavbarIcons>
+      <NavbarContainer isScrolled={isScrolled}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+          <NavbarLinks>
+            <div onClick={() => {
+              setClickCount(prevCount => prevCount + 1);
+              setShowDropdown(!showDropdown);
+              setShowTravelBagDropdown(false);
+            }} style={{ cursor: 'pointer' }}>
+              여행지
+              <DropdownIcon src={dropdownIcon} alt="dropdown" className={showDropdown ? 'open' : ''} />
+            </div>
+            <div onClick={() => {
+              setTravelBagClickCount(prevCount => prevCount + 1);
+              setShowTravelBagDropdown(!showTravelBagDropdown);
+              setShowDropdown(false);
+            }} style={{ cursor: 'pointer' }}>
+              여행 가방
+              <DropdownIcon src={dropdownIcon} alt="dropdown" className={showTravelBagDropdown ? 'open' : ''} />
+            </div>
+            <Link to="/traveler-rank">여행가 순위</Link>
+            <Link to="/popular-page">여행 기록</Link>
+          </NavbarLinks>
+          <NavbarLogo>
+            <Link to="/" className="mainHome" />
+          </NavbarLogo>
+          <NavbarIcons>
+            <SearchIcon onClick={() => setShowSearchSection(!showSearchSection)} />
+            <LoginButton to="/login">로그인</LoginButton>
+            <MusicButton onClick={() => setShowMusicPlayer(!showMusicPlayer)}>
+              <MusicIcon />
+              <MusicText>{currentSong}</MusicText>
+            </MusicButton>
+          </NavbarIcons>
         </div>
       </NavbarContainer>
       {showDropdown && <Dropdown onClose={() => setShowDropdown(false)} />}
       {showTravelBagDropdown && <TravelBagDropdown onClose={() => setShowTravelBagDropdown(false)} />}
-      {showSearchSection && <SearchSection onClose={() => setShowSearchSection(false)} />}  
+      {showSearchSection && <SearchSection onClose={() => setShowSearchSection(false)} />}
+      {showMusicPlayer && <Music onClose={() => setShowMusicPlayer(false)} />}
     </NavbarWrapper>
-  )
+  );
 }
 
 export default Navbar;

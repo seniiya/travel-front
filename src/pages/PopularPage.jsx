@@ -2,12 +2,17 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import sectionbar from '../components/pic/sectionbar.svg';
 import * as A from "../pages/TravelPage.style";
+import { useNavigate } from "react-router-dom";
 
 import mark1 from '../components/pic/mark1.png';
 import headerbar from '../components/pic/headerbar.svg';
 import recordicon from '../components/pic/recordicon.svg';
 import sampleDefault from '../components/pic/samples/sample.jpeg';
 import movetop from '../components/pic/movetop.svg';
+
+import likeicon from '../components/pic/whiteLike.svg';
+import scrapicon from '../components/pic/whiteScrap.svg';
+import linkicon from '../components/pic/whiteLink.svg';
 
 export default function PopularPage() {
     const [activeSection, setActiveSection] = useState(null);
@@ -113,6 +118,21 @@ export default function PopularPage() {
                 >
                   <div className="img-wrapper">
                     <img src={card.image} alt={card.title}/>
+                    <Overlay>
+                    <LikesScraps>
+                      <span>
+                        <img src={likeicon} alt="like" />
+                        {card.like}
+                      </span>
+                      <span>
+                        <img src={scrapicon} alt="scrap" />
+                        {card.scrap || 0}
+                      </span>
+                      <span>
+                        <img src={linkicon} alt="link" />
+                      </span>
+                    </LikesScraps>
+                    </Overlay>
                   </div> 
                   <div className="content">
                     <h3>{card.title}</h3>
@@ -122,7 +142,10 @@ export default function PopularPage() {
                       <span> 조회수 {card.views}</span>
                     </div>
                   </div>
+
                 </ContentCard>
+
+
               ))}
             </TravelersGrid>
 
@@ -189,7 +212,10 @@ const TravelersGrid = styled.div`
       grid-template-rows: repeat(24, auto);
   }
 
+
+
 `;
+
 
 const ContentCard = styled.div`
     position: relative;
@@ -203,18 +229,29 @@ const ContentCard = styled.div`
     &:hover {
         transform: translateY(-10px);
         box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+
+        .img-wrapper img {
+          filter: brightness(50%);
+        }
+
+        .overlay {
+          opacity: 1;
+        }
     }
 
-    .image-wrapper {
-        width: 100%;
-        height: 200px;
-        overflow: hidden;
-    }
+    .img-wrapper {
 
-    .image-wrapper img {
+      position: relative;
+      width: 100%;
+      height: 200px;
+      overflow: hidden;
+        
+      img {
         width: 100%;
         height: 100%;
         object-fit: cover;
+        transition: filter 0.3s ease;
+      }
     }
 
     .content {
@@ -243,3 +280,39 @@ const ContentCard = styled.div`
 `;
 
 
+const Overlay = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  // justify-content: space-between;
+  justify-content: flex-end;
+  padding:15px;
+  color: white;
+  font-size: 15px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+`;
+
+const LikesScraps = styled.div`
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+
+  span {
+      display: flex;
+      align-items: center;
+      color: white;
+      
+    img {
+      width: 20px;
+      height: 20px;
+      margin-right: 5px;
+    }
+  }
+`;
