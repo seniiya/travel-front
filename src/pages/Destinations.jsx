@@ -121,42 +121,58 @@ const Destinations = ({ selectedDest }) => {
   const [destinations, setDestinations] = useState([]);
   const destinationsPerPage = 16;
 
+  // 오류처리 수정 
   useEffect(() => {
     const fetchDestinations = async () => {
       try {
         const response = await axios.get('/api/destinations');
-        setDestinations(response.data.destinations);
+        if (response.data && Array.isArray(response.data.destinations)) {
+          setDestinations(response.data.destinations);
+        } else {
+          console.error('Invalid data format received from API');
+          setDestinations([]);
+        }
       } catch (error) {
         console.error('Error fetching destinations:', error);
+        setDestinations([]);
       }
     };
-
+  
     fetchDestinations();
   }, []);
-
-  const filteredDestinations = selectedDest === '여행지 - 전체'
-    ? destinations
-    : selectedDest.endsWith('전체')
-    ? destinations.filter(destination => destination.dest.includes(selectedDest.split(' - ')[0]))
-    : destinations.filter(destination => destination.dest === selectedDest);
-
-  const sortedDestinations = [...filteredDestinations].sort((a, b) => {
-    if (sortCriteria === 'newest') {
-      return new Date(b.date) - new Date(a.date);
-    } else if (sortCriteria === 'oldest') {
-      return new Date(a.date) - new Date(b.date);
-    } else if (sortCriteria === 'name') {
-      return a.title.localeCompare(b.title);
-    } else if (sortCriteria === 'likes') {
-      return b.likes - a.likes;
-    } else if (sortCriteria === 'scraps') {
-      return b.scraps - a.scraps;
-    } else if (sortCriteria === 'views') {
-      return parseInt(b.views) - parseInt(a.views);
+  // 수정
+  const filteredDestinations = React.useMemo(() => {
+    if (!Array.isArray(destinations)) return [];
+    
+    if (selectedDest === '여행지 - 전체') {
+      return destinations;
+    } else if (selectedDest.endsWith('전체')) {
+      return destinations.filter(destination => destination.dest && destination.dest.includes(selectedDest.split(' - ')[0]));
+    } else {
+      return destinations.filter(destination => destination.dest === selectedDest);
     }
-    return 0;
-  });
+  }, [destinations, selectedDest]);
 
+  const sortedDestinations = React.useMemo(() => {
+    if (!Array.isArray(filteredDestinations)) return [];
+    
+    return [...filteredDestinations].sort((a, b) => {
+      if (sortCriteria === 'newest') {
+        return new Date(b.date) - new Date(a.date);
+      } else if (sortCriteria === 'oldest') {
+        return new Date(a.date) - new Date(b.date);
+      } else if (sortCriteria === 'name') {
+        return a.title.localeCompare(b.title);
+      } else if (sortCriteria === 'likes') {
+        return b.likes - a.likes;
+      } else if (sortCriteria === 'scraps') {
+        return b.scraps - a.scraps;
+      } else if (sortCriteria === 'views') {
+        return parseInt(b.views) - parseInt(a.views);
+      }
+      return 0;
+    });
+  }, [filteredDestinations, sortCriteria]);
   const indexOfLastDestination = currentPage * destinationsPerPage;
   const indexOfFirstDestination = indexOfLastDestination - destinationsPerPage;
   const currentDestinations = sortedDestinations.slice(indexOfFirstDestination, indexOfLastDestination);
