@@ -1,13 +1,53 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 import Draggable from 'react-draggable';
 import mark1 from '../components/pic/mark1.png';
 import mark2 from '../components/pic/mark2.png';
 import mark3 from '../components/pic/mark3.png';
-import mark4 from '../components/pic/mark4.png';
+import mark4 from '../components/pic//mark4.png';
 import plane1 from '../components/pic/plane1.png';
 import plane2 from '../components/pic/plane2.png';
 import folder from '../components/pic/folder.png';
+import sampleDefault from '../components/pic/samples/sample.jpeg'; /* 서버에서 받아오게 */
+import sampleDefault2 from '../components/pic/samples/sample2.jpeg';
+import sampleDefault3 from '../components/pic/samples/sample3.jpeg';
+import sampleDefault4 from '../components/pic/samples/sample4.jpeg';
+import sampleDefault5 from '../components/pic/samples/sample5.jpeg';
+import sampleDefault6 from '../components/pic/samples/sample6.jpeg';
+import sampleDefault7 from '../components/pic/samples/sample7.jpeg';
+import sampleDefault8 from '../components/pic/samples/sample8.jpeg';
+import sampleDefault9 from '../components/pic/samples/sample9.jpeg';
+import sampleDefault10 from '../components/pic/samples/sample10.jpeg';
+import sampleDefault11 from '../components/pic/samples/sample11.jpeg';
+import sampleDefault12 from '../components/pic/samples/sample12.jpeg';
+import sampleDefault13 from '../components/pic/samples/sample13.jpeg';
+import sampleDefault14 from '../components/pic/samples/sample14.jpeg';
+import sampleDefault15 from '../components/pic/samples/sample15.jpeg';
+import sampleDefault16 from '../components/pic/samples/sample16.jpeg';
+
+const images = [
+  sampleDefault, sampleDefault2, sampleDefault3, sampleDefault4,
+  sampleDefault5, sampleDefault6, sampleDefault7, sampleDefault8,
+  sampleDefault9, sampleDefault10, sampleDefault11, sampleDefault12,
+  sampleDefault13, sampleDefault14, sampleDefault15, sampleDefault16
+];
+
+const shuffleArray = (array) => {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+};
+
+const getShuffledImages = (count) => {
+  return shuffleArray(images.slice()).slice(0, count);
+};
+
+const getRandomImage = (usedImages) => {
+  const availableImages = images.filter(img => !usedImages.includes(img));
+  return availableImages[Math.floor(Math.random() * availableImages.length)];
+};
 
 const Container = styled.div`
   display: flex;
@@ -133,26 +173,6 @@ const ContentCard = styled.div`
   }
 `;
 
-const BagContentCard = styled(ContentCard)`
-  position: relative;
-  
-  &::before {
-    content: '#{Tag}'; 
-    position: absolute;
-    font-size: 12px;
-    padding: 5px 10px;
-    width: 36px;
-    height: 15px;
-    top: 150px;
-    left: 10px;
-    background: #FFFFFF;
-    font-size: 12px;
-    padding: 5px 10px;
-    border-radius: 20px;
-    border: 0.5px solid #A8C5F6;
-  }
-`;
-
 const FolderContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -270,7 +290,7 @@ const TravelerCard = styled.div`
       font-size: 12px;
       color: #888;
     }
-  }
+}
 `;
 
 const PageButtonContainer = styled.div`
@@ -281,6 +301,7 @@ const PageButtonContainer = styled.div`
   gap: 20px;
   margin: 30px;
   padding-left: 80px;
+  
 `;
 
 const PageButton = styled.button`
@@ -303,10 +324,6 @@ const PageButton = styled.button`
 `;
 
 const Contents = () => {
-  const [weeklyRecords, setWeeklyRecords] = useState([]);
-  const [destinations, setDestinations] = useState([]);
-  const [worldTravelers, setWorldTravelers] = useState([]);
-  const [travelBags, setTravelBags] = useState([]);
   const [isHovered1, setIsHovered1] = useState(false);
   const [isHovered2, setIsHovered2] = useState(false);
   const [isHovered3, setIsHovered3] = useState(false);
@@ -317,77 +334,169 @@ const Contents = () => {
   const [isPaused3, setIsPaused3] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
 
-  useEffect(() => {
-    fetch('/api/weeklyRecords')
-      .then(response => response.json())
-      .then(data => setWeeklyRecords(data))
-      .catch(error => console.error('Error fetching weekly records:', error));
+  const travelFolders = [
+    { name: '• 삿포로' },
+    { name: '• 나트랑' },
+    { name: '• 대만' },
+    { name: '• 이탈리아' },
+    { name: '• 괌' },
+    { name: '• 사이판' },
+    { name: '• 다낭' },
+    { name: '• 방콕파타야' },
+  ];
 
-    fetch('/api/destinations')
-      .then(response => response.json())
-      .then(data => setDestinations(data))
-      .catch(error => console.error('Error fetching destinations:', error));
+  const shuffledImages = getShuffledImages(travelFolders.length);
+  const [folderImages, setFolderImages] = useState(shuffledImages);
 
-    fetch('/api/worldTravelers')
-      .then(response => response.json())
-      .then(data => setWorldTravelers(data))
-      .catch(error => console.error('Error fetching world travelers:', error));
+  const handleMouseEnterFolder = (index) => {
+    const newImages = [...folderImages];
+    const currentImage = newImages[index];
+    let randomImage = getRandomImage(newImages);
 
-    fetch('/api/travelBags')
-      .then(response => response.json())
-      .then(data => setTravelBags(data))
-      .catch(error => console.error('Error fetching travel bags:', error));
-  }, []);
+    while (randomImage === currentImage) {
+      randomImage = getRandomImage(newImages);
+    }
 
-  const weeklyRecordCards = weeklyRecords.map((record, index) => (
-    <ContentCard key={record.id} onClick={() => setSelectedCard(index)} className={selectedCard === index ? 'active' : ''}>
-      <img src={record.image} alt="샘플" />
+    newImages[index] = randomImage;
+    setFolderImages(newImages);
+  };
+
+  const contentCards = Array.from({ length: 100 }, (_, index) => (
+    <ContentCard
+      key={index}
+      onClick={() => setSelectedCard(index)}
+      className={selectedCard === index ? 'active' : ''}
+    >
+      <img src={sampleDefault} alt="샘플" />
       <div className="content">
-        <h3>{record.title}</h3>
-        <p>{record.content}</p>
+        <h3>제목입니다</h3>
+        <p>내용입니다 내용입니다 내용입니다 내용입니다</p>
         <div className="info">
-          <span>{record.nickname} | {record.date}</span>
-          <span>조회수 {record.views}</span>
+          <span>김태엽 | 2024-08-24</span>
+          <span>조회수 999+</span>
         </div>
       </div>
     </ContentCard>
   ));
 
-  const bagCards = travelBags.map((bag, index) => (
-    <BagContentCard key={bag.id} onClick={() => setSelectedCard(index)} className={selectedCard === index ? 'active' : ''}>
-      <img src={bag.image} alt="샘플" />
-      <div className="content">
-        <h3>{bag.title}</h3>
-        <p>{bag.content}</p>
-        <div className="info">
-          <span>조회수 {bag.views}</span>
-          <span>좋아요 {bag.likes}</span>
-          <span>스크랩 {bag.scraps}</span>
-        </div>
-      </div>
-    </BagContentCard>
-  ));
+  const worldTravelers = [
+    {
+      id: 1,
+      name: '김태엽',
+      description: '안녕하세요! 저는 여행을 사랑하는 25살 김태엽입니다. 새로운 장소를 탐험하고, 다양한 문화를 경험하며, 전 세계 사람들과 소통하는 것을 즐깁니다...',
+      likes: '3.2만',
+      comments: 1312,
+      shares: 5,
+      imgSrc: sampleDefault 
+    },
+    {
+      id: 2,
+      name: '김태엽',
+      description: '안녕하세요! 저는 여행을 사랑하는 25살 김태엽입니다. 새로운 장소를 탐험하고, 다양한 문화를 경험하며, 전 세계 사람들과 소통하는 것을 즐깁니다...',
+      likes: '3.2만',
+      comments: 1312,
+      shares: 5,
+      imgSrc: sampleDefault2 
+    },
+    {
+      id: 3,
+      name: '김태엽',
+      description: '안녕하세요! 저는 여행을 사랑하는 25살 김태엽입니다. 새로운 장소를 탐험하고, 다양한 문화를 경험하며, 전 세계 사람들과 소통하는 것을 즐깁니다...',
+      likes: '3.2만',
+      comments: 1312,
+      shares: 5,
+      imgSrc: sampleDefault3 
+    },
+    {
+      id: 4,
+      name: '김태엽',
+      description: '안녕하세요! 저는 여행을 사랑하는 25살 김태엽입니다. 새로운 장소를 탐험하고, 다양한 문화를 경험하며, 전 세계 사람들과 소통하는 것을 즐깁니다...',
+      likes: '3.2만',
+      comments: 1312,
+      shares: 5,
+      imgSrc: sampleDefault4 
+    },
+    {
+      id: 5,
+      name: '김태엽',
+      description: '안녕하세요! 저는 여행을 사랑하는 25살 김태엽입니다. 새로운 장소를 탐험하고, 다양한 문화를 경험하며, 전 세계 사람들과 소통하는 것을 즐깁니다...',
+      likes: '3.2만',
+      comments: 1312,
+      shares: 5,
+      imgSrc: sampleDefault5 
+    },
+    {
+      id: 6,
+      name: '김태엽',
+      description: '안녕하세요! 저는 여행을 사랑하는 25살 김태엽입니다. 새로운 장소를 탐험하고, 다양한 문화를 경험하며, 전 세계 사람들과 소통하는 것을 즐깁니다...',
+      likes: '3.2만',
+      comments: 1312,
+      shares: 5,
+      imgSrc: sampleDefault6 
+    },
+    {
+      id: 7,
+      name: '김태엽',
+      description: '안녕하세요! 저는 여행을 사랑하는 25살 김태엽입니다. 새로운 장소를 탐험하고, 다양한 문화를 경험하며, 전 세계 사람들과 소통하는 것을 즐깁니다...',
+      likes: '3.2만',
+      comments: 1312,
+      shares: 5,
+      imgSrc: sampleDefault7
+    },
+    {
+      id: 8,
+      name: '김태엽',
+      description: '안녕하세요! 저는 여행을 사랑하는 25살 김태엽입니다. 새로운 장소를 탐험하고, 다양한 문화를 경험하며, 전 세계 사람들과 소통하는 것을 즐깁니다...',
+      likes: '3.2만',
+      comments: 1312,
+      shares: 5,
+      imgSrc: sampleDefault8
+    },
+    {
+      id: 9,
+      name: '김태엽',
+      description: '안녕하세요! 저는 여행을 사랑하는 25살 김태엽입니다. 새로운 장소를 탐험하고, 다양한 문화를 경험하며, 전 세계 사람들과 소통하는 것을 즐깁니다...',
+      likes: '3.2만',
+      comments: 1312,
+      shares: 5,
+      imgSrc: sampleDefault9
+    },
+    {
+      id: 10,
+      name: '김태엽',
+      description: '안녕하세요! 저는 여행을 사랑하는 25살 김태엽입니다. 새로운 장소를 탐험하고, 다양한 문화를 경험하며, 전 세계 사람들과 소통하는 것을 즐깁니다...',
+      likes: '3.2만',
+      comments: 1312,
+      shares: 5,
+      imgSrc: sampleDefault10
+    },
+    {
+      id: 11,
+      name: '김태엽',
+      description: '안녕하세요! 저는 여행을 사랑하는 25살 김태엽입니다. 새로운 장소를 탐험하고, 다양한 문화를 경험하며, 전 세계 사람들과 소통하는 것을 즐깁니다...',
+      likes: '3.2만',
+      comments: 1312,
+      shares: 5,
+      imgSrc: sampleDefault11
+    },
+    {
+      id: 12,
+      name: '김태엽',
+      description: '안녕하세요! 저는 여행을 사랑하는 25살 김태엽입니다. 새로운 장소를 탐험하고, 다양한 문화를 경험하며, 전 세계 사람들과 소통하는 것을 즐깁니다...',
+      likes: '3.2만',
+      comments: 1312,
+      shares: 5,
+      imgSrc: sampleDefault12
+    }
+  ];
 
-  const selectedTravelers = worldTravelers.slice(
-    (currentPage - 1) * 6,
-    currentPage * 6
-  ).map((traveler) => (
-    <TravelerCard key={traveler.useId} onClick={() => setSelectedTravelerCard(traveler.useId)} className={selectedTravelerCard === traveler.useId ? 'active' : ''}>
-      <img src={traveler.profilePhotoUrl} alt={`${traveler.nickname}`} />
-      <div className="traveler-info">
-        <h2>{traveler.nickname}</h2>
-        <p>{traveler.introduction}</p>
-        <div className="traveler-stats">
-          <span>좋아요 {traveler.likes}</span>
-          <span>스크랩 {traveler.scraps}</span>
-          <span>답글 {traveler.replies}</span>
-        </div>
-      </div>
-    </TravelerCard>
-  ));
+  const travelersPerPage = 6;
+  const maxPage = Math.ceil(worldTravelers.length / travelersPerPage);
+  const startIdx = (currentPage - 1) * travelersPerPage;
+  const selectedTravelers = worldTravelers.slice(startIdx, startIdx + travelersPerPage);
 
   const handleNextPage = () => {
-    if (currentPage < Math.ceil(worldTravelers.length / 6)) {
+    if (currentPage < maxPage) {
       setCurrentPage(currentPage + 1);
     }
   };
@@ -408,20 +517,30 @@ const Contents = () => {
             <p>7일 동안의 인기 있었던 기록들이에요.</p>
           </div>
         </SectionHeader>
-        <Draggable axis="x" onStart={() => setIsPaused1(true)} onStop={() => setIsPaused1(false)}>
+        <Draggable
+          axis="x"
+          onStart={() => setIsPaused1(true)}
+          onStop={() => setIsPaused1(false)}
+        >
           <div>
-            <SectionContent duration={30} onMouseEnter={() => setIsPaused1(true)} onMouseLeave={() => setIsPaused1(false)} isPaused={isPaused1}>
-              {weeklyRecordCards}
+            <SectionContent
+              duration={30}
+              onMouseEnter={() => setIsPaused1(true)}
+              onMouseLeave={() => setIsPaused1(false)}
+              isPaused={isPaused1}
+            >
+              {contentCards}
             </SectionContent>
           </div>
         </Draggable>
       </SectionContainer>
-
-      <StyledButton onMouseEnter={() => setIsHovered1(true)} onMouseLeave={() => setIsHovered1(false)}>
+      <StyledButton
+        onMouseEnter={() => setIsHovered1(true)}
+        onMouseLeave={() => setIsHovered1(false)}
+      >
         금주의 기록 전체보기
         <img src={isHovered1 ? plane2 : plane1} alt="비행기" />
       </StyledButton>
-
       <SectionContainer>
         <SectionHeader>
           <img src={mark2} alt="마크" />
@@ -431,18 +550,25 @@ const Contents = () => {
           </div>
         </SectionHeader>
         <FolderContainer>
-          {destinations.map((destination, index) => (
+          {travelFolders.map((folderItem, index) => (
             <FolderCard key={index}>
               <div className="image-wrapper">
-                <img src={destination.photoUrl} alt={destination.name} className="current" />
+                <img
+                  src={folderImages[index]}
+                  alt={folderItem.name}
+                  onMouseEnter={() => handleMouseEnterFolder(index)}
+                  className="current"
+                />
               </div>
-              <div>{destination.name}</div>
+              <div>{folderItem.name}</div>
             </FolderCard>
           ))}
         </FolderContainer>
       </SectionContainer>
-
-      <StyledButton onMouseEnter={() => setIsHovered2(true)} onMouseLeave={() => setIsHovered2(false)}>
+      <StyledButton
+        onMouseEnter={() => setIsHovered2(true)}
+        onMouseLeave={() => setIsHovered2(false)}
+      >
         여행지 전체보기
         <img src={isHovered2 ? plane2 : plane1} alt="비행기" />
       </StyledButton>
@@ -456,19 +582,37 @@ const Contents = () => {
           </div>
         </SectionHeader>
         <TravelersGrid>
-          {selectedTravelers}
+          {selectedTravelers.map(traveler => (
+            <TravelerCard
+              key={traveler.id}
+              onClick={() => setSelectedTravelerCard(traveler.id)}
+              className={selectedTravelerCard === traveler.id ? 'active' : ''}
+            >
+              <img src={traveler.imgSrc} alt={`${traveler.name}`} />
+              <div className="traveler-info">
+                <h2>{traveler.name}</h2>
+                <p>{traveler.description}</p>
+                <div className="traveler-stats">
+                  <span>좋아요 {traveler.likes}</span>
+                  <span>댓글 {traveler.comments}</span>
+                  <span>공유 {traveler.shares}</span>
+                </div>
+              </div>
+            </TravelerCard>
+          ))}
         </TravelersGrid>
         <PageButtonContainer>
           <PageButton onClick={handlePrevPage} disabled={currentPage === 1}>{'<'}</PageButton>
-          <PageButton onClick={handleNextPage} disabled={currentPage === Math.ceil(worldTravelers.length / 6)}>{'>'}</PageButton>
+          <PageButton onClick={handleNextPage} disabled={currentPage === maxPage}>{'>'}</PageButton>
         </PageButtonContainer>
       </SectionContainer>
-
-      <StyledButton onMouseEnter={() => setIsHovered3(true)} onMouseLeave={() => setIsHovered3(false)}>
+      <StyledButton
+        onMouseEnter={() => setIsHovered3(true)}
+        onMouseLeave={() => setIsHovered3(false)}
+      >
         세계 여행가 전체보기
         <img src={isHovered3 ? plane2 : plane1} alt="비행기" />
       </StyledButton>
-
       <SectionContainer>
         <SectionHeader>
           <img src={mark4} alt="마크" />
@@ -477,16 +621,27 @@ const Contents = () => {
             <p>여행가들의 가방 속 빠질 수 없는 이것!</p>
           </div>
         </SectionHeader>
-        <Draggable axis="x" onStart={() => setIsPaused3(true)} onStop={() => setIsPaused3(false)}>
+        <Draggable
+          axis="x"
+          onStart={() => setIsPaused3(true)}
+          onStop={() => setIsPaused3(false)}
+        >
           <div>
-            <SectionContent duration={50} onMouseEnter={() => setIsPaused3(true)} onMouseLeave={() => setIsPaused3(false)} isPaused={isPaused3}>
-              {bagCards}
+            <SectionContent
+              duration={50}
+              onMouseEnter={() => setIsPaused3(true)}
+              onMouseLeave={() => setIsPaused3(false)}
+              isPaused={isPaused3}
+            >
+              {contentCards}
             </SectionContent>
           </div>
         </Draggable>
       </SectionContainer>
-
-      <StyledButton onMouseEnter={() => setIsHovered4(true)} onMouseLeave={() => setIsHovered4(false)}>
+      <StyledButton
+        onMouseEnter={() => setIsHovered4(true)}
+        onMouseLeave={() => setIsHovered4(false)}
+      >
         여행가방 전체보기
         <img src={isHovered4 ? plane2 : plane1} alt="비행기" />
       </StyledButton>

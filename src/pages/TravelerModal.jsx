@@ -19,7 +19,7 @@ import headerbar from '../components/pic/headerbar.svg';
 import bluebar from '../components/pic/BlueBar.svg';
 import undertxt from '../components/pic/UnderTxt.svg';
 
-import linkicon from '../components/pic/LinkIcon.svg';
+import linkicon from '../components/pic/link.svg';
 import snsicon from '../components/pic/SnsTxt.svg';
 import nickicon from '../components/pic/Nickname.svg';
 import locationicon from '../components/pic/LocationIcon.svg';

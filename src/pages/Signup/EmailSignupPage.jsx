@@ -130,7 +130,7 @@ const EmailSignupPage = () => {
 
   const handleEmailVerification = async () => {
     try {
-      const response = await axios.post('http://localhost:8080/api/v1/auth/mailSend', { email });
+      const response = await axios.post('/api/v1/auth/mailSend', { email });
       if (response.data.authNum) {
         setIsEmailSent(true);
         setError('');
