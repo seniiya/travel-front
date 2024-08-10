@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
+import axios from 'axios';
 import logo from '../../components/pic/logo.svg';
 import cancel from '../../components/pic/cancel.svg';
 import invisible from '../../components/pic/invisible.svg';
@@ -139,13 +140,23 @@ const FooterLink = styled.a`
 
 const SignupPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
-  const [username, setUsername] = useState('');
+  const [userId, setUserId] = useState('');
   const [nickname, setNickname] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [errors, setErrors] = useState({});
+
+  // emailsignuppage에서 이메일 내용 받아오기 
+  useEffect(() => {
+    if (location.state?.email) {
+      setEmail(location.state.email);
+    }
+  }, [location.state]);
+
 
   const handleLogoClick = () => {
     navigate('/');
@@ -188,7 +199,8 @@ const SignupPage = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  // 수정
+  const handleSubmit = async (e) => {
     e.preventDefault();
     let newErrors = {};
     if (!/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(password)) {
@@ -198,11 +210,27 @@ const SignupPage = () => {
       newErrors.confirmPassword = '비밀번호가 일치하지 않습니다.';
     }
     setErrors(newErrors);
+
     if (Object.keys(newErrors).length === 0) {
-      // Submit form
+      try {
+        const response = await axios.post('/api/v1/auth/sign-up', {
+          userid: userId,
+          nickname,
+          email,
+          password
+        });
+        if (response.data.token) {
+          // 토큰을 로컬 스토리지나 상태 관리 라이브러리에 저장
+          localStorage.setItem('token', response.data.token);
+          navigate('/'); // 홈페이지로 이동
+        }
+      } catch (error) {
+        setErrors({ submit: '회원가입 중 오류가 발생했습니다.' });
+        console.error('Signup error:', error);
+      }
     }
   };
-
+  
   const clearInput = (field) => {
     if (field === 'username') {
       setUsername('');

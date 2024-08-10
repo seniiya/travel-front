@@ -1,23 +1,25 @@
 import React, { useState } from "react";
-// import styled from 'styled-components';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import axios from "axios";
 import logo from '../../components/pic/logo.svg';
 import copyright from '../../components/pic/copyright.svg';
 import visible from '../../components/pic/visible.svg';
 import invisible from '../../components/pic/invisible.svg';
 import * as A from "../Login.style.jsx";
-import { useNavigate } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
+
 
 
 
 
 export default function RePW() {
-    const { register, handleSubmit, watch, formState: { errors, isVlaid }} = useForm({mode: "onChange"}); // 유효성 검사 실시간 반영 
+    const { register, handleSubmit, watch, formState: { errors }} = useForm({mode: "onChange"}); // 유효성 검사 실시간 반영 
     const [ showPw, setShowPw ] = useState(false);
-    // const [ pwValue, setPwValue ] = useState("");
     const [ reShowPw, setReShowPw] = useState(false);
-    // const [ rePwValue, setRePwValue ] = useState("");
     const navigate = useNavigate();
+    const location = useLocation();
+    // 이전 페이지에서 전달받은 useid
+    const userId = location.state?.userId;
 
     const handleLogoClick = () => {
         navigate('/');
@@ -33,11 +35,34 @@ export default function RePW() {
     };
 
     
-    const onSubmit = (data) => {
-        alert('비밀번호가 번경이 완료되었습니다.');
-        navigate('/login');
+    const onSubmit = async (data) => {
+        if (!userId) {
+            alert('사용자 정보를 찾을 수 없습니다. 다시 시도해주세요.');
+            navigate('/findid');
+            return;
+        }
+
+        try {
+            // 재설정은 경로가 어떻게 되는지 몰라서 비번초기화와 동일하게
+            const response = await axios.post('/api/v1/usersend-verification', {
+                userId: userId,
+                password: data.password
+            });
+
+            if (response.data.userId) {
+                alert('비밀번호 변경이 완료되었습니다.');
+                // 변경 확인 후 로그인 창으로 이동
+                navigate('/login');
+            } else {
+                alert('비밀번호 변경에 실패했습니다. 다시 시도해주세요.');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('서버 오류가 발생했습니다. 나중에 다시 시도해주세요.');
+        }
     };
-    // 변경 확인 후 로그인 창으로 이동 
+
+   
 
 
     const validateRule = {
@@ -72,7 +97,7 @@ export default function RePW() {
                      
                                 <A.Input 
                                     type={showPw ? 'text' : 'password'} 
-                                    placeholder='비밀번호'
+                                    placeholder='비밀번호 (숫자+영문자 8자리 이상)'
                                     {...register("password", validateRule.password)}                            
                                 /> 
                                   

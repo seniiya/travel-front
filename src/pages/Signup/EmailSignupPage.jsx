@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import logo from '../../components/pic/logo.svg';
 
 const PageContainer = styled.div`
@@ -109,29 +110,70 @@ const FooterLink = styled.a`
   }
 `;
 
+//추가
+const ErrorMessage = styled.p`
+  color: red;
+  font-size: 0.8em;
+  margin-top: 5px;
+`;
+
 const EmailSignupPage = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [verificationCode, setVerificationCode] = useState('');
-  const [isEmailVerified, setIsEmailVerified] = useState(false);
+  const [isEmailSent, setIsEmailSent] = useState(false);
+  const [error, setError] = useState('');
 
   const handleLogoClick = () => {
     navigate('/');
   };
 
-  const handleEmailVerification = () => {
-    // Simulate email verification
-    setIsEmailVerified(true);
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (isEmailVerified) {
-      // Handle successful email verification
-      navigate('/signup');
-      // 이메일 인증이 완료되면 회원가입창으로 넘어가도록 수정했습니다 !! 
+  const handleEmailVerification = async () => {
+    try {
+      const response = await axios.post('/api/v1/auth/mail-send', { email });
+      if (response.data.authNum) {
+        setIsEmailSent(true);
+        setError('');
+        alert('인증번호가 이메일로 전송되었습니다.');
+      }
+    } catch (error) {
+      setError('이메일 인증 과정에서 오류가 발생했습니다.');
+      console.error('Email verification error:', error);
     }
   };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (isEmailSent) {
+      try {
+        const response = await axios.post('/api/v1/mail-check', {
+          email: email,
+          authNum: verificationCode
+        });
+
+        if (response.data.email) {
+          // 인증 성공
+          navigate('/signup', { state: { email: response.data.email } });
+        } else {
+          setError('인증에 실패했습니다. 인증번호를 확인해주세요.');
+        }
+      } catch (error) {
+        setError('인증 과정에서 오류가 발생했습니다.');
+        console.error('Verification error:', error);
+      }
+    } else {
+      setError('먼저 이메일 인증을 진행해주세요.');
+    }
+  };
+
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+  //   if (isEmailVerified) {
+  //     // Handle successful email verification
+  //     navigate('/signup');
+  //     // 이메일 인증이 완료되면 회원가입창으로 넘어가도록 수정했습니다 !! 
+  //   }
+  // };
 
   return (
     <PageContainer>
@@ -156,9 +198,11 @@ const EmailSignupPage = () => {
               placeholder="인증번호"
               value={verificationCode}
               onChange={(e) => setVerificationCode(e.target.value)}
-              disabled={!isEmailVerified}
+              disabled={!isEmailSent}
             />
           </InputWrapper>
+          {/* 추가 */}
+          {error && <ErrorMessage>{error}</ErrorMessage>}
           <Button type="submit">이메일 인증</Button>
         </RegisterForm>
         <Footer>
