@@ -369,7 +369,7 @@ export default function TravelerRank() {
     const selectedTravelers = worldTravelers.slice(0, travelersPerPage);
 
     return (
-        <A.Container>
+        <Container>
           <Header>
             <img src={mark3} alt="mark3"/>
             <div>
@@ -377,11 +377,11 @@ export default function TravelerRank() {
               <p>많은 좋아요와 스크랩 수를 보유한 여행가에요.</p>
             </div>
           </Header>
-            <HeaderBar src={headerbar} alt="header bar"/>
+          <HeaderBar src={headerbar} alt="header bar"/>
 
           <TravelerSection>
             <SectionWrapper>
-            <A.Section>
+            < A.Section>
                 <A.SectionTxt     
                     $active={isActiveSection === 'rank'}
                     onClick={() => setisActiveSection('rank')}>
@@ -411,7 +411,7 @@ export default function TravelerRank() {
                     onClick={() => setisActiveSection('write')}>
                 기록순
                 </A.SectionTxt>
-            </A.Section>
+              </A.Section>
             </SectionWrapper>
 
             <TravelersGrid>
@@ -463,9 +463,25 @@ export default function TravelerRank() {
               {/* <TravelerDtails traveler={selectedTraveler}/> */}
           </TravelerModal>
         )}
-        </A.Container>
+        </Container>
     )
 }
+
+
+const Container = styled.div`
+    display: flex;
+    flex-direction: column;
+    position: relative; // 추가
+    // flex: 1;
+    min-height: 100vh;
+    padding: 80px 20px 20px; // 상단 패딩 증가
+    // overflow: hidden;
+    max-width: 1400px;
+    // min-height: 100vh;
+    margin: 0 auto;
+    // margin-top: 80px;
+ 
+`;
 
 const Header = styled.div`
   /* Frame 10057 */
@@ -478,14 +494,14 @@ const Header = styled.div`
   gap: 25px;
   align-items: center;
   // gap: 10px;
-  // margin-bottom: 20px;
+  margin-bottom: 20px;
   // margin-left: 50px;
 
-  position: absolute;
-  width: 1540px;
-  height: 100px;
-  left: 190px;
-  top: 137px;
+  // position: absolute;
+  // width: 1540px;
+  // height: 100px;
+  // left: 190px;
+  // top: 137px;
 
   h2 {
     font-size: 28px;
@@ -501,64 +517,55 @@ const Header = styled.div`
 `;
 
 const HeaderBar = styled.div`
-  /* Vector 672 */
 
   position: absolute;
   width: 1920px;
+  // width: 100%;
   height: 0px;
   left: calc(50% - 1920px/2);
-  top: 262px;
-
+  // top: 262px;
+  margin: 120px 0 0px 0;
   border: 1px solid #E0E2E6;
 
 `;
 
 const TravelerSection = styled.div`
-  /* Frame 10087 */
+  
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 40px 0; // 수정
 
-  position: absolute;
-  width: 1400px;
-  height: 2357px;
-  left: calc(50% - 1400px/2);
-  top: 376px;
 `;
 
 
 const SectionWrapper = styled.div`
-    // display: flex;
-    // justify-content: space-between;
-    // align-items: center;
-    // padding: 0 20px;
-    // margin-bottom: 50px;
-    // margin-top: 80px;
-    /* Component 52 */
 
-  /* Auto layout */
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding: 0px;
-  gap: 40px;
+  margin-bottom: 84px;
+  // padding: 0px;
+  // gap: 40px;
 
-  position: absolute;
-  width: 1400px;
-  height: 25px;
-  left: 0px;
-  top: 0px;
+  // position: absolute;
+  // width: 1400px;
+  // height: 25px;
+  // left: 0px;
+  // top: 0px;
+
 `;
 
 const TravelersGrid = styled.div`
-  // display: flex;
+
   display: grid;
-  // flex-wrap: wrap;
   justify-content: center;
   grid-template-columns: repeat(3, 1fr);
   // margin: 0 auto;
   max-width: 1400px;
   gap: 50px;
-  margin-top: 50px;
+  // margin-top: 50px;
 
-  // background: black;
 `;
 
 const TravelerCard = styled.div`

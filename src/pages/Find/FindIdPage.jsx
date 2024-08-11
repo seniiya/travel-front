@@ -105,6 +105,8 @@ const FooterLink = styled.a`
   &:hover {
     text-decoration: underline;
   }
+  color: #55585B;
+
 `;
 
 const FindIdPage = () => {

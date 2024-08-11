@@ -2,10 +2,12 @@ import styled from "styled-components";
 
 
 export const Container = styled.div`
-
+    // display: flex;
+    flex-direction: column;
     padding: 20px;
     overflow: hidden;
     max-width: 1045px;
+    min-height: 100vh;
     margin: 0 auto;
     margin-top: 80px;
 

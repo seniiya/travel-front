@@ -94,6 +94,8 @@ const AppContainer = styled.div`
 
 const ContentContainer = styled.div`
   flex: 1;
+  display: flex;
+  flex-direction: column;
 `;
 
 function SearchSectionWrapper() {
@@ -108,7 +110,7 @@ function AppContent() {
   const [selectedDest, setSelectedDest] = useState('여행지 - 전체');
 
   return (
-    <>
+    <AppContainer>
       {!isWritePage && <Navbar />}
       <ContentContainer>
         <Routes>
@@ -130,17 +132,25 @@ function AppContent() {
         </Routes>
       </ContentContainer>
       {!noFooterPaths.includes(location.pathname) && <Footer />}
-    </>
+    </AppContainer>
   );
 }
 
 function App() {
 
+  // return (
+  //   <Router>
+  //     <AppContainer>
+  //       <AppContent />
+  //     </AppContainer>
+  //   </Router>
+  // );
+
   return (
     <Router>
-      <AppContainer>
+     
         <AppContent />
-      </AppContainer>
+   
     </Router>
   );
 }

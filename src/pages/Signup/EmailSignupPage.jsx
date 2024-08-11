@@ -108,6 +108,8 @@ const FooterLink = styled.a`
   &:hover {
     text-decoration: underline;
   }
+  color: #55585B;
+
 `;
 
 //추가
@@ -163,7 +165,7 @@ const EmailSignupPage = () => {
       return;
     }
     try {
-      const response = await axios.post('http://localhost:8080/api/v1/mailCheck', { 
+      const response = await axios.post('http://localhost:8080/api/v1/auth/mailCheck', { 
         email: email, //email, 만 해줘도 되나?? 
         authNum: verificationCode 
       });
@@ -215,7 +217,7 @@ const EmailSignupPage = () => {
           <Button type="submit">이메일 인증</Button>
         </RegisterForm>
         <Footer>
-          <p>계정이 있으신가요? <FooterLink href="/login">로그인</FooterLink> | <FooterLink href="/find-id">아이디 찾기</FooterLink></p>
+          <p>계정이 있으신가요? <FooterLink href="/login">로그인</FooterLink> | <FooterLink href="/findid">아이디 찾기</FooterLink></p>
         </Footer>
       </FormContainer>
       <Footer>

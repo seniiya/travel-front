@@ -52,7 +52,7 @@ export default function Login() {
 
             
             try {
-                const response = await axios.post ('/api/v1/auth/sign-in', {
+                const response = await axios.post ('http://localhost:8080/api/v1/auth/signIn', {
                     userid: data.id,
                     password: data.pw
                 });

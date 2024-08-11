@@ -1,3 +1,4 @@
+// 위랑 이거랑 같은 코드인지 모르겠음 
 import React, { useState } from "react";
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -44,7 +45,7 @@ export default function RePW() {
 
         try {
             // 재설정은 경로가 어떻게 되는지 몰라서 비번초기화와 동일하게
-            const response = await axios.post('/api/v1/usersend-verification', {
+            const response = await axios.post('http://localhost:8080/api/v1/user/repassword', {
                 userId: userId,
                 password: data.password
             });
