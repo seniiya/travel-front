@@ -213,7 +213,7 @@ const SignupPage = () => {
 
     if (Object.keys(newErrors).length === 0) {
       try {
-        const response = await axios.post('/api/v1/auth/sign-up', {
+        const response = await axios.post('http://localhost:8080/api/v1/auth/signup', {
           userid: userId,
           nickname,
           email,

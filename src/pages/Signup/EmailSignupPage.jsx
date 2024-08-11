@@ -128,53 +128,55 @@ const EmailSignupPage = () => {
     navigate('/');
   };
 
+  
   const handleEmailVerification = async () => {
     try {
-      const response = await axios.post('/api/v1/auth/mailSend', { email });
-      if (response.data.authNum) {
+      const response = await axios.post('http://localhost:8080/api/v1/auth/mailSend', { email });
+      if (response.data.isSuccess) {
         setIsEmailSent(true);
         setError('');
-        alert('인증번호가 이메일로 전송되었습니다.');
+        alert('인증번호를 발송했습니다. 인증번호가 오지 않으면 입력하신 정보를 다시 한번 확인해 주세요.');
+      } else {
+        // Check for specific error messages from the server
+        if (response.data.message === 'DUPLICATE_EMAIL') {
+          // 이거 중복된 거 맞나??
+          setError('중복된 이메일입니다.');
+        } else if (response.data.message === 'INVALID_EMAIL_FORMAT') {
+          setError('올바른 이메일 형식이 아닙니다.');
+        } else {
+          console.error('이메일 전송 실패:', response.data.message);
+          setError('이메일 전송에 실패했습니다. 다시 시도해주세요.');
+        }
       }
     } catch (error) {
-      console.error('Email verification error:', error);
-      setError('이메일 인증 과정에서 오류가 발생했습니다.');
-      
+      console.error('서버 오류:', error);
     }
   };
+
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (isEmailSent) {
-      try {
-        const response = await axios.post('/api/v1/mail-check', {
-          email: email,
-          authNum: verificationCode
-        });
-
-        if (response.data.email) {
-          // 인증 성공
-          navigate('/signup', { state: { email: response.data.email } });
-        } else {
-          setError('인증에 실패했습니다. 인증번호를 확인해주세요.');
-        }
-      } catch (error) {
-        setError('인증 과정에서 오류가 발생했습니다.');
-        console.error('Verification error:', error);
+    if (!isEmailSent) {
+      console.error('인증 코드 요청 필요');
+      setError('올바른 이메일 형식이 아닙니다.')
+      return;
+    }
+    try {
+      const response = await axios.post('http://localhost:8080/api/v1/mailCheck', { 
+        email: email, //email, 만 해줘도 되나?? 
+        authNum: verificationCode 
+      });
+      if (response.data.isSuccess) {
+        navigate('/signup', { state: { email: response.data.result.email } });
+      } else {
+        setError('인증 번호가 올바르지 않습니다. 다시 확인해주세요.');
       }
-    } else {
-      setError('먼저 이메일 인증을 진행해주세요.');
+    } catch (error) {
+      console.error('서버 오류:', error);
     }
   };
 
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-  //   if (isEmailVerified) {
-  //     // Handle successful email verification
-  //     navigate('/signup');
-  //     // 이메일 인증이 완료되면 회원가입창으로 넘어가도록 수정했습니다 !! 
-  //   }
-  // };
 
   return (
     <PageContainer>
@@ -189,7 +191,7 @@ const EmailSignupPage = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
-            <SmallButton type="button" onClick={handleEmailVerification}>
+            <SmallButton type="button" onClick={handleEmailVerification} disabled={isEmailSent}>
               인증하기
             </SmallButton>
           </InputWrapper>
@@ -204,7 +206,7 @@ const EmailSignupPage = () => {
                 console.log('Verification code changed:', e.target.value);
                 setVerificationCode(e.target.value);
               }}
-              disabled={!isEmailSent}
+              // disabled={!isEmailSent}
               // 입력이 안 된다면 isemailsent 주석처리 후 실행
             />
           </InputWrapper>
