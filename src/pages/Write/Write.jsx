@@ -7,24 +7,21 @@ import profileImage from '../../components/pic/image 53.png';
 
 const WriteContainer = styled.div`
   width: 100%;
+  padding-top: 300px;
 `;
 
 const EditorContainer = styled.div`
-  max-width: 100%;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 0 20px;
+  transition: opacity 0.3s ease;
+  opacity: ${props => props.isModalOpen ? 0.5 : 1};
 `;
 
 const SelectedDestination = styled.div`
   font-size: 14px;
   color: #666;
   margin-bottom: 10px;
-`;
-
-const InputContainer = styled.div`
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 0 20px;
 `;
 
 const TitleInput = styled.input`
@@ -40,23 +37,11 @@ const TitleInput = styled.input`
   }
 `;
 
-const ContentInput = styled.textarea`
-  width: 100%;
-  font-size: 16px;
-  padding: 10px 0;
-  border: none;
-  outline: none;
-  resize: none;
-  min-height: 100px;
-  &::placeholder {
-    color: #999;
-  }
-`;
-
 const Write = () => {
   const [content, setContent] = useState('');
   const [title, setTitle] = useState('');
   const [selectedDestination, setSelectedDestination] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleEditorChange = (content, editor) => {
     setContent(content);
@@ -74,11 +59,17 @@ const Write = () => {
         {selectedDestination && (
           <SelectedDestination>{selectedDestination}</SelectedDestination>
         )}
+        <TitleInput
+          type="text"
+          placeholder="제목을 입력하세요"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+        />
         <Editor
           apiKey="3llja0vwv8x7zavvqpxewy591rc1v1ly32owzvge6o5ccx2e"
           value={content}
           init={{
-            height: 300,
+            height: 500,
             width: '100%',
             menubar: false,
             plugins: [
@@ -86,14 +77,15 @@ const Write = () => {
               'searchreplace visualblocks code fullscreen',
               'insertdatetime media table paste code help wordcount'
             ],
-            toolbar: 'location image givenserve bold italic underline strikethrough | ' +
+            toolbar: 'location image givenserve | formatselect | ' +
+              'bold italic underline strikethrough | forecolor backcolor | ' +
               'alignleft aligncenter alignright alignjustify | ' +
               'bullist numlist outdent indent | undo redo',
             toolbar_sticky: true,
-            toolbar_sticky_offset: 100, 
-            toolbar_mode: 'wrap',
+            toolbar_sticky_offset: 85,
+            toolbar_mode: 'sliding',
             statusbar: false,
-            content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
+            content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:16px; padding-top: 48px; }',
             icons: 'thin',
             skin: 'oxide',
             setup: function (editor) {
@@ -114,19 +106,6 @@ const Write = () => {
           onEditorChange={handleEditorChange}
         />
       </EditorContainer>
-      <InputContainer>
-        <TitleInput
-          type="text"
-          placeholder="제목을 입력하세요"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
-        <ContentInput
-          placeholder="본문을 입력하세요"
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-        />
-      </InputContainer>
     </WriteContainer>
   );
 };

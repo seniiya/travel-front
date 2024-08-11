@@ -85,6 +85,8 @@ import TravelBagDropdown from "./Navbar/TravelBagDropdown.jsx";
 import Music from './Navbar/Music.jsx';
 import TravelDestinationsBag from './pages/DestinationsBag.jsx';
 import WritePage from './pages/Write/Write.jsx';
+import PostPage from './pages/PostPage.jsx';
+
 
 const AppContainer = styled.div`
   display: flex;
@@ -129,6 +131,7 @@ function AppContent() {
           <Route path="/search" element={<SearchSectionWrapper />} />
           <Route path="/music" element={<Music />} />
           <Route path="/write" element={<WritePage/>} />
+          <Route path="/postpage" element={<PostPage />} /> {/* 새로운 PostPage 경로 추가 */}
         </Routes>
       </ContentContainer>
       {!noFooterPaths.includes(location.pathname) && <Footer />}

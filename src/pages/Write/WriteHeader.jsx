@@ -6,16 +6,22 @@ import dropdownIcon from '../../components/pic/화살표.png';
 
 const HeaderContainer = styled.div`
   width: 100%;
-  height: 21px;
+  height: 85px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  background-color: white;
+`;
+
+const HeaderContent = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px;
-  border-bottom: 1px solid #e0e0e0;
-  position: relative;
-  z-index: 999;
-  background-color: white; // 배경색 추가
-  border-bottom: none;
+  height: 100%;
+  padding: 10px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
 `;
 
 const LeftSection = styled.div`
@@ -40,6 +46,7 @@ const NavLinks = styled.div`
   display: flex;
   gap: 20px;
   position: relative;
+  height: 100%;
 `;
 
 const NavItem = styled.div`
@@ -82,13 +89,13 @@ const StyledCheckbox = styled.div`
   display: inline-block;
   width: 16px;
   height: 16px;
-  background: ${props => props.checked ? '#888' : 'white'};
-  border: 1px solid #888;
+  background: ${props => props.checked ? (props.isMainCategory ? '#007bff' : '#888') : 'white'};
+  border: 1px solid ${props => props.isMainCategory ? '#007bff' : '#888'};
   border-radius: 3px;
   transition: all 150ms;
 
   ${HiddenCheckbox}:focus + & {
-    box-shadow: 0 0 0 3px rgba(136, 136, 136, 0.25);
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
   }
 
   &::after {
@@ -140,22 +147,33 @@ const Button = styled.button`
 `;
 
 const SaveButton = styled.button`
-  padding: 6px 12px; // 높이를 줄이기 위해 패딩 조정
+  padding: 6px 12px;
   border: none;
-  border-radius: 20px; // border-radius 증가
+  border-radius: 20px;
   cursor: pointer;
   background-color: #e0e0e0;
   color: #333;
   font-size: 14px;
   display: flex;
   align-items: center;
-  height: 32px; // 버튼 높이 명시적 지정
+  height: 32px;
+  transition: color 0.3s ease; // 색상 변화에 애니메이션 효과 추가
+
+  &:hover {
+    color: #007bff; // 마우스 오버 시 파란색으로 변경
+  }
 `;
+
 
 const SaveCount = styled.span`
   margin-left: 8px;
   padding-left: 8px;
   border-left: 1px solid #999;
+  transition: color 0.3s ease; // 색상 변화에 애니메이션 효과 추가
+
+  ${SaveButton}:hover & {
+    color: #007bff; // 부모 버튼에 마우스 오버 시 파란색으로 변경
+  }
 `;
 
 const DropdownContainer = styled.div`
@@ -163,12 +181,11 @@ const DropdownContainer = styled.div`
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   padding: 20px;
   position: absolute;
-  top: 61px; // HeaderContainer의 높이(21px)와 padding(20px * 2)의 합
+  top: 85px; // HeaderContainer의 높이와 일치
   left: 0;
   right: 0;
-  z-index: 998; // HeaderContainer보다 낮은 z-index
+  z-index: 998;
 `;
-
 const DropdownContent = styled.div`
   display: flex;
   justify-content: space-between;
@@ -219,11 +236,66 @@ const CloseButton = styled.div`
   opacity: 0.6;
 `;
 
+const Modal = styled.div`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  width: 400px;
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+`;
+
+const ModalContent = styled.div`
+  flex-grow: 1;
+  text-align: left;
+`;
+
+const ModalTitle = styled.p`
+  font-weight: bold;
+  margin-bottom: 10px;
+`;
+
+const ModalMessage = styled.p`
+  margin-bottom: 20px;
+`;
+
+const ModalButton = styled.button`
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  align-self: flex-end;
+
+  &:hover {
+    background-color: #0056b3;
+  }
+`;
+
+const Overlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+`;
+
 const Checkbox = ({ checked, onChange, label, isMainCategory = false }) => (
   <CheckboxLabel isMainCategory={isMainCategory}>
     <CheckboxContainer>
       <HiddenCheckbox checked={checked} onChange={onChange} />
-      <StyledCheckbox checked={checked} />
+      <StyledCheckbox checked={checked} isMainCategory={isMainCategory}/>
     </CheckboxContainer>
     <span>{label}</span>
   </CheckboxLabel>
@@ -236,6 +308,7 @@ const WriteHeader = ({ profileImage, writerName, tempSaveCount = 0, onDestinatio
   const [bagsChecked, setBagsChecked] = useState(false);
   const [selectedDestination, setSelectedDestination] = useState('');
   const [selectedBag, setSelectedBag] = useState('');
+  const [showModal, setShowModal] = useState(false);
   
 
   const categories = {
@@ -264,6 +337,10 @@ const WriteHeader = ({ profileImage, writerName, tempSaveCount = 0, onDestinatio
     onDestinationSelect(item);
   };
 
+  const handleSaveClick = () => {
+    setShowModal(true);
+  };
+
   const handleBagSelect = (item) => {
     setSelectedBags(prev => {
       if (prev.includes(item)) {
@@ -281,35 +358,36 @@ const WriteHeader = ({ profileImage, writerName, tempSaveCount = 0, onDestinatio
     <>
     <div style={{ position: 'relative' }}>
       <HeaderContainer>
+        <HeaderContent>
         <LeftSection>
           <ProfileImage src={profileImage} alt="Profile" />
           <WriterName>{writerName}</WriterName>
           <NavLinks>
-            <NavItem>
-              <Checkbox 
-                checked={destinationsChecked} 
-                onChange={() => {
-                  setDestinationsChecked(prev => !prev);
-                  setShowTravelDestinations(prev => !prev);
-                  setShowTravelBags(false);
-                  if (!destinationsChecked) {
-                    setSelectedDestination('');
-                  }
-                }}
-                label="여행지"
-                isMainCategory={true}
-              />
-              <DropdownIcon 
-                src={dropdownIcon} 
-                alt="dropdown" 
-                className={showTravelDestinations ? 'open' : ''} 
-                onClick={() => {
-                  setShowTravelDestinations(prev => !prev);
-                  setShowTravelBags(false);
-                }}
-              />
-            </NavItem>
-            <NavItem>
+          <NavItem>
+            <Checkbox 
+              checked={destinationsChecked} 
+              onChange={() => {
+                setDestinationsChecked(prev => !prev);
+                setShowTravelDestinations(prev => !prev);
+                setShowTravelBags(false);
+                if (!destinationsChecked) {
+                  setSelectedDestination('');
+                }
+              }}
+              label="여행지"
+              isMainCategory={true}
+            />
+            <DropdownIcon 
+              src={dropdownIcon} 
+              alt="dropdown" 
+              className={showTravelDestinations ? 'open' : ''} 
+              onClick={() => {
+                setShowTravelDestinations(prev => !prev);
+                setShowTravelBags(false);
+              }}
+            />
+          </NavItem>
+          <NavItem>
             <Checkbox 
               checked={bagsChecked}
               onChange={() => {
@@ -341,13 +419,13 @@ const WriteHeader = ({ profileImage, writerName, tempSaveCount = 0, onDestinatio
           </Logo>
         </CenterSection>
         <RightSection>
-            <SaveButton>
+            <SaveButton onClick={handleSaveClick}>
               임시기록
               <SaveCount>{tempSaveCount}</SaveCount>
             </SaveButton>
             <SaveButton>기록완료</SaveButton>
         </RightSection>
-      </HeaderContainer>
+        </HeaderContent>
       {showTravelDestinations && (
           <DropdownContainer>
             <DropdownContent>
@@ -399,6 +477,16 @@ const WriteHeader = ({ profileImage, writerName, tempSaveCount = 0, onDestinatio
             <CloseButton onClick={() => setShowTravelBags(false)}>✕</CloseButton>
           </DropdownContainer>
         )}
+        </HeaderContainer>
+        {showModal && (
+      <Modal>
+        <ModalContent>
+        <ModalTitle>www.memoir.com 내용 :</ModalTitle>
+        <ModalMessage>여행가님의 기록이 임시기록 되었습니다.</ModalMessage>
+        </ModalContent>
+        <ModalButton onClick={() => setShowModal(false)}>확인</ModalButton>
+      </Modal>
+    )}
       </div>
     </>
   );
