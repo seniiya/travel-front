@@ -219,9 +219,8 @@ const SignupPage = () => {
           email,
           password
         });
-        if (response.data.token) {
-          // 토큰을 로컬 스토리지나 상태 관리 라이브러리에 저장
-          localStorage.setItem('token', response.data.token);
+        if (response.data.isSuccess && response.data.result.token) { // 수정
+          localStorage.setItem('token', response.data.result.token);
           navigate('/'); // 홈페이지로 이동
         }
       } catch (error) {
@@ -232,14 +231,19 @@ const SignupPage = () => {
   };
   
   const clearInput = (field) => {
-    if (field === 'username') {
-      setUsername('');
-    } else if (field === 'nickname') {
-      setNickname('');
-    } else if (field === 'password') {
-      setPassword('');
-    } else if (field === 'confirmPassword') {
-      setConfirmPassword('');
+    switch(field) {
+      case 'userid':
+        setUserId('');
+        break;
+      case 'nickname':
+        setNickname('');
+        break;
+      case 'password':
+        setPassword('');
+        break;
+      case 'confirmPassword':
+        setConfirmPassword('');
+        break;
     }
   };
 
@@ -253,16 +257,16 @@ const SignupPage = () => {
             <Input
               type="text"
               placeholder="아이디"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              value={userId}
+              onChange={(e) => setUserId(e.target.value)}
             />
             <Icon
               src={cancel}
               alt="Cancel Icon"
-              onClick={() => clearInput('username')}
+              onClick={() => clearInput('userId')}
             />
           </InputWrapper>
-          {errors.username && <ErrorMessage>{errors.username}</ErrorMessage>}
+          {errors.userId && <ErrorMessage>{errors.userId}</ErrorMessage>}
           <InputWrapper>
             <Input
               type="text"
