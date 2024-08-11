@@ -5,6 +5,10 @@ import CommentSection from "../components/post/CommentSection";
 import Sidebar from "../components/post/Sidebar";
 import backgroundImage from "../components/pic/postpage/postbg.png"; // Correct file path
 
+import sample2Image from "../components/pic/samples/sample2.jpeg";
+import sample3Image from "../components/pic/samples/sample3.jpeg";
+import profileImage from '../components/pic/image 53.png';
+
 // Global Style for the font
 const GlobalStyle = styled.div`
   font-family: 'Apple Sandol Gothic', sans-serif; /* Fallback to sans-serif if the font is unavailable */
@@ -83,17 +87,18 @@ const post = {
   region: "제주도",
   title: "제주도 여행: 숨겨진 보석 같은 휴양지 ✨",
   author: "김태연",
-  authorImage: "https://example.com/author-image.jpg", // Replace with the actual author image path
+  // authorImage: "https://example.com/author-image.jpg", // Replace with the actual author image path
+  authorImage: profileImage,
   date: "2024-08-24 12:50",
   likes: 32000,
   downloads: 1312,
   views: 762000,
   content: [
     { type: 'text', text: '안녕 여러분! 오늘은 내가 다녀온 제주도 여행 이야기를 들려줄게.' },
-    { type: 'image', src: 'https://example.com/image1.jpg', alt: '제주도 풍경' },
+    { type: 'image', src: sample2Image, alt: '제주도 풍경' },
     { type: 'text', text: '제주도는 언제나 그렇듯이 아름다운 풍경, 맛있는 음식, 그리고 따뜻한 사람들로 가득한 곳이야.' },
     { type: 'map', map: <iframe src="https://maps.google.com/..."></iframe> }, // Replace with actual map iframe or element
-    { type: 'image', src: 'https://example.com/image2.jpg', alt: '맛있는 음식' },
+    { type: 'image', src: sample3Image, alt: '맛있는 음식' },
     { type: 'text', text: '이번 여행에서 놓치면 안 되는 필수 코스와 꿀팁들을 공유할게. 준비됐지? 그럼 고고! 🚀' }
   ],
   comments: [

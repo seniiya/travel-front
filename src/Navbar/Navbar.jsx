@@ -264,7 +264,7 @@ function Navbar() {
               <DropdownIcon src={dropdownIcon} alt="dropdown" className={showTravelBagDropdown ? 'open' : ''} />
             </div>
             <Link to="/traveler-rank">여행가 순위</Link>
-            <Link to="/popular-page">여행 기록</Link>
+            <Link to="/popular-page">인기 기록</Link>
           </NavbarLinks>
           <NavbarLogo>
             <Link to="/" className="mainHome" />

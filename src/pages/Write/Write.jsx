@@ -47,6 +47,10 @@ const Write = () => {
     setContent(content);
   };
 
+  const handleModalChange = (isOpen) => { // 수정
+    setIsModalOpen(isOpen);
+  };
+
   return (
     <WriteContainer>
       <WriteHeader 
@@ -54,8 +58,9 @@ const Write = () => {
         writerName="김태엽 님"
         tempSaveCount={3}
         onDestinationSelect={setSelectedDestination}
+        onModalChagne={handleModalChange}
       />
-      <EditorContainer>
+      <EditorContainer isModalOpen={isModalOpen}>
         {selectedDestination && (
           <SelectedDestination>{selectedDestination}</SelectedDestination>
         )}

@@ -100,6 +100,8 @@ const ContentContainer = styled.div`
   flex-direction: column;
 `;
 
+
+
 function SearchSectionWrapper() {
   const navigate = useNavigate();
   return <SearchSection onClose={() => navigate('/')} />;
@@ -151,9 +153,7 @@ function App() {
 
   return (
     <Router>
-     
         <AppContent />
-   
     </Router>
   );
 }

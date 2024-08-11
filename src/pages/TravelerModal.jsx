@@ -34,8 +34,9 @@ const TravelerModal = ({ children, onClose, traveler }) => {
     }
 
     return (
-        <Overlay >
+        <Overlay>
             <Mlogo src={myback} alt="My back"/>
+           
             <Content onClick={e => e.stopPropagation()}>
                 <CloseButton src={cancel} alt ="Close Modal" onClick={onClose}/>
                 <ModalContent>
@@ -57,7 +58,7 @@ const TravelerModal = ({ children, onClose, traveler }) => {
                         <div className="Introduce Bar"/>
                         <Section>
                             <SnsPart>
-                                <span className="section bar"/>
+                                {/* <span className="section bar"/> */}
                                 {/* <p>SNS:</p> */}
                                 <img src={snsicon} alt="Sns icon"/>
                                 {traveler.sns.map((link, index) => (
@@ -67,7 +68,7 @@ const TravelerModal = ({ children, onClose, traveler }) => {
                                 ))}
                             </SnsPart>
 
-                            <InfoPart>
+                            {/* <InfoPart>
                                 <span className="section bar" />
                                 <Nick>
                                     <img src={nickicon} alt="Nickname icon"/>
@@ -84,7 +85,7 @@ const TravelerModal = ({ children, onClose, traveler }) => {
                                     <a>{traveler.favcountry}</a>
                                 </Location>
                                 
-                            </InfoPart>
+                            </InfoPart> */}
                         </Section>
                         
                     </Introduce>
@@ -110,12 +111,11 @@ const Overlay = styled.div`
     // position: absolute;
     position: fixed;
     width: 1000px;
-    height: 670px;
+    height: 620px;
     left: calc(50% - 1000px/2);
     top: calc(50% - 670px/2 + 14.5px);
-  
     background: #FFFFFF;
-    /* 선택 그림자 */
+  
     box-shadow: 0px 0px 54px rgba(0, 0, 0, 0.05), 1px 10px 24px rgba(0, 0, 0, 0.08);
     border-radius: 20px;
 
@@ -583,13 +583,13 @@ const Location = styled.div`
 const Myunder = styled.div`
     /* Frame 10267 */
 
-    position: absolute;
-    // position: relative;
+    // position: absolute;
+    position: relative;
     // width: 1068px;
     width: 100%;
     height: 41px;
-    left: -33px;
-    top: 629px;
+    left: -53px;
+    top: 601px;
     bottom: 0;
 
 `;

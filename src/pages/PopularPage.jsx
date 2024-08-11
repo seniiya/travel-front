@@ -7,7 +7,8 @@ import { useNavigate, Link } from "react-router-dom";
 import mark1 from '../components/pic/mark1.png';
 import headerbar from '../components/pic/headerbar.svg';
 import recordicon from '../components/pic/recordicon.svg';
-import sampleDefault from '../components/pic/samples/sample.jpeg';
+// import sampleDefault from '../components/pic/samples/sample.jpeg';
+import sampleDefault from '../components/pic/samples/sample18.svg';
 import movetop from '../components/pic/movetop.svg';
 
 import likeicon from '../components/pic/whiteLike.svg';

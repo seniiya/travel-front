@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import logo from '../../components/pic/logo1.png';
 import dropdownIcon from '../../components/pic/화살표.png';
 
+
 const HeaderContainer = styled.div`
   width: 100%;
   height: 85px;
@@ -301,7 +302,7 @@ const Checkbox = ({ checked, onChange, label, isMainCategory = false }) => (
   </CheckboxLabel>
 );
 
-const WriteHeader = ({ profileImage, writerName, tempSaveCount = 0, onDestinationSelect}) => {
+const WriteHeader = ({ profileImage, writerName, tempSaveCount = 0, onDestinationSelect, onModalChange}) => {
   const [showTravelDestinations, setShowTravelDestinations] = useState(false);
   const [showTravelBags, setShowTravelBags] = useState(false);
   const [destinationsChecked, setDestinationsChecked] = useState(false);
@@ -309,6 +310,7 @@ const WriteHeader = ({ profileImage, writerName, tempSaveCount = 0, onDestinatio
   const [selectedDestination, setSelectedDestination] = useState('');
   const [selectedBag, setSelectedBag] = useState('');
   const [showModal, setShowModal] = useState(false);
+  const [modalType, setModalType] = useState('');
   
 
   const categories = {
@@ -339,6 +341,19 @@ const WriteHeader = ({ profileImage, writerName, tempSaveCount = 0, onDestinatio
 
   const handleSaveClick = () => {
     setShowModal(true);
+    setModalType('save'); // 수정
+    onModalChange(true); // 수정
+  };
+
+  const handleCompleteClick = () => { // 수정
+    setShowModal(true);
+    setModalType('complete');
+    onModalChange(true);
+  }
+
+  const closeModal = () => { // 수정
+    setShowModal(false);
+    onModalChange(false);
   };
 
   const handleBagSelect = (item) => {
@@ -423,7 +438,7 @@ const WriteHeader = ({ profileImage, writerName, tempSaveCount = 0, onDestinatio
               임시기록
               <SaveCount>{tempSaveCount}</SaveCount>
             </SaveButton>
-            <SaveButton>기록완료</SaveButton>
+            <SaveButton onClick={handleCompleteClick}>기록완료</SaveButton>
         </RightSection>
         </HeaderContent>
       {showTravelDestinations && (
@@ -479,14 +494,21 @@ const WriteHeader = ({ profileImage, writerName, tempSaveCount = 0, onDestinatio
         )}
         </HeaderContainer>
         {showModal && (
-      <Modal>
-        <ModalContent>
-        <ModalTitle>www.memoir.com 내용 :</ModalTitle>
-        <ModalMessage>여행가님의 기록이 임시기록 되었습니다.</ModalMessage>
-        </ModalContent>
-        <ModalButton onClick={() => setShowModal(false)}>확인</ModalButton>
-      </Modal>
-    )}
+          <>
+            <Overlay onClick={closeModal} />
+            <Modal>
+              <ModalContent>
+                <ModalTitle>www.memoir.com 내용 :</ModalTitle>
+                <ModalMessage>
+                  {modalType === 'save' 
+                    ? "여행가님의 기록이 임시기록 되었습니다." 
+                    : "여행가님의 기록이 업로드 되었습니다."}
+                </ModalMessage>
+              </ModalContent>
+              <ModalButton onClick={closeModal}>확인</ModalButton>
+            </Modal>
+          </>
+        )}
       </div>
     </>
   );
