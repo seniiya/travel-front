@@ -68,7 +68,7 @@ const TravelerModal = ({ children, onClose, traveler }) => {
                                 ))}
                             </SnsPart>
 
-                            {/* <InfoPart>
+                            <InfoPart>
                                 <span className="section bar" />
                                 <Nick>
                                     <img src={nickicon} alt="Nickname icon"/>
@@ -85,7 +85,7 @@ const TravelerModal = ({ children, onClose, traveler }) => {
                                     <a>{traveler.favcountry}</a>
                                 </Location>
                                 
-                            </InfoPart> */}
+                            </InfoPart>
                         </Section>
                         
                     </Introduce>

@@ -34,9 +34,11 @@ const Logo = styled.img`
   top: 200px;
   left: 50%;
   transform: translateX(-50%);
-  opacity: 0.5;
+  opacity: 0.8;
   z-index: 1; 
+  filter: brightness(1.5) contrast(0.9) saturate(1) hue-rotate(-180deg);
 `;
+
 
 const Heading = styled.h2`
   font-size: 18px;
@@ -96,12 +98,12 @@ const FolderCard = styled.div`
     left: 83px;
     font-size: 24px;
     font-weight: 500;
-    color: #B6CEF7;  /* 기본 색상 */
-    transition: color 0.3s ease;  /* 색상 변화 애니메이션 */
+    color: #B6CEF7;
+    transition: color 0.3s ease;
   }
 
   &:hover span {
-    color: #005CF9;  /* hover 시 색상 */
+    color: #005CF9;
   }
 `;
 
@@ -116,7 +118,7 @@ const MainPage = () => {
   useEffect(() => {
     const fetchServerLogs = async () => {
       try {
-        const response = await axios.get('/api/v1/main/serverLogs');
+        const response = await axios.get('http://localhost:8080/api/v1/main/serverLogs');
         if (response.data.isSuccess) {
           setServerLogs(response.data.result);
         } else {
