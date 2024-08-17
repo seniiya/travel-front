@@ -8,10 +8,9 @@ import link_src from '../components/pic/link.svg';
 import img from '../components/pic/default.png';  // 기본 이미지
 
 const PageContainer = styled.div`
-  padding: 20px;
-  max-width: 1045px;
-  margin: 0 auto;
+  max-width: 1290px;
   margin-top: 80px;
+  margin: 50px 30px 50px 30px;
 `;
 
 const SortingContainer = styled.div`
@@ -20,6 +19,7 @@ const SortingContainer = styled.div`
   justify-content: space-between;
   margin-bottom: 20px;
   font-size: 18px;
+  margin-left: 80px;
 
   span {
     cursor: pointer;
@@ -36,7 +36,7 @@ const SortingContainer = styled.div`
 
   span.separator {
     cursor: default;
-    padding: 0 10px;
+    padding: 0 10pxß
   }
 `;
 

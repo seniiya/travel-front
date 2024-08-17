@@ -44,7 +44,6 @@ export default function TravelerRank() {
     }
 
     const MoveToTop = () => {
-      // top: 0 (맨위로)
       window.scrollTo({ top: 0, behavior: 'smooth'})
     }
 
@@ -53,7 +52,7 @@ export default function TravelerRank() {
           if (prevState.includes(travelerId)) {
               return prevState.filter(id => id !== travelerId);
           } else {
-              return [...prevState, travelerId];
+              return [prevState, travelerId];
           }
       });
     };
@@ -439,7 +438,6 @@ export default function TravelerRank() {
                         <span>{traveler.comments}</span>
                       </StatItem>
                       <StatItem>
-                        {/* 사진이 동그랗게 잘려서 나옴 */}
                         <img src={recordicon} alt="record"/>
                         <span>{traveler.shares}</span>
                       </StatItem>
@@ -460,7 +458,6 @@ export default function TravelerRank() {
 
         {selectedTraveler && (
           <TravelerModal onClose={handelCloseModal} traveler={selectedTraveler}>
-              {/* <TravelerDtails traveler={selectedTraveler}/> */}
           </TravelerModal>
         )}
         </Container>
@@ -471,40 +468,25 @@ export default function TravelerRank() {
 const Container = styled.div`
     display: flex;
     flex-direction: column;
-    position: relative; // 추가
-    // flex: 1;
+    position: relative;
     min-height: 100vh;
-    padding: 80px 20px 20px; // 상단 패딩 증가
-    // overflow: hidden;
-    max-width: 1400px;
-    // min-height: 100vh;
+    max-width: 1290px;
     margin: 0 auto;
-    // margin-top: 80px;
  
 `;
 
 const Header = styled.div`
-  /* Frame 10057 */
-
-  /* Auto layout */
   display: flex;
-  // flex-direction: column;
-  // align-items: flex-start;
-  // padding: 0px;/
-  gap: 25px;
+  gap: 10px;
+  width: 1230px;
+  height: 100px;
   align-items: center;
-  // gap: 10px;
+  margin-top: 80px;
   margin-bottom: 20px;
-  // margin-left: 50px;
-
-  // position: absolute;
-  // width: 1540px;
-  // height: 100px;
-  // left: 190px;
-  // top: 137px;
+  margin-left: 60px;
 
   h2 {
-    font-size: 28px;
+    font-size: 23px;
     margin: 0;
   }
 
@@ -514,17 +496,20 @@ const Header = styled.div`
     color: gray;
   }
 
+  img {
+    width: 80px;
+    height: 80px;
+  }
+
 `;
 
 const HeaderBar = styled.div`
 
   position: absolute;
-  width: 1920px;
-  // width: 100%;
+  width: 1290px;
   height: 0px;
   left: calc(50% - 1920px/2);
-  // top: 262px;
-  margin: 120px 0 0px 0;
+  margin-left: 120px;
   border: 1px solid #E0E2E6;
 
 `;
@@ -532,47 +517,34 @@ const HeaderBar = styled.div`
 const TravelerSection = styled.div`
   
   width: 100%;
-  max-width: 1400px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 40px 0; // 수정
 
 `;
 
 
 const SectionWrapper = styled.div`
-
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   margin-bottom: 84px;
-  // padding: 0px;
-  // gap: 40px;
-
-  // position: absolute;
-  // width: 1400px;
-  // height: 25px;
-  // left: 0px;
-  // top: 0px;
-
 `;
 
 const TravelersGrid = styled.div`
-
   display: grid;
   justify-content: center;
   grid-template-columns: repeat(3, 1fr);
-  // margin: 0 auto;
   max-width: 1400px;
-  gap: 50px;
-  // margin-top: 50px;
-
+  gap: 20px;
+  margin-left: 30px;
+  margin-right: 30px;
 `;
 
 const TravelerCard = styled.div`
   display: flex;
   align-items: center;
-  width: 450px;
-  height: 220px;
+  width: 380px;
+  height: 178px;
   border-radius: 10px;
   overflow: hidden;
   box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
@@ -592,16 +564,16 @@ const TravelerCard = styled.div`
   }
 
   img {
-    margin: 10px;
     width: 160px;
-    height: 175px;
+    height: 178px;
     object-fit: cover;
-    border-radius: 10px;
+
   }
 
   .traveler-info {
     flex-grow: 1;
-    padding: 10px;
+    width: 150px;
+    margin-left: 10px;
     h2 {
       margin: 0;
       font-size: 18px;
@@ -610,7 +582,7 @@ const TravelerCard = styled.div`
     p {
       font-size: 14px;
       color: #555;
-      margin-right: 10px;
+      width: 200px;
     }
     .traveler-stats {
       display: flex;
@@ -638,18 +610,3 @@ const StatItem = styled.div`
 `;
 
 
-
-
-
-// const TravelerDtails = ({ traveler }) => (
-//   <div>
-//       <img src={traveler.imgSrc} alt={`${traveler.name}`} />
-//       <h2>{traveler.name}</h2>
-//       <p>{traveler.description}</p>
-//       <div className="traveler-stats">
-//           <span>좋아요 {traveler.likes}</span>
-//           <span>댓글 {traveler.comments}</span>
-//           <span>공유 {traveler.shares}</span>
-//       </div>
-//   </div>
-// );
