@@ -4,6 +4,10 @@ import styled from 'styled-components';
 import WriteHeader from './WriteHeader';
 import './TinyMCECustom.css';
 import profileImage from '../../components/pic/image 53.png';
+import locationIcon from '../../components/pic/toolbar/위치아이콘.png';
+import imageIcon from '../../components/pic/toolbar/사진첨부.png';
+import fontIcon from '../../components/pic/toolbar/폰트아이콘.png';
+import paragraphIcon from '../../components/pic/toolbar/본문.png';
 
 const WriteContainer = styled.div`
   width: 100%;
@@ -58,7 +62,7 @@ const Write = () => {
         writerName="김태엽 님"
         tempSaveCount={3}
         onDestinationSelect={setSelectedDestination}
-        onModalChagne={handleModalChange}
+        onModalChange={handleModalChange}
       />
       <EditorContainer isModalOpen={isModalOpen}>
         {selectedDestination && (
@@ -80,36 +84,92 @@ const Write = () => {
             plugins: [
               'advlist autolink lists link image charmap print preview anchor',
               'searchreplace visualblocks code fullscreen',
-              'insertdatetime media table paste code help wordcount'
+              'insertdatetime media table paste code help wordcount checklist'
             ],
-            toolbar: 'location image givenserve | formatselect | ' +
-              'bold italic underline strikethrough | forecolor backcolor | ' +
-              'alignleft aligncenter alignright alignjustify | ' +
-              'bullist numlist outdent indent | undo redo',
+            toolbar: 'location attachment | ' +
+                    'fontselect formatselect | ' +
+                    'bold italic underline strikethrough | ' +
+                    'numlist bullist checklist | ' +
+                    'alignleft aligncenter alignright alignjustify | ' +
+                    'undo redo',
             toolbar_sticky: true,
             toolbar_sticky_offset: 85,
             toolbar_mode: 'sliding',
             statusbar: false,
             content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:16px; padding-top: 48px; }',
-            icons: 'thin',
-            skin: 'oxide',
+            icons: 'custom', // 커스텀 아이콘 사용
+            font_formats: '기본서체=Helvetica,Arial,sans-serif;본고딕 R=Noto Sans KR;본고딕 L=Noto Sans KR Light;나눔고딕=Nanum Gothic;본명조=Noto Serif KR;궁서=Gungsuh',
+            style_formats: [
+              { title: '제목 1', format: 'h1' },
+              { title: '제목 2', format: 'h2' },
+              { title: '제목 3', format: 'h3' },
+              { title: '본문 1', format: 'p' },
+              { title: '본문 2', selector: 'p', classes: 'body-text-2' },
+              { title: '본문 3', selector: 'p', classes: 'body-text-3' }
+            ],
+            language: 'ko_KR',
+            language_url: './ko_KR.js',
             setup: function (editor) {
+              editor.ui.registry.addIcon('location', `<img src="${locationIcon}" width="24" height="24" alt="Location" />`);
+              editor.ui.registry.addIcon('attachment', `<img src="${imageIcon}" width="24" height="24" alt="Location" />`); // SVG 아이콘 추가
+              editor.ui.registry.addIcon('customfont', `<img src="${fontIcon}" width="24" height="24" alt="Font" />`);
+              editor.ui.registry.addIcon('customformat', `<img src="${paragraphIcon}" width="24" height="24" alt="Format" />`);
+
+
               editor.ui.registry.addButton('location', {
-                text: '위치',
+                icon: 'location',
+                tooltip: '위치 추가',
                 onAction: function () {
-                  console.log('위치 추가');
+                  // 위치 추가 로직
                 }
               });
-              editor.ui.registry.addButton('givenserve', {
-                text: '기본 서체',
-                onAction: function () {
-                  console.log('기본 서체');
-                }
-              });
-            }
-          }}
-          onEditorChange={handleEditorChange}
-        />
+
+            editor.ui.registry.addButton('attachment', {
+              icon: 'attachment',
+              tooltip: '첨부파일',
+              onAction: function () {
+                // 첨부파일 추가 로직
+              }
+            });
+
+            editor.ui.registry.addButton('customfont', {
+              icon: 'customfont',
+              tooltip: '기본 서체',
+              type: 'listbox',
+              onAction: function (api) {
+                editor.execCommand('FontName', false, api.getValue());
+              },
+              fetch: function (callback) {
+                const items = editor.getParam('font_formats').split(';').map(item => {
+                  const [title, value] = item.split('=');
+                  return { type: 'choiceitem', text: title, value: value };
+                });
+                callback(items);
+              }
+            });
+
+             editor.ui.registry.addButton('customformat', {
+        icon: 'customformat',
+        tooltip: '본문',
+        type: 'listbox',
+        onAction: function (api) {
+          editor.formatter.apply(api.getValue());
+        },
+        fetch: function (callback) {
+          const items = editor.getParam('style_formats').map(format => ({
+            type: 'choiceitem',
+            text: format.title,
+            value: format.format || format.classes
+          }));
+          callback(items);
+        }
+      });
+
+
+          }
+        }}
+        onEditorChange={handleEditorChange}
+      />
       </EditorContainer>
     </WriteContainer>
   );
