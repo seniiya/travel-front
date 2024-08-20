@@ -119,7 +119,7 @@ const PageOverlay = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 5;
+  z-index: 10;
   pointer-events: none;
 `;
 
@@ -150,14 +150,14 @@ const MyPage = () => {
         <StyledImage
           src={union2}
           alt="Union2"
-          zIndex={selectedUnion === 2 ? 4 : 2}
+          zIndex={selectedUnion === 2 ? 4 : 1}
           isSelected={selectedUnion === 2}
           onClick={() => handleUnionClick(2)}
         />
         <StyledImage
           src={union3}
           alt="Union3"
-          zIndex={selectedUnion === 3 ? 4 : 3}
+          zIndex={selectedUnion === 3 ? 4 : 1}
           isSelected={selectedUnion === 3}
           isUnion3={true}
           onClick={() => handleUnionClick(3)}
@@ -165,7 +165,7 @@ const MyPage = () => {
         <StyledImage
           src={union4}
           alt="Union4"
-          zIndex={selectedUnion === 4 ? 4 : 4}
+          zIndex={selectedUnion === 4 ? 4 : 1}
           isSelected={selectedUnion === 4}
           isUnion4={true}
           onClick={() => handleUnionClick(4)}
