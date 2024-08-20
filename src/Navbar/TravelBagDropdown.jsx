@@ -1,5 +1,3 @@
-// import PropTypes from 'prop-types';
-
 import styled from 'styled-components';
 
 const DropdownContainer = styled.div`
@@ -94,11 +92,6 @@ function TravelBagDropdown({ onClose }) {
     </DropdownContainer>
   );
 }
-
-// TravelBagDropdown.propTypes = {
-//   onClose: PropTypes.func.isRequired,
-// };
-// TravelDestinations.jsx와 동일 이유 
 
 
 export default TravelBagDropdown;

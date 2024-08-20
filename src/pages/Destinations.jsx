@@ -2,29 +2,84 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 import write from '../components/pic/write.png';
-import like from '../components/pic/like.png';
-import scrap from '../components/pic/scrap.png';
+import like from '../components/pic/whiteLike.svg';
+import scrap from '../components/pic/whiteScrap.svg';
 import link_src from '../components/pic/link.svg';
-import img from '../components/pic/default.png';  // 기본 이미지
+import img from '../components/pic/default.png';
 
 const PageContainer = styled.div`
-  max-width: 1290px;
-  margin-top: 80px;
-  margin: 50px 30px 50px 30px;
+  max-width: 1920px;
+  margin: 50px 30px;
+
+  @media (max-width: 1000px) {
+    margin: 20px 10px;
+  }
+
+  @media (max-width: 500px) {
+    margin: 10px 50px;
+  }
 `;
 
 const SortingContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 20px;
   font-size: 18px;
-  margin-left: 80px;
+  margin: 120px 300px 60px 300px;
+
+  @media (max-width: 1700px) {
+    margin: 20px 20px;
+    font-size: 17px;
+    margin: 100px 250px 60px 250px;
+  }
+
+  @media (max-width: 1500px) {
+    font-size: 16px;
+    margin: 90px 200px 60px 200px;
+  }
+
+  @media (max-width: 1300px) {
+    font-size: 15px;
+    margin: 90px 150px 60px 150px;
+  }
+
+  @media (max-width: 1100px) {
+    font-size: 14px;
+    margin: 90px 130px 60px 125px;
+  }
+
+  @media (max-width: 900px) {
+    font-size: 13px;
+    margin: 80px 100px 60px 100px;
+  }
+
+  @media (max-width: 700px) {
+    font-size: 12px;
+    margin: 80px 80px 60px 80px;
+  }
+
+  @media (max-width: 600px) {
+    font-size: 11px;
+    margin: 80px 60px 60px 60px;
+  }
+
+  @media (max-width: 500px) {
+    font-size: 10px;
+    margin: 80px 40px 60px 40px;
+  }
+
+  @media (max-width: 400px) {
+    margin: 80px 30px 60px 30px;
+  }
+
+  @media (max-width: 300px) {
+    margin: 80px 20px 60px 20px;
+  }
+
 
   span {
     cursor: pointer;
     padding: 5px;
-    border-radius: 5px;
     transition: background-color 0.3s;
     color: #b4b7b9;
   }
@@ -36,13 +91,18 @@ const SortingContainer = styled.div`
 
   span.separator {
     cursor: default;
-    padding: 0 10pxß
+    padding: 0 10px;
   }
 `;
 
 const SortOptions = styled.div`
   display: flex;
   align-items: center;
+
+  @media (max-width: 480px) {
+    flex-wrap: wrap;
+    gap: 5px;
+  }
 `;
 
 const WriteButton = styled.button`
@@ -60,6 +120,40 @@ const WriteButton = styled.button`
     height: 20px;
     margin-left: 5px;
   }
+
+    
+  @media (max-width: 1700px) {
+    font-size: 17px;
+  }
+
+  @media (max-width: 1500px) {
+    font-size: 16px;
+  }
+
+  @media (max-width: 1300px) {
+    font-size: 15px;
+  }
+
+  @media (max-width: 1100px) {
+    font-size: 14px;
+  }
+
+  @media (max-width: 900px) {
+    font-size: 13px;
+  }
+
+  @media (max-width: 700px) {
+    font-size: 12px;
+  }
+
+  @media (max-width: 600px) {
+    font-size: 11px;
+  }
+
+  @media (max-width: 500px) {
+    font-size: 10px;
+  }
+
 `;
 
 const CardGrid = styled.div`
@@ -67,6 +161,18 @@ const CardGrid = styled.div`
   grid-template-columns: repeat(4, 1fr);
   gap: 20px;
   margin-bottom: 50px;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+  }
 `;
 
 const Pagination = styled.div`
@@ -108,6 +214,11 @@ const Pagination = styled.div`
   button:disabled {
     color: #ddd;
     border: none;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 16px;
+    margin-bottom: 30px;
   }
 `;
 
@@ -330,6 +441,10 @@ const Card = styled.div`
       opacity: 1;
     }
   }
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
 `;
 
 const CardImage = styled.img`
@@ -378,10 +493,18 @@ const CardContent = styled.div`
   height: 115px;
   h2 {
     font-size: 20px;
+
+    @media (max-width: 480px) {
+      font-size: 18px;
+    }
   }
   p {
     font-size: 15px;
     color: #75797d;
+
+    @media (max-width: 480px) {
+      font-size: 14px;
+    }
   }
 `;
 
@@ -391,6 +514,10 @@ const CardFooter = styled.div`
   font-size: 13px;
   color: #75797d;
   margin: 10px;
+
+  @media (max-width: 480px) {
+    font-size: 12px;
+  }
 `;
 
 const CardFooterLeft = styled.div`
@@ -420,6 +547,11 @@ const ScrollToTopButton = styled.button`
   &:hover {
     background-color: rgba(255, 255, 250, 0.5);
   }
+
+  @media (max-width: 768px) {
+    bottom: 100px;
+    right: 20px;
+  }
 `;
 
 const FixedButtonLeft = styled.button`
@@ -441,6 +573,10 @@ const FixedButtonLeft = styled.button`
     color: #ddd;
     cursor: not-allowed;
   }
+
+  @media (max-width: 768px) {
+    left: 20px;
+  }
 `;
 
 const FixedButtonRight = styled.button`
@@ -461,6 +597,10 @@ const FixedButtonRight = styled.button`
   &:disabled {
     color: #ddd;
     cursor: not-allowed;
+  }
+
+  @media (max-width: 768px) {
+    right: 20px;
   }
 `;
 

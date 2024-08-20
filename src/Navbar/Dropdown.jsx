@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 
 const DropdownContainer = styled.div`
   background-color: white;
@@ -11,7 +12,6 @@ const DropdownContainer = styled.div`
   left: 0;
   right: 0;
   z-index: 999;
-
 `;
 
 const DropdownContent = styled.div`
@@ -80,8 +80,16 @@ const categories = {
   '호주': ['하와이', '호주', '기타']
 };
 
+function Dropdown({ onClose, setSelectedDest }) {
+  const navigate = useNavigate();
 
-function Dropdown({ onClose }) {
+  const handleItemClick = (category, item) => {
+    const destination = item === '전체' ? `${category} - 전체` : `${category} - ${item}`;
+    setSelectedDest(destination);
+    navigate('/travel-destinations');
+    onClose();
+  };
+
   return (
     <DropdownContainer>
       <DropdownContent>
@@ -89,7 +97,9 @@ function Dropdown({ onClose }) {
           <CategoryColumn key={category}>
             <CategoryTitle>{category}</CategoryTitle>
             {items.map(item => (
-              <CategoryItem key={item}>{item}</CategoryItem>
+              <CategoryItem key={item} onClick={() => handleItemClick(category, item)}>
+                {item}
+              </CategoryItem>
             ))}
           </CategoryColumn>
         ))}
@@ -101,6 +111,7 @@ function Dropdown({ onClose }) {
 
 Dropdown.propTypes = {
   onClose: PropTypes.func.isRequired,
+  setSelectedDest: PropTypes.func.isRequired,
 };
 
 export default Dropdown;

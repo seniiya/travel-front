@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';  // useNavigate 가져오기
 import mark2 from '../components/pic/mark1.png';
 import dropdownIcon from '../components/pic/화살표.png';
 
@@ -15,21 +16,24 @@ const HeaderWrapper = styled.header`
 const SectionHeader = styled.div`
   display: flex;
   align-items: center;
-  width: 1290px;
-  height: 100px;
+  width: 90%;
+  max-width: 1290px;
+  height: auto;
   gap: 10px;
-  margin-top: 80px;
+  margin-top: 100px;
   margin-bottom: 20px;
-  margin-left: 120px;
+  padding: 0 20px;
 
   img {
     width: 80px;
     height: 80px;
+    padding-left: 40px;
   }
 
   h2 {
     font-size: 23px;
     margin: 0;
+    word-break: break-word;
   }
 
   p {
@@ -37,32 +41,82 @@ const SectionHeader = styled.div`
     margin: 0;
     color: gray;
   }
+
+  @media (max-width: 700px) {
+    align-items: flex-start;
+    h2 {
+      font-size: 23px;
+    }
+    p {
+      font-size: 20px;
+    }
+    img {
+      width: 80px;
+      height: 80px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    align-items: center;
+    h2 {
+      font-size: 18px;
+    }
+
+    p {
+      font-size: 14px;
+      text-align: center;
+    }
+  }
 `;
 
 const MainNav = styled.nav`
   display: flex;
-  gap: 30px;
   flex-wrap: wrap;
-  width: 1292px;
-  max-width: 1200px;
+  gap: 15px;
+  width: 90%;
+  max-width: 1292px;
   margin-top: 10px;
-  margin-left: 60px;
   font-style: normal;
   font-weight: 400;
   font-size: 17px;
+  padding-left: 90px;
+
+  @media (max-width: 1024px) {
+    gap: 20px;
+    margin-left: 30px;
+  }
+
+  @media (max-width: 768px) {
+    align-items: flex-start;
+    margin-left: 20px;
+  }
+
+  @media (max-width: 480px) {
+    align-items: center;
+    margin-left: 0;
+    gap: 10px;
+  }
 `;
 
 const MainNavLink = styled.a`
   color: #000;
   text-decoration: none;
   font-size: 1em;
+
+  @media (max-width: 768px) {
+    font-size: 0.9em;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 0.8em;
+  }
 `;
 
 const MainNavLinkDropdown = styled.div`
   position: relative;
   display: inline-block;
   height: 25px;
-  border-bottom: ${({ isOpen }) => (isOpen ? '3px solid blue' : 'none')};
+  border-bottom: ${({ isOpen }) => (isOpen ? '2px solid blue' : 'none')};
 
   & > a {
     color: #000;
@@ -78,6 +132,30 @@ const MainNavLinkDropdown = styled.div`
       margin-left: 5px;
       transition: transform 0.3s ease;
       transform: ${({ isOpen }) => (isOpen ? 'rotate(90deg)' : 'rotate(0deg)')};
+    }
+  }
+
+  @media (max-width: 900px) {
+    font-size: 17px;
+
+    & > a {
+      font-size: 17px;
+      img {
+        width: 12px;
+        height: 12px;
+      }
+    }
+  }
+
+  @media (max-width: 400px) {
+    font-size: 16px;
+
+    & > a {
+      font-size: 16px;
+      img {
+        width: 10px;
+        height: 10px;
+      }
     }
   }
 `;
@@ -104,6 +182,22 @@ const DropdownContent = styled.div`
       background-color: #f1f1f1;
     }
   }
+
+  @media (max-width: 768px) {
+    min-width: 100px;
+    a {
+      padding: 8px;
+      font-size: 0.9em;
+    }
+  }
+
+  @media (max-width: 480px) {
+    min-width: 90px;
+    a {
+      padding: 6px;
+      font-size: 0.8em;
+    }
+  }
 `;
 
 const getMainCategory = (dest) => {
@@ -118,6 +212,7 @@ const getSubCategory = (dest) => {
 
 function Header({ selectedDest, setSelectedDest }) {
   const [activeDropdown, setActiveDropdown] = useState(null);
+  const navigate = useNavigate();  // useNavigate 초기화
 
   const toggleDropdown = (index) => {
     setActiveDropdown(prevIndex => (prevIndex === index ? null : index));
@@ -127,6 +222,7 @@ function Header({ selectedDest, setSelectedDest }) {
     const displayDest = dest === '전체' ? `여행지 - 전체` : dest;
     setSelectedDest(displayDest);
     setActiveDropdown(null); 
+    navigate('/travel-destinations');  // 페이지 이동
   };
 
   return (

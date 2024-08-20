@@ -187,7 +187,7 @@ const MusicText = styled.span`
   }
 `;
 
-function Navbar() {
+function Navbar({ setSelectedDest }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const [showTravelBagDropdown, setShowTravelBagDropdown] = useState(false);
@@ -229,7 +229,7 @@ function Navbar() {
 
   useEffect(() => {
     if (travelBagClickCount === 2) {
-      navigate('/travel-destinations-bag');
+      navigate('/travel-bag');
       setTravelBagClickCount(0);
     }
 
@@ -240,8 +240,6 @@ function Navbar() {
     return () => clearTimeout(timer);
   }, [travelBagClickCount]);
 
-
- 
   return (
     <NavbarWrapper>
       <NavbarContainer isScrolled={isScrolled}>
@@ -279,7 +277,7 @@ function Navbar() {
           </NavbarIcons>
         </div>
       </NavbarContainer>
-      {showDropdown && <Dropdown onClose={() => setShowDropdown(false)} />}
+      {showDropdown && <Dropdown onClose={() => setShowDropdown(false)} setSelectedDest={setSelectedDest} />}
       {showTravelBagDropdown && <TravelBagDropdown onClose={() => setShowTravelBagDropdown(false)} />}
       {showSearchSection && <SearchSection onClose={() => setShowSearchSection(false)} />}
       {showMusicPlayer && <Music onClose={() => setShowMusicPlayer(false)} />}

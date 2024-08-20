@@ -1,5 +1,5 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes, useLocation } from "react-router-dom";
+import React, { useState } from 'react';
+import { BrowserRouter as Router, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import styled from 'styled-components';
 import './index.css';
 import MainPage from './pages/MainPage.jsx';
@@ -8,7 +8,7 @@ import SignupPage from './pages/Signup/SignupPage.jsx';
 import EmailSignupPage from './pages/Signup/EmailSignupPage.jsx';
 import FindIdPage from './pages/Find/FindIdPage.jsx';
 import FindPwPage from './pages/Find/FindPwPage.jsx';
-import TravelDestinations from './pages/Destinations.jsx';
+import Destinations from './pages/Destinations.jsx';
 import PopularPage from "./pages/PopularPage.jsx";
 import TravelerRank from "./pages/TravelerRank.jsx";
 import RePW from './pages/Find/RePW.jsx';
@@ -41,14 +41,14 @@ function SearchSectionWrapper() {
 }
 
 function AppContent() {
+  const [selectedDest, setSelectedDest] = useState('여행지 - 전체');
   const location = useLocation();
-  console.log("현재 경로:", location.pathname); 
   const isWritePage = location.pathname === '/write';
   const noFooterPaths = ['/login', '/signup', '/emailsignup', '/findid', '/findpw', '/repasswd', '/write'];
 
   return (
     <AppContainer>
-      {!isWritePage && <Navbar />}
+      {!isWritePage && <Navbar setSelectedDest={setSelectedDest} />}
       <ContentContainer>
         <Routes>
           <Route path="/" element={<><MainPage /><Contents /></>} />
@@ -58,8 +58,16 @@ function AppContent() {
           <Route path='/findid' element={<FindIdPage />} />
           <Route path='/findpw' element={<FindPwPage />} />
           <Route path='/repasswd' element={<RePW />} />
-          <Route path="/travel-destinations" element={<><Header /><TravelDestinations /></>} />
-          <Route path="/travel-bag" element={<><Header2 /> <TravelBag /></>} />
+          <Route 
+            path="/travel-destinations" 
+            element={
+              <>
+                <Header selectedDest={selectedDest} setSelectedDest={setSelectedDest} />
+                <Destinations selectedDest={selectedDest} />
+              </>
+            } 
+          />
+          <Route path="/travel-bag" element={<div><Header2 /><TravelBag /></div>} />
           <Route path='/traveler-rank' element={<TravelerRank />} />
           <Route path='/popular-page' element={<PopularPage />} />
           <Route path="/search" element={<SearchSectionWrapper />} />
@@ -82,4 +90,3 @@ function App() {
 }
 
 export default App;
-
