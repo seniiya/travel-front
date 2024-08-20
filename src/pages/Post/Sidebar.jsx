@@ -91,7 +91,7 @@ const Sidebar = ({ scrollToComments }) => {
       <IconButton
         src={saveHistIcon}
         alt="Save to Wish List"
-        onClick={() => alert("여행 가방에 추가 완료!")}
+        onClick={() => alert("마이페이지의 여행 지도에 저장되었습니다!")}
       />
       
       <IconButton

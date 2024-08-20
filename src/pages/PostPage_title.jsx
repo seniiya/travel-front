@@ -1,10 +1,16 @@
-import React, { useEffect, useRef } from "react";
+import React, { useRef } from "react";
 import styled from "styled-components";
 import PostContent from "./Post/PostContent";
 import CommentSection from "./Post/CommentSection";
 import Sidebar from "./Post/Sidebar";
 import backgroundImage from "./Post/postpage/postbg.png";
-import useMoveScroll from './Post/useMoveScroll';
+
+import {
+  ContentWrapper,
+  HeaderWrapper,
+  Title,
+  EditButton,
+} from './Post/SharedStyles'; // Adjust the import path
 
 // Import images
 import sampleDefault from '../components/pic/samples/sample.jpeg';
@@ -40,17 +46,6 @@ const GlobalStyle = styled.div`
   font-family: 'Apple Sandol Gothic', sans-serif;
 `;
 
-const ContentWrapper = styled.div`
-  display: flex;
-  justify-content: center; 
-  max-width: 1000px;
-  margin: 0 auto;
-  border-radius: 8px;
-  margin-top: 100px;
-  margin-bottom: 1000px;
-  min-height: 1000px; 
-`;
-
 const MainContent = styled.div`
   min-width: 830px;
   max-width: 830px;
@@ -67,25 +62,12 @@ const SidebarWrapper = styled.div`
   justify-content: center;
 `;
 
-const HeaderWrapper = styled.div`
-  margin-top: 100px;
-  text-align: center; 
-  margin-bottom: 20px;
-padding: 0 80px;
-`;
 
 const Subtitle = styled.h2`
   font-family: 'AppleSDGothicNeoB', sans-serif; 
   font-size: 20px;
   margin-bottom: 8px;
   color: #999;
-  text-align: center;
-`;
-
-const Title = styled.h1`
-  font-family: 'AppleSDGothicNeoEB', sans-serif; 
-  font-size: 28px;
-  margin-bottom: 16px;
   text-align: center;
 `;
 
@@ -134,43 +116,70 @@ const AuthorDateWrapper = styled.div`
   margin-bottom: 10px;
 `;
 
-const EditButton = styled.div`
-  text-align: right;
-  color: #888;
-  cursor: pointer;
-  display: ${({ isVisible }) => (isVisible ? 'block' : 'none')};  
 
-  img {
-    margin-left: 8px;
-    width: 16px;
-    height: 16px;
-  }
-`;
-
-// Randomly select an image
 const randomImage = images[Math.floor(Math.random() * images.length)];
 
 const post = {
   country: "대한민국",
   region: "제주도",
-  title: "제주도 여행: 숨겨진 보석 같은 휴양지 ✨",
-  author: "김태연",
+  title: "제주도 여행 : 숨겨진 보석 같은 휴양지",
+  author: "김태엽",
   authorImage: randomImage,
   date: "2024-08-24 12:50",
   likes: 32000,
   downloads: 1312,
   views: 762000,
   content: [
-    { type: 'text', text: '안녕 여러분! 오늘은 내가 다녀온 제주도 여행 이야기를 들려줄게.', align: 'left' },
-    { type: 'image', src: randomImage, alt: '제주도 풍경' },
-    { type: 'text', text: '제주도는 언제나 그렇듯이 아름다운 풍경, 맛있는 음식, 그리고 따뜻한 사람들로 가득한 곳이야.', align: 'center' },
-    { type: 'map', map: <iframe src="https://maps.app.goo.gl/nD7HT11iH5U9zFuY8"></iframe> },
-    { type: 'image', src: randomImage, alt: '맛있는 음식' },
-    { type: 'text', text: '이번 여행에서 놓치면 안 되는 필수 코스와 꿀팁들을 공유할게. 준비됐지? 그럼 고고! 🚀', align: 'right' }
+    { type: 'text', text: '본문입니다', align: 'left' },
+    { type: 'image', src: randomImage, alt: '제주' },
+    { type: 'text', text: '본문입니다', align: 'center' },
+    { type: 'map', map: <iframe src="https://maps.google.com/..."></iframe> },
+    { type: 'image', src: randomImage, alt: '음식' },
+    { type: 'text', text: '본문입니다', align: 'right' }
   ],
   comments: [
-    { author: "김철수", text: "정말 멋지네요!" },
-    { author: "이영희", text: "사진이 정말 아름다워요." },
+    {
+      author: "윤다희",
+      text: "댓글 입니다",
+      time: "2024-08-24 12:50",
+      isMyComment: false,
+      replies: [
+        {
+          author: "김태연",
+          text: "댓글 입니다",
+          time: "2024-08-24 12:50",
+          isMyComment: true,
+        },
+      ],
+    },
+    {
+      author: "윤커카",
+      text: "댓글 입니다",
+      time: "2024-08-24 12:50",
+      isMyComment: false,
+      replies: [
+        {
+          author: "김태연",
+          text: "댓글 입니다",
+          time: "2024-08-24 12:50",
+          isMyComment: true,
+        },
+      ],
+    },
+    {
+      author: "윤커카",
+      text: "댓글 입니다",
+      time: "2024-08-24 12:50",
+      isMyComment: false,
+      replies: [
+        {
+          author: "김태연",
+          text: "댓글 입니다",
+          time: "2024-08-24 12:50",
+          isMyComment: true,
+        },
+      ],
+    },
   ],
   location: "제주도",
 };
@@ -180,7 +189,7 @@ const isLoggedIn = true;
 const isWrittenIn = true;
 
 const PostPage = () => {
-  const commentSectionRef = useRef(null); // Reference for the comment section
+  const commentSectionRef = useRef(null); // 코멘트 섹션으로 감
 
   const scrollToComments = () => {
     if (commentSectionRef.current) {
@@ -223,16 +232,16 @@ const PostPage = () => {
           </HeaderWrapper>
 
           <PostContent content={post.content} />
-          <div ref={commentSectionRef}>  {/* Attach the ref */}
+          <div ref={commentSectionRef}>  {/* 댓글 */}
             <CommentSection comments={post.comments} />
           </div>
         </MainContent>
 
         <SidebarWrapper>
-          <Sidebar scrollToComments={scrollToComments} /> {/* Pass the scroll function */}
+          <Sidebar scrollToComments={scrollToComments} /> {/* 버튼 누르면 코멘트로 감 */}
         </SidebarWrapper>
-      </ContentWrapper>
-    </GlobalStyle>
+    </ContentWrapper>
+    </GlobalStyle >
   );
 };
 
