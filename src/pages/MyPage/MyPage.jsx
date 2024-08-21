@@ -10,7 +10,6 @@ import APage from './APage.jsx';
 import BPage from './BPage.jsx';
 import CPage from './CPage.jsx';
 import DPage from './DPage.jsx';
-import Footer from '../../components/Footer.jsx'; // Footer 컴포넌트 import
 
 const MyPageContainer = styled.div`
   background-image: url(${backgroundImage});
@@ -30,7 +29,7 @@ const MyPageContainer = styled.div`
 const Tabs = styled.div`
   position: relative;
   top: 120px;
-  left: -5%;
+  left: -6%;
   display: flex;
   justify-content: center;
   z-index: 10;
@@ -45,7 +44,7 @@ const Tab = styled.div`
   padding-top: 30px;
   color: #75797D;
   cursor: pointer;
-  width: 290px;
+  width: 295px;
   height: 50px;
   text-align: center;
   line-height: 50px;
@@ -106,11 +105,41 @@ const PageOverlay = styled.div`
   z-index: 5;
 `;
 
+const ScrollToTopButton = styled.button`
+  position: fixed;
+  bottom: 350px;
+  right: 100px;
+  background-color: #ffffff;
+  color: #005cf9;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 16px;
+  z-index: 1000;
+  width: 30px;
+  height: 30px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  &:hover {
+    background-color: #ffffff;
+  }
+
+  @media (max-width: 768px) {
+    bottom: 100px;
+    right: 20px;
+  }
+`;
+
+
 const MyPage = () => {
   const [selectedUnion, setSelectedUnion] = useState(1);
 
   const handleUnionClick = (id) => {
     setSelectedUnion(id);
+  };
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
@@ -129,10 +158,9 @@ const MyPage = () => {
             alt="Union"
             isSelected={selectedUnion === 1}
             width="1300px"
-            height="800px"
-            top="10%"
+            height="2000px"
+            top="7%"
             left="-7%"
-            translateY="-15px"
             onClick={() => handleUnionClick(1)}
           />
           <StyledImage
@@ -143,7 +171,6 @@ const MyPage = () => {
             height="2000px"
             top="10%"
             left="-4.5%"
-            translateY="-15px"
             onClick={() => handleUnionClick(2)}
           />
           <StyledImage
@@ -176,8 +203,9 @@ const MyPage = () => {
             {selectedUnion === 4 && <DPage />}
           </PageOverlay>
         </ImageContainer>
+
+        <ScrollToTopButton onClick={scrollToTop}>↑</ScrollToTopButton>
       </MyPageContainer>
-      <Footer /> {/* Footer 컴포넌트를 MyPageContainer 아래에 추가 */}
     </>
   );
 };

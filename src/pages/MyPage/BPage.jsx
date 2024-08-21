@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import sampleDefault from '../../components/pic/default.png';
 import imageDefault from '../../components/pic/default.png';
-import like from '../../components/pic/grayLike.png'; // 좋아요 아이콘
-import scrap from '../../components/pic/grayScrap.png'; // 스크랩 아이콘
+import like from '../../components/pic/grayLike.png';
+import scrap from '../../components/pic/grayScrap.png';
+import write from '../../components/pic/write.png';
 
 const BPageContainer = styled.div`
   position: absolute;
-  top: 200px;
+  top: 150px;
   width: 1100px;
   height: auto;
   background-color: #ffffff;
@@ -18,13 +19,38 @@ const BPageContainer = styled.div`
   z-index: 9;
 `;
 
-const ButtonContainer = styled.div`
+const WriteButton = styled.button`
   position: absolute;
-  top: 0;
-  left: 0;
+  bottom: 50px;
+  right: 30px;
+  width: 100px;
+  height: 60px;
+  background-color: #ffffff;
+  border: none;
+  display: flex;
+  justify-content: flex-end;
+  cursor: pointer;
+  z-index: 10;
+  font-size: 16px;
+  color: #75797D;
+
+  img {
+    width: 20px;
+    height: 20px;
+  }
+`;
+
+const FlexContainer = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 20px 0;
+`;
+
+const ButtonContainer = styled.div`
   display: flex;
   gap: 10px;
-  margin: 20px;
 `;
 
 const Button = styled.button`
@@ -47,17 +73,16 @@ const Button = styled.button`
 
 const SortingContainer = styled.div`
   display: flex;
-  justify-content: center;
-  margin-top: 20px;
+  justify-content: flex-end;
 `;
 
 const SortOptions = styled.div`
   display: flex;
   gap: 10px;
-  font-size: 18px;
 
   span {
     cursor: pointer;
+
     &.active {
       color: #005CF9;
       font-weight: bold;
@@ -72,21 +97,22 @@ const SortOptions = styled.div`
 const GridContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  padding: ${({ isDestination }) => (isDestination ? '70px 30px 100px 30px' : '50px 20px 80px 20px')};
+  padding: ${({ isDestination }) => (isDestination ? '30px 30px 80px 30px' : '50px 20px 80px 20px')};
   gap: ${({ isDestination }) => (isDestination ? '20px' : '30px')};
   z-index: 8;
 `;
 
 const Card = styled.div`
+  position: relative;
   border-radius: ${({ isDestination }) => (isDestination ? '8px' : '12px')};
   width: 250px;
   height: ${({ isDestination }) => (isDestination ? '320px' : '400px')};
-  background-color: ${({ isDestination }) => (isDestination ? '#ffffff' : '#ffffff')};
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  background-color: #ffffff;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   display: flex;
   flex-direction: column;
-  justify-content: space-between; /* 카드 하단에 SmallText를 고정하기 위해 사용 */
+  justify-content: space-between;
 
   &:hover {
     transform: translateY(-5px);
@@ -129,6 +155,28 @@ const Content = styled.p`
   -webkit-box-orient: vertical;
 `;
 
+const TagsContainer = styled.div`
+  position: absolute;
+  bottom: 150px;
+  left: 6px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  background-color: none;
+  border-radius: 4px;
+  padding: 4px;
+
+  span {
+    background-color: #ffffff;
+    color: #005CF9;
+    padding: 2px 6px;
+    font-size: 10px;
+    height: 18px;
+    border-radius: 4px;
+    border: 0.5px solid #A8C5F6;
+  }
+`;
+
 const SmallTextContainer = styled.div`
   display: flex;
   justify-content: space-between;
@@ -145,6 +193,72 @@ const SmallText = styled.small`
   img {
     margin-right: 5px;
   }
+`;
+
+const Pagination = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+
+  button {
+    margin: 0 5px;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 20px;
+    font-size: 15px;
+    background-color: #F7F7F7;
+    cursor: pointer;
+  }
+
+  span {
+    background-color: none;
+    border: none;
+    padding: 8px 12px;
+    margin: 0 9px;
+  }
+
+  .active {
+    color: #005CF9;
+    background-color: none;
+  }
+`;
+
+const FixedButtonLeft = styled.button`
+  position: fixed;
+  bottom: 400px;
+  left: 100px;
+  background-color: #ffffff;
+  color: #75797d;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 20px;
+  z-index: 1000;
+  width: 30px;
+  height: 30px;
+
+  &:disabled {
+    color: #ddd;
+  }
+
+`;
+
+const FixedButtonRight = styled.button`
+  position: fixed;
+  bottom: 400px;
+  right: 100px;
+  background-color: #ffffff;
+  color: #75797d;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 20px;
+  z-index: 1000;
+  width: 30px;
+  height: 30px;
+
+  &:disabled {
+    color: #ddd;
 `;
 
 const destinations = [
@@ -188,6 +302,7 @@ const destinations = [
   // 나머지 여행지 데이터 이후에 추가
 ];
 
+
 const travelbags = [
   { id: 1, imgSrc: imageDefault, title: '제목1입니다', content: '내용입니다', likes: 3200, views: 1310, date: '2024.08.11', tags: ['공항', '공항', '공항', '공항', '공항'], scraps: 3000 },
   { id: 2, imgSrc: imageDefault, title: '제목2입니다', content: '내용입니다', likes: 3201, views: 1311, date: '2024.08.12', tags: ['공항', '가방·캐리어', '공항', '공항', '공항'], scraps: 3000 },
@@ -210,131 +325,115 @@ const travelbags = [
 ];
 
 const BPage = () => {
-  const [selectedOption, setSelectedOption] = useState('destinations'); // 디폴트는 destinations
+  const [selectedOption, setSelectedOption] = useState('destinations');
   const [sortCriteria, setSortCriteria] = useState('latest');
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 16;
 
   const handleButtonClick = (option) => {
     setSelectedOption(option);
+    setCurrentPage(1);
   };
 
   const handleSortChange = (criteria) => {
     setSortCriteria(criteria);
+    setCurrentPage(1);
   };
 
-  const sortedDestinations = [...destinations].sort((a, b) => {
-    switch (sortCriteria) {
-      case 'latest':
-        return b.id - a.id;
-      case 'oldest':
-        return a.id - b.id;
-      case 'views':
-        return b.views - a.views;
-      case 'likes':
-        return b.likes - a.likes;
-      case 'name':
-        return a.title.localeCompare(b.title);
-      case 'scraps':
-        return b.scraps - a.scraps;
-      default:
-        return 0;
-    }
-  });
+  const sortedItems = (items) => {
+    return [...items].sort((a, b) => {
+      switch (sortCriteria) {
+        case 'latest':
+          return b.id - a.id;
+        case 'oldest':
+          return a.id - b.id;
+        case 'views':
+          return b.views - a.views;
+        case 'likes':
+          return b.likes - a.likes;
+        case 'name':
+          return a.title.localeCompare(b.title);
+        case 'scraps':
+          return b.scraps - a.scraps;
+        default:
+          return 0;
+      }
+    });
+  };
 
-  const sortedTravelbags = [...travelbags].sort((a, b) => {
-    switch (sortCriteria) {
-      case 'latest':
-        return b.id - a.id;
-      case 'oldest':
-        return a.id - b.id;
-      case 'views':
-        return b.views - a.views;
-      case 'likes':
-        return b.likes - a.likes;
-      case 'name':
-        return a.title.localeCompare(b.title);
-      case 'scraps':
-        return b.scraps - a.scraps;
-      default:
-        return 0;
+  const itemsToShow = selectedOption === 'destinations' ? sortedItems(destinations) : sortedItems(travelbags);
+  const maxPageIdx = Math.ceil(itemsToShow.length / itemsPerPage);
+  const currentItems = itemsToShow.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+  const handlePageChange = (pageIndex) => {
+    setCurrentPage(pageIndex);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      handlePageChange(currentPage - 1);
     }
-  });
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < maxPageIdx) {
+      handlePageChange(currentPage + 1);
+    }
+  };
 
   return (
     <BPageContainer>
-      <ButtonContainer>
-        <Button
-          onClick={() => handleButtonClick('destinations')}
-          isActive={selectedOption === 'destinations'}
-        >
-          <input
-            type="checkbox"
-            checked={selectedOption === 'destinations'}
-            readOnly
-          />
-          여행지
-        </Button>
-        <Button
-          onClick={() => handleButtonClick('travelbags')}
-          isActive={selectedOption === 'travelbags'}
-        >
-          <input
-            type="checkbox"
-            checked={selectedOption === 'travelbags'}
-            readOnly
-          />
-          여행 가방
-        </Button>
-      </ButtonContainer>
+      <FlexContainer>
+        <ButtonContainer>
+          <Button
+            onClick={() => handleButtonClick('destinations')}
+            isActive={selectedOption === 'destinations'}
+          >
+            <input
+              type="checkbox"
+              checked={selectedOption === 'destinations'}
+              readOnly
+            />
+            여행지
+          </Button>
+          <Button
+            onClick={() => handleButtonClick('travelbags')}
+            isActive={selectedOption === 'travelbags'}
+          >
+            <input
+              type="checkbox"
+              checked={selectedOption === 'travelbags'}
+              readOnly
+            />
+            여행 가방
+          </Button>
+        </ButtonContainer>
 
-      <SortingContainer>
-        <SortOptions>
-          <span
-            className={sortCriteria === 'latest' ? 'active' : ''}
-            onClick={() => handleSortChange('latest')}
-          >
-            최신순
-          </span>
-          <span className="separator">|</span>
-          <span
-            className={sortCriteria === 'oldest' ? 'active' : ''}
-            onClick={() => handleSortChange('oldest')}
-          >
-            오래된순
-          </span>
-          <span className="separator">|</span>
-          <span
-            className={sortCriteria === 'name' ? 'active' : ''}
-            onClick={() => handleSortChange('name')}
-          >
-            제목순
-          </span>
-          <span className="separator">|</span>
-          <span
-            className={sortCriteria === 'likes' ? 'active' : ''}
-            onClick={() => handleSortChange('likes')}
-          >
-            좋아요순
-          </span>
-          <span className="separator">|</span>
-          <span
-            className={sortCriteria === 'scraps' ? 'active' : ''}
-            onClick={() => handleSortChange('scraps')}
-          >
-            스크랩순
-          </span>
-          <span className="separator">|</span>
-          <span
-            className={sortCriteria === 'views' ? 'active' : ''}
-            onClick={() => handleSortChange('views')}
-          >
-            조회수순
-          </span>
-        </SortOptions>
-      </SortingContainer>
+        <SortingContainer>
+          <SortOptions>
+            {['latest', 'oldest', 'name', 'likes', 'scraps', 'views'].map((criteria) => (
+              <React.Fragment key={criteria}>
+                <span
+                  className={sortCriteria === criteria ? 'active' : ''}
+                  onClick={() => handleSortChange(criteria)}
+                >
+                  {criteria === 'latest' ? '최신순' : 
+                   criteria === 'oldest' ? '오래된순' : 
+                   criteria === 'name' ? '제목순' : 
+                   criteria === 'likes' ? '좋아요순' : 
+                   criteria === 'scraps' ? '스크랩순' : '조회수순'}
+                </span>
+                {criteria !== 'views' && <span className="separator">|</span>}
+              </React.Fragment>
+            ))}
+          </SortOptions>
+        </SortingContainer>
+      </FlexContainer>
 
       {selectedOption === 'destinations' && (
-        <GridContainer className='dst' isDestination={true}>
-          {sortedDestinations.map((destination) => (
+        <GridContainer className="dst" isDestination={true}>
+          {currentItems.map((destination) => (
             <Card key={destination.id} isDestination={true}>
               <ImageWrapper isDestination={true}>
                 <StyledImage src={destination.image} alt={destination.title} />
@@ -351,22 +450,60 @@ const BPage = () => {
       )}
 
       {selectedOption === 'travelbags' && (
-        <GridContainer className='bag' isDestination={false}>
-          {sortedTravelbags.map((bag) => (
+        <GridContainer className="bag" isDestination={false}>
+          {currentItems.map((bag) => (
             <Card key={bag.id} isDestination={false}>
               <ImageWrapper isDestination={false}>
                 <StyledImage src={bag.imgSrc} alt={bag.title} />
               </ImageWrapper>
+              <TagsContainer>
+                {bag.tags.slice(0, 3).map((tag, index) => (
+                  <span key={index}># {tag}</span>
+                ))}
+                {bag.tags.length > 3 && (
+                  <span>+{bag.tags.length - 3}</span>
+                )}
+              </TagsContainer>
               <Title>{bag.title}</Title>
               <Content>{bag.content}</Content>
               <SmallTextContainer>
-                <SmallText><img src={like} alt="like" /> {bag.likes}&ensp;<img src={scrap} alt="scrap" /> {bag.scraps}</SmallText>
+                <SmallText>
+                  <img src={like} alt="like" /> {bag.likes}&ensp;
+                  <img src={scrap} alt="scrap" /> {bag.scraps}
+                </SmallText>
                 <SmallText>조회수 {bag.views}</SmallText>
               </SmallTextContainer>
             </Card>
           ))}
         </GridContainer>
       )}
+
+      <Pagination>
+        <button onClick={() => handlePageChange(1)} disabled={currentPage === 1}>&lt;&lt;</button>
+        <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>&lt;</button>
+        {Array.from({ length: maxPageIdx }, (_, index) => (
+          <span
+            key={index + 1}
+            className={currentPage === index + 1 ? 'active' : ''}
+            onClick={() => handlePageChange(index + 1)}
+          >
+            {index + 1}
+          </span>
+        ))}
+        <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === maxPageIdx}>&gt;</button>
+        <button onClick={() => handlePageChange(maxPageIdx)} disabled={currentPage === maxPageIdx}>&gt;&gt;</button>
+      </Pagination>
+
+      <FixedButtonLeft onClick={handlePreviousPage} disabled={currentPage === 1}>
+        &lt;
+      </FixedButtonLeft>
+      <FixedButtonRight onClick={handleNextPage} disabled={currentPage === maxPageIdx}>
+        &gt;
+      </FixedButtonRight>
+
+      <WriteButton onClick={() => console.log('글쓰기 버튼 클릭')}>
+        글쓰기 <img src={write} alt="글쓰기" />
+      </WriteButton>
     </BPageContainer>
   );
 };

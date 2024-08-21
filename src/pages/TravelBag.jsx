@@ -269,7 +269,7 @@ function TravelBag() {
   const itemsPerPage = 16;
   const [currentPage, setCurrentPage] = useState(1);
   const [sortCriteria, setSortCriteria] = useState('latest');
-  const [activeCard, setActiveCard] = useState(null); // 클릭된 카드를 추적
+  const [activeCard, setActiveCard] = useState(null);
 
   const cards = [
     { id: 1, imgSrc: imageDefault, title: '제목1입니다', content: '내용입니다', likes: 3200, views: 1310, date: '2024.08.11', tags: ['공항', '공항', '공항', '공항', '공항'], scraps: 3000 },
@@ -400,8 +400,8 @@ function TravelBag() {
         {currentCards.map((card) => (
           <Card
             key={card.id}
-            isActive={activeCard === card.id} // 클릭된 카드만 위로 올라가도록 설정
-            onClick={() => setActiveCard(card.id)} // 클릭 시 카드 활성화
+            isActive={activeCard === card.id} 
+            onClick={() => setActiveCard(card.id)}
           >
             <TagsContainer>
               {card.tags.slice(0, 3).map((tag, index) => (

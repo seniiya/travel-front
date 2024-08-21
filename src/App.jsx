@@ -44,7 +44,7 @@ function AppContent() {
   const [selectedDest, setSelectedDest] = useState('여행지 - 전체');
   const location = useLocation();
   const isWritePage = location.pathname === '/write';
-  const noFooterPaths = ['/login', '/signup', '/emailsignup', '/findid', '/findpw', '/repasswd', '/write'];
+  const noFooterPaths = ['/login', '/signup', '/emailsignup', '/findid', '/findpw', '/repasswd', '/write', '/MyPage'];
 
   return (
     <AppContainer>
@@ -58,15 +58,7 @@ function AppContent() {
           <Route path='/findid' element={<FindIdPage />} />
           <Route path='/findpw' element={<FindPwPage />} />
           <Route path='/repasswd' element={<RePW />} />
-          <Route 
-            path="/travel-destinations" 
-            element={
-              <>
-                <Header selectedDest={selectedDest} setSelectedDest={setSelectedDest} />
-                <Destinations selectedDest={selectedDest} />
-              </>
-            } 
-          />
+          <Route path="/travel-destinations" element={<><Header selectedDest={selectedDest} setSelectedDest={setSelectedDest} /><Destinations selectedDest={selectedDest} /></>} />
           <Route path="/travel-bag" element={<div><Header2 /><TravelBag /></div>} />
           <Route path='/traveler-rank' element={<TravelerRank />} />
           <Route path='/popular-page' element={<PopularPage />} />
@@ -74,6 +66,7 @@ function AppContent() {
           <Route path="/write" element={<WritePage />} />
           <Route path="/postpage" element={<PostPage />} />
           <Route path="/MyPage" element={<MyPage />} />
+
         </Routes>
       </ContentContainer>
       {!noFooterPaths.includes(location.pathname) && <Footer />}
