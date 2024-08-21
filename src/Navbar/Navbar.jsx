@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import search from '../components/pic/search.png';
@@ -201,8 +201,7 @@ function Navbar() {
   const location = useLocation(); 
   const [showSearchSection, setShowSearchSection] = useState(false);
   const [showMusicPlayer, setShowMusicPlayer] = useState(false);
-  const { isPlaying, currentTime, duration, togglePlay, seekTo, title } = useAudioPlayer(audioSrc);
-
+  
   const [currentSongInfo, setCurrentSongInfo] = useState({
     title: '노래 제목 예시 노래 제...',
     isPlaying: false,
@@ -210,24 +209,25 @@ function Navbar() {
     duration: 0
   });
 
+  const { isPlaying, currentTime, duration, togglePlay, seekTo } = useAudioPlayer(audioSrc);
+
   useEffect(() => {
     setCurrentSongInfo(prev => ({
       ...prev,
       isPlaying,
       currentTime,
       duration,
-      title
+      title: isPlaying ? 'Ludoric - Summer Travel Vlog' : '노래 제목 예시 노래 제...'
     }));
-    console.log('Current song info updated:', { title, isPlaying, currentTime, duration });
-  }, [isPlaying, currentTime, duration, title]);
+  }, [isPlaying, currentTime, duration]);
 
-  useEffect( () => {
+  useEffect(() => {
     const currentPath = location.pathname;
     if(currentPath !== '/') {
-    setShowDropdown(false);
-    setShowTravelBagDropdown(false);
-    setShowSearchSection(false);
-    setShowMusicPlayer(false);
+      setShowDropdown(false);
+      setShowTravelBagDropdown(false);
+      setShowSearchSection(false);
+      setShowMusicPlayer(false);
     }
   }, [location.pathname]);
 
@@ -271,12 +271,8 @@ function Navbar() {
     }, 300);
 
     return () => clearTimeout(timer);
-  }, [travelBagClickCount]);
+  }, [travelBagClickCount, navigate]);
 
-  const handleUpdateSongInfo = useCallback((songInfo) => {
-    setCurrentSongInfo(songInfo);
-  }, []);
- 
   return (
     <NavbarWrapper>
       <NavbarContainer isScrolled={isScrolled}>
@@ -318,14 +314,12 @@ function Navbar() {
               <SearchIcon />
             </div>
             <LoginButton to="/login">로그인</LoginButton>
-            <div onClick={() => {
-              setShowMusicPlayer(prev => !prev)}} style={{ cursor: 'pointer' }}>
+            <div onClick={() => setShowMusicPlayer(prev => !prev)} style={{ cursor: 'pointer' }}>
               <MusicButton>
                 <MusicIcon />
                 <MusicText>{currentSongInfo.title}</MusicText>
               </MusicButton>
             </div>
-
           </NavbarIcons>
         </div>
       </NavbarContainer>
@@ -334,14 +328,14 @@ function Navbar() {
       {showSearchSection && <SearchSection onClose={() => setShowSearchSection(false)} />}
       {showMusicPlayer && (
         <Music 
-          onClose={() => setShowMusicPlayer(false)} 
+          onClose={() => setShowMusicPlayer(false)}
           isPlaying={isPlaying}
           currentTime={currentTime}
           duration={duration}
           togglePlay={togglePlay}
           seekTo={seekTo}
-          title={title}
-          onUpdateSongInfo={handleUpdateSongInfo} />)}
+        />
+      )}
     </NavbarWrapper>
   );
 }

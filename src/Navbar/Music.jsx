@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import styled, { keyframes, css } from 'styled-components';
+import React from 'react';
+import styled from 'styled-components';
 import musicPlayerImage from '../components/pic/music.svg';
 
 const MusicContainer = styled.div`
@@ -29,11 +29,6 @@ const MusicImage = styled.div`
   margin-bottom: 20px;
 `;
 
-const SongTitleContainer = styled.div`
-  width: 100%;
-  overflow: hidden;
-  white-space: nowrap;
-`;
 
 const SongTitle = styled.p`
   font-size: 16px;
@@ -42,8 +37,6 @@ const SongTitle = styled.p`
   transition: color 0.3s ease;
   color: ${props => props.isPlaying ? '#888' : 'black'};
   display: inline-block;
-  padding-left: 100%;
-  animation: ${props => props.isPlaying ? css`${marquee} 15s linear infinite` : 'none'};
 `;
 
 const Controls = styled.div`
@@ -90,49 +83,18 @@ const TimeDisplay = styled.div`
   margin-bottom: 10px;
 `;
 
-const marquee = keyframes`
-    0% { transform: translateX(100%); }
-    100% { transform: translateX(-100%);}
-`;
-
-function Music({ onClose, isPlaying, currentTime, duration, togglePlay, seekTo, onUpdateSongInfo, title }) {
-
-  const [currentSongInfo, setCurrentSongInfo] = useState({
-    title: '노래 제목 예시 노래 제...',
-    isPlaying: false,
-    currentTime: 0,
-    duration: 0
-  });
-
-
+function Music({ onClose, isPlaying, currentTime, duration, togglePlay, seekTo }) {
   const formatTime = (time) => {
     const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60);
     return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
   };
 
-  useEffect(() => {
-    console.log('Music component received title:', title); // 디버깅용 로그
-  }, [title]);
-
-  useEffect(() => {
-    const updatedInfo = {
-      title,
-      isPlaying,
-      currentTime,
-      duration
-    };
-    setCurrentSongInfo(updatedInfo);
-    onUpdateSongInfo(updatedInfo);
-  }, [isPlaying, currentTime, duration, onUpdateSongInfo, title]);
-
   return (
     <MusicContainer>
       <MusicPlayer>
         <MusicImage />
-        <SongTitleContainer>
-          <SongTitle isPlaying={isPlaying}>{ title || '노래 제목 없음' }</SongTitle>
-        </SongTitleContainer> 
+          <SongTitle isPlaying={isPlaying}>Ludoric - Summer Travel Vlog</SongTitle>
         <TimeDisplay>{formatTime(currentTime)} / {formatTime(duration)}</TimeDisplay>
         <Controls>
           <ControlButton isPlaying={isPlaying} onClick={() => seekTo(currentTime - 10)}>&#9668;&#9668;</ControlButton>
@@ -148,4 +110,3 @@ function Music({ onClose, isPlaying, currentTime, duration, togglePlay, seekTo, 
 }
 
 export default React.memo(Music);
-
