@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import search from '../components/pic/search.png';
@@ -9,6 +9,8 @@ import TravelBagDropdown from './TravelBagDropdown';
 import dropdownIcon from '../components/pic/화살표.png';
 import SearchSection from './SearchSection';
 import Music from './Music';
+import useAudioPlayer from './AudioHook/useAudioPlayer';
+import audioSrc from '../assets/for-her-chill-upbeat-summel-travel-vlog-and-ig-music-royalty-free-use-202298.mp3';
 
 const NavbarWrapper = styled.div`
   position: fixed;
@@ -197,16 +199,37 @@ function Navbar() {
   const [travelBagClickCount, setTravelBagClickCount] = useState(0);
   const navigate = useNavigate();
   const location = useLocation(); 
-  const currentSong = "노래 제목 예시 노래 제...";
   const [showSearchSection, setShowSearchSection] = useState(false);
   const [showMusicPlayer, setShowMusicPlayer] = useState(false);
+  const { isPlaying, currentTime, duration, togglePlay, seekTo, title } = useAudioPlayer(audioSrc);
+
+  const [currentSongInfo, setCurrentSongInfo] = useState({
+    title: '노래 제목 예시 노래 제...',
+    isPlaying: false,
+    currentTime: 0,
+    duration: 0
+  });
+
+  useEffect(() => {
+    setCurrentSongInfo(prev => ({
+      ...prev,
+      isPlaying,
+      currentTime,
+      duration,
+      title
+    }));
+    console.log('Current song info updated:', { title, isPlaying, currentTime, duration });
+  }, [isPlaying, currentTime, duration, title]);
 
   useEffect( () => {
+    const currentPath = location.pathname;
+    if(currentPath !== '/') {
     setShowDropdown(false);
     setShowTravelBagDropdown(false);
     setShowSearchSection(false);
     setShowMusicPlayer(false);
-  }, [location]);
+    }
+  }, [location.pathname]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -250,7 +273,9 @@ function Navbar() {
     return () => clearTimeout(timer);
   }, [travelBagClickCount]);
 
-
+  const handleUpdateSongInfo = useCallback((songInfo) => {
+    setCurrentSongInfo(songInfo);
+  }, []);
  
   return (
     <NavbarWrapper>
@@ -294,14 +319,10 @@ function Navbar() {
             </div>
             <LoginButton to="/login">로그인</LoginButton>
             <div onClick={() => {
-              setShowMusicPlayer(!showMusicPlayer);
-              setShowDropdown(false);
-              setShowTravelBagDropdown(false);
-              setShowSearchSection(false);
-            }} style={{ cursor: 'pointer' }}>
+              setShowMusicPlayer(prev => !prev)}} style={{ cursor: 'pointer' }}>
               <MusicButton>
                 <MusicIcon />
-                <MusicText>{currentSong}</MusicText>
+                <MusicText>{currentSongInfo.title}</MusicText>
               </MusicButton>
             </div>
 
@@ -311,7 +332,16 @@ function Navbar() {
       {showDropdown && <Dropdown onClose={() => setShowDropdown(false)} />}
       {showTravelBagDropdown && <TravelBagDropdown onClose={() => setShowTravelBagDropdown(false)} />}
       {showSearchSection && <SearchSection onClose={() => setShowSearchSection(false)} />}
-      {showMusicPlayer && <Music onClose={() => setShowMusicPlayer(false)} />}
+      {showMusicPlayer && (
+        <Music 
+          onClose={() => setShowMusicPlayer(false)} 
+          isPlaying={isPlaying}
+          currentTime={currentTime}
+          duration={duration}
+          togglePlay={togglePlay}
+          seekTo={seekTo}
+          title={title}
+          onUpdateSongInfo={handleUpdateSongInfo} />)}
     </NavbarWrapper>
   );
 }

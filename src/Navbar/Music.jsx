@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
-import styled from 'styled-components';
+import React, { useState, useEffect } from 'react';
+import styled, { keyframes, css } from 'styled-components';
 import musicPlayerImage from '../components/pic/music.svg';
-import audioFile from '../assets/beethoven-moonlight-sonata-op-27-nr-2-concert-grand-version-227468.mp3';
 
 const MusicContainer = styled.div`
   position: absolute;
@@ -30,12 +29,21 @@ const MusicImage = styled.div`
   margin-bottom: 20px;
 `;
 
+const SongTitleContainer = styled.div`
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+`;
+
 const SongTitle = styled.p`
   font-size: 16px;
   margin-bottom: 15px;
   text-align: center;
   transition: color 0.3s ease;
   color: ${props => props.isPlaying ? '#888' : 'black'};
+  display: inline-block;
+  padding-left: 100%;
+  animation: ${props => props.isPlaying ? css`${marquee} 15s linear infinite` : 'none'};
 `;
 
 const Controls = styled.div`
@@ -82,47 +90,20 @@ const TimeDisplay = styled.div`
   margin-bottom: 10px;
 `;
 
-function Music({ onClose }) {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
-  const audioRef = useRef(null);
+const marquee = keyframes`
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-100%);}
+`;
 
-  useEffect(() => {
-    audioRef.current = new Audio(audioFile);
-    const audio = audioRef.current;
+function Music({ onClose, isPlaying, currentTime, duration, togglePlay, seekTo, onUpdateSongInfo, title }) {
 
-    audio.addEventListener('timeupdate', updateTime);
-    audio.addEventListener('loadedmetadata', () => {
-      setDuration(audio.duration);
-    });
-    audio.addEventListener('error', (e) => {
-      console.error("Audio error:", e);
-    });
+  const [currentSongInfo, setCurrentSongInfo] = useState({
+    title: '노래 제목 예시 노래 제...',
+    isPlaying: false,
+    currentTime: 0,
+    duration: 0
+  });
 
-    return () => {
-      audio.removeEventListener('timeupdate', updateTime);
-      audio.removeEventListener('error', (e) => {
-        console.error("Audio error:", e);
-      });
-      audio.pause();
-    };
-  }, []);
-
-  const updateTime = () => {
-    setCurrentTime(audioRef.current.currentTime);
-  };
-
-  const togglePlay = () => {
-    if (isPlaying) {
-      audioRef.current.pause();
-    } else {
-      audioRef.current.play().catch(error => {
-        console.error("Audio playback failed:", error);
-      });
-    }
-    setIsPlaying(!isPlaying);
-  };
 
   const formatTime = (time) => {
     const minutes = Math.floor(time / 60);
@@ -130,18 +111,35 @@ function Music({ onClose }) {
     return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
   };
 
+  useEffect(() => {
+    console.log('Music component received title:', title); // 디버깅용 로그
+  }, [title]);
+
+  useEffect(() => {
+    const updatedInfo = {
+      title,
+      isPlaying,
+      currentTime,
+      duration
+    };
+    setCurrentSongInfo(updatedInfo);
+    onUpdateSongInfo(updatedInfo);
+  }, [isPlaying, currentTime, duration, onUpdateSongInfo, title]);
+
   return (
     <MusicContainer>
       <MusicPlayer>
         <MusicImage />
-        <SongTitle isPlaying={isPlaying}>Beethoven - Moonlight Sonata</SongTitle>
+        <SongTitleContainer>
+          <SongTitle isPlaying={isPlaying}>{ title || '노래 제목 없음' }</SongTitle>
+        </SongTitleContainer> 
         <TimeDisplay>{formatTime(currentTime)} / {formatTime(duration)}</TimeDisplay>
         <Controls>
-          <ControlButton isPlaying={isPlaying} onClick={() => audioRef.current.currentTime -= 10}>&#9668;&#9668;</ControlButton>
+          <ControlButton isPlaying={isPlaying} onClick={() => seekTo(currentTime - 10)}>&#9668;&#9668;</ControlButton>
           <ControlButton main onClick={togglePlay}>
             {isPlaying ? '❚❚' : '▶'}
           </ControlButton>
-          <ControlButton isPlaying={isPlaying} onClick={() => audioRef.current.currentTime += 10}>&#9658;&#9658;</ControlButton>
+          <ControlButton isPlaying={isPlaying} onClick={() => seekTo(currentTime + 10)}>&#9658;&#9658;</ControlButton>
         </Controls>
       </MusicPlayer>
       <CloseButton onClick={onClose}>✕</CloseButton>
@@ -149,4 +147,5 @@ function Music({ onClose }) {
   );
 }
 
-export default Music;
+export default React.memo(Music);
+
