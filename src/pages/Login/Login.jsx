@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useId, useState, useTransition } from "react";
 // import styled from 'styled-components';
 import logo from '../../components/pic/logo.svg';
 import copyright from '../../components/pic/copyright.svg';
@@ -9,6 +9,7 @@ import * as A from "../Login.style.jsx";
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
+import { useAuth } from "./AuthContext.jsx";
 
 
 
@@ -20,6 +21,9 @@ export default function Login() {
     const [ showPw, setShowPw ] = useState(false);
     const [ idValue, setIdValue ] = useState("");
     const [ pwValue, setPwValue ] = useState("");
+    const { login } = useAuth();
+
+
 
     const handleLogoClick = () => {
         navigate('/');
@@ -66,6 +70,8 @@ export default function Login() {
                     // 로그인 성공 시 토큰 저장 
                     localStorage.setItem('token', result.result.token);
                     localStorage.setItem('userid', result.result.userid);
+
+                    login(result.result.token)
 
                     // 성공 시 메인 페이지로 이동 (오른쪽 상단에 +)
                     navigate('/');

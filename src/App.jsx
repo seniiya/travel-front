@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation } from "react-router-dom";
 import styled from 'styled-components';
 import './index.css';
@@ -22,6 +22,9 @@ import TravelBag from './pages/TravelBag.jsx';
 import WritePage from './pages/Write/Write.jsx';
 import PostPage from './pages/PostPage.jsx';
 import MyPage from './pages/MyPage/MyPage.jsx';
+import { AuthProvider } from './pages/Login/AuthContext.jsx';
+import axios from 'axios';
+
 
 const AppContainer = styled.div`
   display: flex;
@@ -74,12 +77,34 @@ function AppContent() {
 }
 
 function App() {
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    }
+
+    axios.interceptors.response.use(
+      (response) => response,
+      (error) => {
+        if (error.response.status === 401) {
+          // 토큰이 만료되었거나 유효하지 않은 경우
+          localStorage.removeItem('token');
+          // 로그인 페이지로 리다이렉트
+          window.location.href = '/login';
+        }
+        return Promise.reject(error);
+      }
+    );
+  }, []);
+
+  
   return (
+    <AuthProvider>
     <Router>
-      <AppContent />
+        <AppContent />
     </Router>
+    </AuthProvider>
   );
 }
 
 export default App;
-
