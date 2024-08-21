@@ -167,6 +167,7 @@ const Card = styled.div`
     height: 260px;
     display: block;
     margin: 10px;
+    border-radius: 10px;
   }
 
   .card-content {
@@ -222,11 +223,6 @@ const Card = styled.div`
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
   }
 
-  &:active {
-    transform: translateY(-80px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-  }
-
 `;
 
 
@@ -242,8 +238,9 @@ const TagsContainer = styled.div`
   span {
     background-color: #ffffff;
     color: #005CF9;
-    padding: 2px 6px;
-    font-size: 12px;
+    padding: 6px 6px 2px 6px;
+    font-size: 11px;
+    height: 18px;
     border-radius: 4px;
     border: 0.5px solid #A8C5F6;
   }

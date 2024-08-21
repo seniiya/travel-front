@@ -130,7 +130,6 @@ const TravelerModal = ({ children, onClose, traveler }) => {
 
 
 const Overlay = styled.div`
-
     position: fixed;
     width: 1000px;
     height: 620px;

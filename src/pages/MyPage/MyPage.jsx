@@ -10,16 +10,17 @@ import APage from './APage.jsx';
 import BPage from './BPage.jsx';
 import CPage from './CPage.jsx';
 import DPage from './DPage.jsx';
+import Footer from '../../components/Footer.jsx'; // Footer 컴포넌트 import
 
 const MyPageContainer = styled.div`
   background-image: url(${backgroundImage});
   background-size: cover;
   background-position: center;
-  min-height: 100vh;
+  min-height: 2500px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 120px;
+  padding-top: 10px;
 
   @media (max-width: 768px) {
     padding-top: 80px;
@@ -28,86 +29,69 @@ const MyPageContainer = styled.div`
 
 const Tabs = styled.div`
   position: relative;
-  top: 75px;
-  right: 60px;
-  z-index: 5;
+  top: 120px;
+  left: -5%;
   display: flex;
-  flex-wrap: wrap;
   justify-content: center;
+  z-index: 10;
 
   @media (max-width: 768px) {
     top: 50px;
-    right: 0;
     width: 100%;
   }
 `;
 
 const Tab = styled.div`
-  background-color: none;
+  padding-top: 30px;
   color: #75797D;
   cursor: pointer;
-  width: 270px;
-  height: 75px;
+  width: 290px;
+  height: 50px;
   text-align: center;
-  justify-content: center;
-  line-height: 75px;
-  z-index: 6;
+  line-height: 50px;
+  font-size: 18px;
+  background-color: none;
+  border: none;
 
   @media (max-width: 768px) {
     width: 50%;
-    height: 60px;
-    line-height: 60px;
+    height: 40px;
+    line-height: 40px;
   }
 
   @media (max-width: 480px) {
     width: 100%;
-    height: 50px;
-    line-height: 50px;
+    height: 40px;
+    line-height: 40px;
   }
 `;
 
 const ImageContainer = styled.div`
   position: relative;
-  width: 1200px;
+  width: 100%;
+  max-width: 1200px;
   height: 500px;
   overflow: visible;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-  @media (max-width: 1200px) {
-    width: 90%;
+  @media (max-width: 768px) {
     height: auto;
   }
 `;
 
 const StyledImage = styled.img`
   position: absolute;
-  top: 0;
-  left: ${({ isUnion3, isUnion4 }) => {
-    if (isUnion3) return '90px';
-    if (isUnion4) return '50px';
-    return '0';
-  }};
-  max-width: 100%;
-  height: auto;
-  transition: transform 0.3s ease, z-index 0.3s ease, filter 0.3s ease;
-  z-index: ${({ zIndex }) => zIndex};
+  width: ${({ width }) => width || '100px'};
+  height: ${({ height }) => height || '100px'};
+  top: ${({ top }) => top || '0'};
+  left: ${({ left }) => left || '0'};
+  transition: transform 0.3s ease, filter 0.3s ease;
+  z-index: ${({ isSelected }) => (isSelected ? 2 : 1)};
   filter: ${({ isSelected }) => (isSelected ? 'none' : 'grayscale(80%)')};
-  transform: ${({ isSelected }) => (isSelected ? 'translateY(-10px)' : 'translateY(0)')};
-
-  @media (max-width: 768px) {
-    left: ${({ isUnion3, isUnion4 }) => {
-      if (isUnion3) return '30px';
-      if (isUnion4) return '20px';
-      return '0';
-    }};
-  }
-
-  @media (max-width: 480px) {
-    left: 0;
-    width: 100%;
-    height: auto;
-    position: relative;
-    transform: ${({ isSelected }) => (isSelected ? 'translateY(-5px)' : 'translateY(0)')};
-  }
+  transform: ${({ isSelected, translateY }) => 
+    isSelected ? `translateY(${translateY || '-10px'})` : 'translateY(0)'};
 `;
 
 const PageOverlay = styled.div`
@@ -119,8 +103,7 @@ const PageOverlay = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 10;
-  pointer-events: none;
+  z-index: 5;
 `;
 
 const MyPage = () => {
@@ -131,68 +114,71 @@ const MyPage = () => {
   };
 
   return (
-    <MyPageContainer>
-      <Tabs>
-        <Tab active={selectedUnion === 1} onClick={() => handleUnionClick(1)}>여행가 프로필</Tab>
-        <Tab active={selectedUnion === 2} onClick={() => handleUnionClick(2)}>여행 기록</Tab>
-        <Tab active={selectedUnion === 3} onClick={() => handleUnionClick(3)}>스크랩 파일</Tab>
-        <Tab active={selectedUnion === 4} onClick={() => handleUnionClick(4)}>여행 지도</Tab>
-      </Tabs>
+    <>
+      <MyPageContainer>
+        <Tabs>
+          <Tab active={selectedUnion === 1} onClick={() => handleUnionClick(1)}>여행가 프로필</Tab>
+          <Tab active={selectedUnion === 2} onClick={() => handleUnionClick(2)}>여행 기록</Tab>
+          <Tab active={selectedUnion === 3} onClick={() => handleUnionClick(3)}>스크랩 파일</Tab>
+          <Tab active={selectedUnion === 4} onClick={() => handleUnionClick(4)}>여행 지도</Tab>
+        </Tabs>
 
-      <ImageContainer>
-        <StyledImage
-          src={union}
-          alt="Union"
-          zIndex={selectedUnion === 1 ? 4 : 1}
-          isSelected={selectedUnion === 1}
-          onClick={() => handleUnionClick(1)}
-        />
-        <StyledImage
-          src={union2}
-          alt="Union2"
-          zIndex={selectedUnion === 2 ? 4 : 1}
-          isSelected={selectedUnion === 2}
-          onClick={() => handleUnionClick(2)}
-        />
-        <StyledImage
-          src={union3}
-          alt="Union3"
-          zIndex={selectedUnion === 3 ? 4 : 1}
-          isSelected={selectedUnion === 3}
-          isUnion3={true}
-          onClick={() => handleUnionClick(3)}
-        />
-        <StyledImage
-          src={union4}
-          alt="Union4"
-          zIndex={selectedUnion === 4 ? 4 : 1}
-          isSelected={selectedUnion === 4}
-          isUnion4={true}
-          onClick={() => handleUnionClick(4)}
-        />
+        <ImageContainer>
+          <StyledImage
+            src={union}
+            alt="Union"
+            isSelected={selectedUnion === 1}
+            width="1300px"
+            height="800px"
+            top="10%"
+            left="-7%"
+            translateY="-15px"
+            onClick={() => handleUnionClick(1)}
+          />
+          <StyledImage
+            src={union2}
+            alt="Union2"
+            isSelected={selectedUnion === 2}
+            width="1300px"
+            height="2000px"
+            top="10%"
+            left="-4.5%"
+            translateY="-15px"
+            onClick={() => handleUnionClick(2)}
+          />
+          <StyledImage
+            src={union3}
+            alt="Union3"
+            isSelected={selectedUnion === 3}
+            width="1300px"
+            height="2000px"
+            top="10%"
+            left="4.5%"
+            translateY="-15px"
+            onClick={() => handleUnionClick(3)}
+          />
+          <StyledImage
+            src={union4}
+            alt="Union4"
+            isSelected={selectedUnion === 4}
+            width="1300px"
+            height="900px"
+            top="10%"
+            left="3.5%"
+            translateY="-15px"
+            onClick={() => handleUnionClick(4)}
+          />
 
-        {selectedUnion === 1 && (
           <PageOverlay>
-            <APage />
+            {selectedUnion === 1 && <APage />}
+            {selectedUnion === 2 && <BPage />}
+            {selectedUnion === 3 && <CPage />}
+            {selectedUnion === 4 && <DPage />}
           </PageOverlay>
-        )}
-        {selectedUnion === 2 && (
-          <PageOverlay>
-            <BPage />
-          </PageOverlay>
-        )}
-        {selectedUnion === 3 && (
-          <PageOverlay>
-            <CPage />
-          </PageOverlay>
-        )}
-        {selectedUnion === 4 && (
-          <PageOverlay>
-            <DPage />
-          </PageOverlay>
-        )}
-      </ImageContainer>
-    </MyPageContainer>
+        </ImageContainer>
+      </MyPageContainer>
+      <Footer /> {/* Footer 컴포넌트를 MyPageContainer 아래에 추가 */}
+    </>
   );
 };
 

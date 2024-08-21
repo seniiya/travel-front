@@ -8,7 +8,7 @@ import recordicon from '../../components/pic/recordicon.svg';
 import myback from '../../components/pic/MyImg.svg';
 import idcard from '../../components/pic/idcard.svg';
 import logo3 from '../../components/pic/logo3.svg';
-import goTraveler from '../../components/pic/MoveTraveler.svg';
+import bigglasses from '../../components/pic/bigglasses.svg';
 import twinkle from '../../components/pic/Twinkle.svg';
 import bluebar from '../../components/pic/BlueBar.svg';
 import undertxt from '../../components/pic/UnderTxt.svg';
@@ -50,6 +50,7 @@ const APage = () => {
         <PageContainer>
             <Content>
                 <BackgroundImage src={myback} alt="Background" />
+                <BigGlass src={bigglasses} alt="BigGlasses"/>
                 <ModalContent>
                     <Profile>
                         <ProfileImage src={traveler.imgSrc} alt='Profileimg'/>
@@ -65,6 +66,8 @@ const APage = () => {
                 
                     <Introduce>
                         <Section>
+                            <SectionBar />
+
                             <InfoColumn>
                                 <InfoItem>
                                     <SNSIcon src={snsicon} alt="Sns icon"/>
@@ -116,14 +119,15 @@ const APage = () => {
 
 const PageContainer = styled.div`
     position: absolute;
-    top: 150px;
-    left: 100px;
+    left: calc(50% - 1000px/2);
+    top: 100px;
     width: 1000px;
-    height: 620px;
+    height: 625px;
     background: #FFFFFF;
     border-radius: 14px;
     overflow: hidden;
     box-shadow: 0px 0px 54px rgba(0, 0, 0, 0.05), 1px 10px 24px rgba(0, 0, 0, 0.08);
+
 `;
 
 const Content = styled.div`
@@ -134,10 +138,16 @@ const Content = styled.div`
 
 const BackgroundImage = styled.img`
     position: absolute;
-    width: 100%;
-    height: 100%;
     object-fit: cover;
-    z-index: -1;
+`;
+
+const BigGlass = styled.img`
+    position: absolute;
+    width: 178.12px;
+    height: 171.27px;
+    left: 1511px;
+    top: 154px;
+    z-index: 2;
 `;
 
 const ModalContent = styled.div`
@@ -218,9 +228,9 @@ const Section = styled.div`
 
 const SectionBar = styled.div`
     width: 1px;
-    height: 100px;
+    height: 110px;
     background-color: #C1C3C5;
-    margin: 0 20px;
+    margin: 10px 10px;
 `;
 
 const InfoColumn = styled.div`
