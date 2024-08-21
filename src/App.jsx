@@ -1,8 +1,9 @@
 
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import styled from 'styled-components';
+import { AuthProvider } from './pages/Login/AuthContext.jsx';
+import axios from 'axios';
 import './index.css';
 import MainPage from './pages/MainPage.jsx';
 import Login from './pages/Login/Login.jsx';
@@ -45,7 +46,6 @@ const ContentContainer = styled.div`
 `;
 
 
-
 function SearchSectionWrapper() {
   const navigate = useNavigate();
   return <SearchSection onClose={() => navigate('/')} />;
@@ -54,12 +54,13 @@ function SearchSectionWrapper() {
 function AppContent() {
   const [selectedDest, setSelectedDest] = useState('여행지 - 전체');
   const location = useLocation();
+  console.log("현재 경로:", location.pathname); 
   const isWritePage = location.pathname === '/write';
-  const noFooterPaths = ['/login', '/signup', '/emailsignup', '/findid', '/findpw', '/repasswd', '/write', '/emailchange', '/id-change', '/pw-change', '/leave'];
+  const noFooterPaths = ['/login', '/signup', '/emailsignup', '/findid', '/findpw', '/repasswd', '/write', '/emailchange', '/id-change', '/pw-change', '/leave', '/MyPage'];
 
   return (
     <AppContainer>
-      {!isWritePage && <Navbar setSelectedDest={setSelectedDest} />}
+      {!isWritePage && <Navbar />}
       <ContentContainer>
         <Routes>
           <Route path="/" element={<><MainPage /><Contents /></>} />
@@ -91,10 +92,33 @@ function AppContent() {
 }
 
 function App() {
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    }
+
+    axios.interceptors.response.use(
+      (response) => response,
+      (error) => {
+        if (error.response.status === 401) {
+          // 토큰이 만료되었거나 유효하지 않은 경우
+          localStorage.removeItem('token');
+          // 로그인 페이지로 리다이렉트
+          window.location.href = '/login';
+        }
+        return Promise.reject(error);
+      }
+    );
+  }, []);
+
+  
   return (
+    <AuthProvider>
     <Router>
         <AppContent />
     </Router>
+    </AuthProvider>
   );
 }
 

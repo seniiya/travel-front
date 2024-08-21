@@ -1,9 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import hearticon from '../../components/pic/hearticon.svg';
-import scrap from '../../components/pic/scrap.svg';
-import recordicon from '../../components/pic/recordicon.svg';
+import caption from '../../components/pic/caption.svg';
+import bluedrag from '../../components/pic/bluedrag.svg';
+// import hearticon from '../../components/pic/';
+// import scrap from '../../components/pic/';
+// import recordicon from '../../components/pic/';
 
 import myback from '../../components/pic/MyImg.svg';
 import idcard from '../../components/pic/idcard.svg';
@@ -51,6 +53,11 @@ const APage = () => {
             <Content>
                 <BackgroundImage src={myback} alt="Background" />
                 <BigGlass src={bigglasses} alt="BigGlasses"/>
+                <MyAll>
+                    <CaptionBackground />
+                    <Caption src={caption} alt="Caption"/>
+                    <Drag src={bluedrag} alt="Blue Drag"/>
+                </MyAll>
                 <ModalContent>
                     <Profile>
                         <ProfileImage src={traveler.imgSrc} alt='Profileimg'/>
@@ -119,15 +126,16 @@ const APage = () => {
 
 const PageContainer = styled.div`
     position: absolute;
+    // position: relative;
     left: calc(50% - 1000px/2);
-    top: 100px;
+    top: 144px;
     width: 1000px;
     height: 625px;
     background: #FFFFFF;
     border-radius: 14px;
-    overflow: hidden;
+    // overflow: hidden;
+    overflow: visible;
     box-shadow: 0px 0px 54px rgba(0, 0, 0, 0.05), 1px 10px 24px rgba(0, 0, 0, 0.08);
-
 `;
 
 const Content = styled.div`
@@ -136,17 +144,73 @@ const Content = styled.div`
     height: 100%;
 `;
 
+// 캡션 전체 
+const MyAll = styled.div`
+    position: absolute;
+    width: 264px;
+    height: 87px;
+    right: 75%;
+`;
+
+// 캡션
+const Caption = styled.img`
+    display: flex;
+    position: absolute;
+    flex-direction: column;
+    align-items: center;
+    padding: 0px;
+
+    height: 67.67px;
+    left: 914px;
+    top: 161px;
+    z-index: 2;
+    filter: drop-shadow(0px 2px 14px rgba(0, 0, 0, 0.08));
+`;
+
+// 캡션 배경
+const CaptionBackground = styled.div`
+    position: absolute;
+    width: 75%;
+    height: 61px;
+    left: 948px;
+    top: 185px;
+
+    background-color: #FFFFFF;
+    z-index: 1;
+    box-shadow: 0px 0px 54px rgba(0, 0, 0, 0.05), 1px 10px 24px rgba(0, 0, 0, 0.08);
+    border-radius: 7px;
+    
+`;
+
+const Drag = styled.img`
+position: absolute;
+width: 70%;
+height: 61px;
+left: 958px;
+top: 195px;
+
+
+// flex: none;
+// order: 3;
+// flex-grow: 0;
+z-index: 3;
+
+`;
+
 const BackgroundImage = styled.img`
     position: absolute;
     object-fit: cover;
 `;
 
+// 돋보기 모양 
 const BigGlass = styled.img`
     position: absolute;
+    right: 0%;
+    top: -60px;
+    bottom: 0%;
     width: 178.12px;
     height: 171.27px;
-    left: 1511px;
-    top: 154px;
+    left: 1051px;
     z-index: 2;
 `;
 
@@ -194,7 +258,7 @@ const Twinkle = styled.img`
 const Description = styled.div`
     position: absolute;
     left: 373px;
-    top: 256px;
+    top: 286px;
     width: 571px;
     height: 120px;
     font-family: 'AppleSDGothicNeoL00';

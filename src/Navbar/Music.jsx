@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import musicPlayerImage from '../components/pic/music.svg';
-import audioFile from '../assets/beethoven-moonlight-sonata-op-27-nr-2-concert-grand-version-227468.mp3';
 
 const MusicContainer = styled.div`
   position: absolute;
@@ -30,12 +29,14 @@ const MusicImage = styled.div`
   margin-bottom: 20px;
 `;
 
+
 const SongTitle = styled.p`
   font-size: 16px;
   margin-bottom: 15px;
   text-align: center;
   transition: color 0.3s ease;
   color: ${props => props.isPlaying ? '#888' : 'black'};
+  display: inline-block;
 `;
 
 const Controls = styled.div`
@@ -82,48 +83,7 @@ const TimeDisplay = styled.div`
   margin-bottom: 10px;
 `;
 
-function Music({ onClose }) {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
-  const audioRef = useRef(null);
-
-  useEffect(() => {
-    audioRef.current = new Audio(audioFile);
-    const audio = audioRef.current;
-
-    audio.addEventListener('timeupdate', updateTime);
-    audio.addEventListener('loadedmetadata', () => {
-      setDuration(audio.duration);
-    });
-    audio.addEventListener('error', (e) => {
-      console.error("Audio error:", e);
-    });
-
-    return () => {
-      audio.removeEventListener('timeupdate', updateTime);
-      audio.removeEventListener('error', (e) => {
-        console.error("Audio error:", e);
-      });
-      audio.pause();
-    };
-  }, []);
-
-  const updateTime = () => {
-    setCurrentTime(audioRef.current.currentTime);
-  };
-
-  const togglePlay = () => {
-    if (isPlaying) {
-      audioRef.current.pause();
-    } else {
-      audioRef.current.play().catch(error => {
-        console.error("Audio playback failed:", error);
-      });
-    }
-    setIsPlaying(!isPlaying);
-  };
-
+function Music({ onClose, isPlaying, currentTime, duration, togglePlay, seekTo }) {
   const formatTime = (time) => {
     const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60);
@@ -134,14 +94,14 @@ function Music({ onClose }) {
     <MusicContainer>
       <MusicPlayer>
         <MusicImage />
-        <SongTitle isPlaying={isPlaying}>Beethoven - Moonlight Sonata</SongTitle>
+          <SongTitle isPlaying={isPlaying}>Ludoric - Summer Travel Vlog</SongTitle>
         <TimeDisplay>{formatTime(currentTime)} / {formatTime(duration)}</TimeDisplay>
         <Controls>
-          <ControlButton isPlaying={isPlaying} onClick={() => audioRef.current.currentTime -= 10}>&#9668;&#9668;</ControlButton>
+          <ControlButton isPlaying={isPlaying} onClick={() => seekTo(currentTime - 10)}>&#9668;&#9668;</ControlButton>
           <ControlButton main onClick={togglePlay}>
             {isPlaying ? '❚❚' : '▶'}
           </ControlButton>
-          <ControlButton isPlaying={isPlaying} onClick={() => audioRef.current.currentTime += 10}>&#9658;&#9658;</ControlButton>
+          <ControlButton isPlaying={isPlaying} onClick={() => seekTo(currentTime + 10)}>&#9658;&#9658;</ControlButton>
         </Controls>
       </MusicPlayer>
       <CloseButton onClick={onClose}>✕</CloseButton>
@@ -149,4 +109,4 @@ function Music({ onClose }) {
   );
 }
 
-export default Music;
+export default React.memo(Music);
