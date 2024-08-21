@@ -262,7 +262,7 @@ function Navbar() {
 
   useEffect(() => {
     if (travelBagClickCount === 2) {
-      navigate('/travel-destinations-bag');
+      navigate('/travel-bag');
       setTravelBagClickCount(0);
     }
 
@@ -271,7 +271,7 @@ function Navbar() {
     }, 300);
 
     return () => clearTimeout(timer);
-  }, [travelBagClickCount, navigate]);
+  }, [travelBagClickCount]);
 
   return (
     <NavbarWrapper>
