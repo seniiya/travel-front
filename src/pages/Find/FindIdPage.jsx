@@ -3,6 +3,9 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import logo from '../../components/pic/logo.svg';
+import copyright from '../../components/pic/copyright.svg';
+import * as A from "../Login.style.jsx";
+
 
 const PageContainer = styled.div`
   display: flex;
@@ -180,13 +183,14 @@ const FindIdPage = () => {
   };
 
   return (
-    <PageContainer>
+    
+    <A.loginpage>
       <FormContainer>
         <Logo src={logo} alt="Memoir Logo" onClick={handleLogoClick} />
         <Description>계정에 등록된 이메일로 인증을 해주세요.</Description>
-        <RegisterForm>
-          <InputWrapper>
-            <Input
+        <A.InputForm>
+          <A.InputContainer>
+            <A.Input
               type="text"
               placeholder="이메일"
               value={email}
@@ -194,28 +198,48 @@ const FindIdPage = () => {
             />
             {/* 버튼 작동 안되면 disabled 없애기   */}
             <IconButton onClick={handleEmailVerification} >인증하기</IconButton>
-          </InputWrapper>
-          {emailError && <ErrorMessage>{emailError}</ErrorMessage>}
-          <InputWrapper>
-            <Input
+          </A.InputContainer>
+          {emailError && <A.ErrorMessage>{emailError}</A.ErrorMessage>}
+          <A.InputContainer>
+            <A.Input
               type="text"
               placeholder="인증번호"
               value={verificationCode}
               // value={authNum} 위에 email, authNum만 적었다면 
               onChange={(e) => setVerificationCode(e.target.value)}
             />
-          </InputWrapper>
+          </A.InputContainer>
         
-          {authError && <ErrorMessage>{authError}</ErrorMessage>}
+          {authError && <A.ErrorMessage>{authError}</A.ErrorMessage>}
           <Button onClick={handleIdSearch}>아이디 찾기</Button>
-        </RegisterForm>
-        <Footer>
-          <p>
-            계정을 찾으셨나요? <FooterLink href="/login">로그인</FooterLink> | <FooterLink href="/findpw">비밀번호 찾기</FooterLink>
-          </p>
-        </Footer>
+        </A.InputForm>
+        <A.UnderText>
+          <A.SignText >계정을 찾으셨나요?</A.SignText>
+              <A.LookText>
+                <A.LoglookLink to="/login">로그인</A.LoglookLink>
+                <A.SectionBar/> {' '}
+                <A.PwlookLink to="/findpw">비밀번호 찾기</A.PwlookLink>
+              </A.LookText>
+        </A.UnderText>
       </FormContainer>
-    </PageContainer>
+      
+        <A.UnderContainer>
+          <A.UnderLinks>
+              <A.Underlink to='/terms' color='#A5A8AB'>이용약관</A.Underlink> 
+              <A.SectionBar/> {' '}
+              <A.Underlink to='privacy' color='#63676A'>개인정보 처리방침</A.Underlink> 
+              <A.SectionBar/>  {' '}
+              <A.Underlink to='/support' color='#A5A8AB'>고객센터</A.Underlink>  
+              <A.SectionBar/> {' '}
+              <A.Underlink to='/contact' color='#A5A8AB'>Contact Us</A.Underlink>
+          </A.UnderLinks>
+            <img src={copyright} alt='Memoir copyright'/>
+      </A.UnderContainer>
+      </A.loginpage>
+
+
+
+
   );
 };
 

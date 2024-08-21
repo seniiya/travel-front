@@ -1,8 +1,6 @@
 import styled from "styled-components";
 
-
 export const Container = styled.div`
-    // display: flex;
     flex-direction: column;
     padding: 20px;
     overflow: hidden;
@@ -10,39 +8,27 @@ export const Container = styled.div`
     min-height: 100vh;
     margin: 0 auto;
     margin-top: 80px;
-
-    
 `;
 
 export const Section = styled.div`
-    /* Component 52 */
-
-    /* Auto layout */
     display: flex;
     align-items: center;
     padding: 0px;
     gap: 10px;
-
+    margin-left: 80px;
 `;
 
 export const SectionTxt = styled.div`
-    
-
-    font-family: 'Inter';
-    font-style: normal;
     font-weight: 300;
     font-size: 18px;
     line-height: 130%;
- 
     display: flex;
     align-items: center;
     text-align: center;
     letter-spacing: -0.003em;
-    text-transform: lowercase;
-
- 
-    color: ${({$active}) => ($active ? '#005CF9': '#B4B7B9')};
+    color: ${({$active}) => ($active ? '#005CF9': '#b4b7b9')};
     cursor: pointer;
+    margin: 10px 0 0 10px
 
     &:hover {
         color: #005CF9;
@@ -55,19 +41,12 @@ export const SectionTxt = styled.div`
 `;
 
 export const SectionBar = styled.img`
-    /* Vector 658 */
-
     width: 0px;
     height: 15px;
-
-    /* Foundation /Blue/Light :active */
     border: 1.3px solid #B0CCFD;
     transform: rotate(-180deg);
-
-    /* Inside auto layout */
     flex: none;
     flex-grow: 0;
-
     cursor: default;
 `;
 
@@ -93,41 +72,25 @@ export const Header = styled.div`
     margin: 0;
     color: gray;
   }
-
 `;
 
  export const HeaderBar = styled.div`
-  
     height: 0px;
     left: calc(50% - 1920px/2);
     top: 0;
+    position: absolute;
+    width: 1920px;
 
-  //   border: 1px solid #E0E2E6;
-
-  /* Vector 672 */
-
-  position: absolute;
-  width: 1920px;
-  height: 0px;
-  left: calc(50% - 1920px/2);
-  top: 220px;
-
-  border: 1px solid #E0E2E6;
-
-
-
+    top: 220px; 
+    border: 1px solid #E0E2E6;
 `;
 
 export const GoTop = styled.button`
-
-
     img {
         width: 100%;
         height: 100%;
         object-fit: cover;
     }
-
-
     position: fixed;
     bottom: 350px;
     right: 80px;

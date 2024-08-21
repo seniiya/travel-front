@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import axios from "axios";
 import sectionbar from '../components/pic/sectionbar.svg';
 import * as A from "../pages/TravelPage.style";
-import { useNavigate, Link } from "react-router-dom";
+import {Link } from "react-router-dom";
 
 import mark1 from '../components/pic/mark1.png';
 import headerbar from '../components/pic/headerbar.svg';
@@ -16,8 +17,35 @@ import scrapicon from '../components/pic/whiteScrap.svg';
 import linkicon from '../components/pic/whiteLink.svg';
 
 export default function PopularPage() {
-    const [activeSection, setActiveSection] = useState(null);
+    const [activeSection, setActiveSection] = useState('latest');
     const [selectedCard, setSelectedCard] = useState(null);
+    const [topPosts, setTopPosts] = useState([]);
+
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+      fetchTopPosts();
+    }, [activeSection]);
+
+    const fetchTopPosts = async () => {
+      try {
+        const response = await axios.get('https://81bc-203-255-3-239.ngrok-free.app/api/v1/travelPost/topTravelPosts', {
+                params: { orderBy: activeSection },
+                withCredentials: true
+            });
+            if (response.data && response.data.isSuccess) {
+              setTopPosts(response.data.result.topTravelPosts);
+            } else {
+              throw new Error(response.data?.message || '데이터를 불러오는데 실패했습니다.');
+            }
+          } catch (error) {
+            console.error('Error fetching top posts:', error);
+            setError('게시글을 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요.');
+          } finally {
+            setIsLoading(false);
+          }
+      };
 
     const handleClick = (section) => {
         setActiveSection(section);
@@ -28,24 +56,12 @@ export default function PopularPage() {
       window.scrollTo({ top: 0, behavior: 'smooth'})
     }
 
-    const travelersPerPage = 24;
-
-
-    // content 데이터 정의 
-    const contentCards = Array.from({ length: 24 }, (_, index) => ({
-      id: index,
-      title: "제목입니다",
-      content: "내용입니다 내용입니다 내용입니다 내용입니다",
-      author: "김태엽",
-      date: "2024-08-24",
-      views: "999+",
-      like: "84",
-      scrap: "3",
-      image: sampleDefault
-    }));
-    // like scrap 이미지에 뜨게 
-    
-    const selectCard = contentCards.slice(0, travelersPerPage);
+     // HTML 태그 제거 함수
+     const stripHtml = (html) => {
+      let tmp = document.createElement("DIV");
+      tmp.innerHTML = html;
+      return tmp.textContent || tmp.innerText || "";
+    }
 
 
 // 최신순 오래된순 이름순 좋아요순 스크랩순 조회순
@@ -59,19 +75,19 @@ export default function PopularPage() {
                 <p>7일 동안의 인기 있었던 기록들이에요.</p>
                 </div>
             </A.Header>
-            <A.HeaderBar src={headerbar} alt="header bar"/>
+            <A.HeaderBar />
 
             <SectionWrapper>
               <A.Section>
                 <A.SectionTxt     
-                    $active={activeSection === 'recent'}
-                    onClick={() => handleClick('recent')}>
+                    $active={activeSection === 'latest'}
+                    onClick={() => handleClick('latest')}>
                     최신순
                 </A.SectionTxt>
                 <A.SectionBar src={sectionbar} alt="section bar"/>
                 <A.SectionTxt 
-                    $active={activeSection === 'old'}
-                    onClick={() => handleClick('old')}>
+                    $active={activeSection === 'oldest'}
+                    onClick={() => handleClick('oldest')}>
                     오래된순
                 </A.SectionTxt>
                 <A.SectionBar src={sectionbar} alt="section bar"/>
@@ -82,8 +98,8 @@ export default function PopularPage() {
                 </A.SectionTxt>
                 <A.SectionBar src={sectionbar} alt="section bar"/>
                 <A.SectionTxt 
-                    $active={activeSection === 'like'}
-                    onClick={() => handleClick('like')}>
+                    $active={activeSection === 'likes'}
+                    onClick={() => handleClick('likes')}>
                     좋아요순
                 </A.SectionTxt>
                 <A.SectionBar src={sectionbar} alt="section bar"/>
@@ -94,8 +110,8 @@ export default function PopularPage() {
                 </A.SectionTxt>
                 <A.SectionBar src={sectionbar} alt="section bar"/>
                 <A.SectionTxt 
-                    $active={activeSection === 'view'}
-                    onClick={() => handleClick('view')}>
+                    $active={activeSection === 'views'}
+                    onClick={() => handleClick('views')}>
                     조회순
                 </A.SectionTxt>
               </A.Section>
@@ -109,47 +125,49 @@ export default function PopularPage() {
               </WriteSection>
             </SectionWrapper>
 
+            {isLoading && <LoadingMessage>게시글을 불러오는 중입니다...</LoadingMessage>}
+            {error && <ErrorMessage>{error}</ErrorMessage>}
 
+            {!isLoading && !error && (
             <TravelersGrid>
-              {selectCard.map((card, index) => (
+              {topPosts.map((post) => (
                 <ContentCard 
-                  key={card.id} 
-                  onClick={() => setSelectedCard(index)} 
-                  className={selectedCard === index ? 'active' : ''}
+                  key={post.id} 
+                  onClick={() => setSelectedCard(post.id)} 
+                  className={selectedCard === post.id ? 'active' : ''}
                 >
-                  <div className="img-wrapper">
-                    <img src={card.image} alt={card.title}/>
+                 
+                    <CardImg src={ post.repImage ? `https://81bc-203-255-3-239.ngrok-free.app${post.repImage}` : sampleDefault} alt={post.title}/>
                     <Overlay>
                     <LikesScraps>
                       <span>
                         <img src={likeicon} alt="like" />
-                        {card.like}
+                        {post.likeCount}
                       </span>
                       <span>
                         <img src={scrapicon} alt="scrap" />
-                        {card.scrap || 0}
+                        {post.scrapCount}
                       </span>
                       <span>
                         <img src={linkicon} alt="link" />
                       </span>
                     </LikesScraps>
                     </Overlay>
-                  </div> 
+                  
                   <div className="content">
-                    <h3>{card.title}</h3>
-                    <p>{card.content}</p>
+                    <h3>{post.title}</h3>
+                    {/* 이미지 등록 안 되어있으면 기본 이미지로 보이도록 */}
+                    <p>{stripHtml(post.content).length > 100 ? stripHtml(post.content).slice(0, 100) + '...' : stripHtml(post.content)}</p>
                     <div className="info">
-                      <span>{card.author} | {card.date}</span>
-                      <span> 조회수 {card.views}</span>
+                    <span>{post.user.nickname} | {new Date(post.createDate).toLocaleDateString()}</span>
+                      <span> 조회수 {post.viewCount}</span>
                     </div>
                   </div>
-
                 </ContentCard>
-
-
               ))}
+              
             </TravelersGrid>
-
+            )}
 
         </A.Container>
 
@@ -159,6 +177,20 @@ export default function PopularPage() {
     </>
     )
 }
+
+
+const LoadingMessage = styled.div`
+  text-align: center;
+  padding: 20px;
+  font-size: 18px;
+`;
+
+const ErrorMessage = styled.div`
+  text-align: center;
+  padding: 20px;
+  font-size: 18px;
+  color: red;
+`;
 
 const SectionTxt = styled(Link)`
     
@@ -243,49 +275,36 @@ const TravelersGrid = styled.div`
   }
 
 
-
 `;
 
 
 const ContentCard = styled.div`
-    position: relative;
-    width: 100%;
-    background: white;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease;
+  width: 100%;
+  height: 320px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  // overflow: hidden;
 
-    &:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+  &:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
 
-        .img-wrapper img {
-          filter: brightness(50%);
-        }
-
-        .overlay {
-          opacity: 1;
-        }
+    img {
+      filter: brightness(50%);
     }
 
-    .img-wrapper {
-
-      position: relative;
-      width: 100%;
-      height: 200px;
-      overflow: hidden;
-        
-      img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: filter 0.3s ease;
-      }
+    div {
+      opacity: 1;
     }
+  }
 
-    .content {
+      .content {
         padding: 15px;
+               
 
         h3 {
             margin: 0 0 10px;
@@ -309,40 +328,50 @@ const ContentCard = styled.div`
 
 `;
 
+const CardImg = styled.img`
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  transition: filter 0.3s ease;
+  border-radius: 10px 10px 0 0;
+
+
+`;
+
 
 const Overlay = styled.div`
   position: absolute;
-  top: 0;
+  // bottom: 120px;
+  top: 15px;
   left: 0;
   width: 100%;
-  height: 100%;
+  height: 40%;
   display: flex;
-  flex-direction: column;
-  // justify-content: space-between;
-  justify-content: flex-end;
-  padding:15px;
+  align-items: end;
   color: white;
   font-size: 15px;
   opacity: 0;
   transition: opacity 0.3s ease;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 1;
+  border-radius: 10px 10px 0 0;
+  margin-left: 3px;
 `;
 
 const LikesScraps = styled.div`
   display: flex;
   gap: 10px;
-  justify-content: flex-end;
+  opacity: 2;
+
 
   span {
-      display: flex;
-      align-items: center;
-      color: white;
-      
+    display: flex;
+    align-items: center;
+
     img {
       width: 20px;
       height: 20px;
       margin-right: 5px;
+      color: white;
+      filter: brightness(100%) !important;
     }
   }
 `;

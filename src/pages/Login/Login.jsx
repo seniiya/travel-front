@@ -52,7 +52,7 @@ export default function Login() {
 
             
             try {
-                const response = await axios.post ('http://localhost:8080/api/v1/auth/signIn', {
+                const response = await axios.post ('https://81bc-203-255-3-239.ngrok-free.app/api/v1/auth/signIn', {
                     userid: data.id,
                     password: data.pw
                 });
@@ -110,7 +110,7 @@ export default function Login() {
             <A.LoginPageContainer>
                 <A.LoginMain>
                     <A.Logo src={logo} alt="Memoir Logo" onClick={handleLogoClick}/>
-                    <form onSubmit = {handleSubmit(onSubmit)}>
+                    <form onSubmit = {handleSubmit(onSubmit)} style={{width: '100%'}}>
                     <A.InputForm>
                         <A.InputContainer>
                             <A.InputWrapper>
@@ -137,7 +137,7 @@ export default function Login() {
                                 onChange={handlePwChange}
                             />
                             {pwValue && (
-                            <A.Icon src={ showPw ? visible : invisible } alt="Visible" onClick={handlePwVisible}/>                 
+                            <A.Icon src={ showPw ? invisible : visible } alt="Visible" onClick={handlePwVisible}/>                 
                             )}
                         </A.InputContainer>
 
@@ -167,11 +167,13 @@ export default function Login() {
             </A.LoginPageContainer>
             <A.UnderContainer>
                 <A.UnderLinks>
-                    {/* to='' 링크 넣어주기 */}
-                    <A.Underlink to='/terms'>이용약관</A.Underlink> | {' '}
-                    <A.Underlink to='/privacy'>개인정보 처리방침</A.Underlink> |  {' '}
-                    <A.Underlink to='/support'>고객센터</A.Underlink>  |  {' '}
-                    <A.Underlink to='/contact'>Contact Us</A.Underlink>
+                    <A.Underlink to='/terms' color='#A5A8AB'>이용약관</A.Underlink> 
+                    <A.SectionBar/> {' '}
+                    <A.Underlink to='privacy' color='#63676A'>개인정보 처리방침</A.Underlink> 
+                    <A.SectionBar/>  {' '}
+                    <A.Underlink to='/support' color='#A5A8AB'>고객센터</A.Underlink>  
+                    <A.SectionBar/> {' '}
+                    <A.Underlink to='/contact' color='#A5A8AB'>Contact Us</A.Underlink>
                 </A.UnderLinks>
                     <img src={copyright} alt='Memoir copyright'/>
             </A.UnderContainer>

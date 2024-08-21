@@ -33,20 +33,38 @@ const TravelerModal = ({ children, onClose, traveler }) => {
         navigate(`/tarveler/${traveler.id}`);
     }
 
+    const simplifyUrl = (url) => {
+        // Remove protocol and 'www.' if present
+        let simplified = url.replace(/^(https?:\/\/)?(www\.)?/, '');
+        
+        // Split the remaining string by '/'
+        let parts = simplified.split('/');
+        
+        // Get the domain part
+        let domain = parts[0];
+        
+        // Special case for 'x.com'
+        if (domain === 'x.com') {
+            return 'x';
+        }
+        
+        // For other cases, return the first part of the domain
+        return domain.split('.')[0];
+    };
+
     return (
         <Overlay>
             <Mlogo src={myback} alt="My back"/>
            
             <Content onClick={e => e.stopPropagation()}>
-                <CloseButton src={cancel} alt ="Close Modal" onClick={onClose}/>
+                <CloseButton src={cancel} alt="Close Modal" onClick={onClose}/>
                 <ModalContent>
                     <Profile>
-                        <ProfileImage src={traveler.imgSrc}  alt='Profileimg'/>
+                        <ProfileImage src={traveler.imgSrc} alt='Profileimg'/>
                         <img src={idcard} alt='Idcardtxt'/>
-                        {/*사용자 이미지 어떻게 받아올지 */}
                     </Profile>
-                        <GoTraveler src={goTraveler} alt="Move Traveler" onClick={GoTravelerClick}/>
-                    <LogoContainer >
+                    <GoTraveler src={goTraveler} alt="Move Traveler" onClick={GoTravelerClick}/>
+                    <LogoContainer>
                         <LogoSection src={logo3} alt="Logo Section"/>
                     </LogoContainer>
                     <Twinkle src={twinkle} alt="Twinkle" />
@@ -55,44 +73,49 @@ const TravelerModal = ({ children, onClose, traveler }) => {
                     </Description>
                 
                     <Introduce>
-                        <div className="Introduce Bar"/>
                         <Section>
-                            <SnsPart>
-                                {/* <span className="section bar"/> */}
-                                {/* <p>SNS:</p> */}
-                                <img src={snsicon} alt="Sns icon"/>
-                                {traveler.sns.map((link, index) => (
-                                    <a key={index} href={link} src={linkicon} targt="_balnk" rel="noopener noreferrer">
-                                        {link}
-                                    </a>
-                                ))}
-                            </SnsPart>
+                            <InfoColumn>
+                                <InfoItem>
+                                    <SNSIcon src={snsicon} alt="Sns icon"/>
+                                    {traveler.sns.map((link, index) => (
+                                        <SnsLink key={index} href={link} target="_blank" rel="noopener noreferrer">
+                                            {simplifyUrl(link)}
+                                        </SnsLink>
+                                    ))}
+                                </InfoItem>
+                            </InfoColumn>
 
-                            <InfoPart>
-                                <span className="section bar" />
-                                <Nick>
-                                    <img src={nickicon} alt="Nickname icon"/>
-                                    <a>{traveler.name}</a>
-                                </Nick>
-                                <Location>
-                                    <img src={locationicon} alt="Location icon"/>
-                                    <a>{traveler.location}</a>
+                            <SectionBar />
 
-                                    <img src={dateissue} alt="Date of Iusse"/>
-                                    <a>{traveler.dateofissue}</a>
+                            <InfoColumn>
+                                <InfoItem>
+                                    <SectionTitle src={nickicon} alt="Nickname icon" />
+                                    <InfoText>{traveler.name}</InfoText>
+                                </InfoItem>
+                                <InfoItem>
+                                    <SectionTitle src={locationicon} alt="Location icon" />
+                                    <InfoText>{traveler.location}</InfoText>
+                                </InfoItem>
+                            </InfoColumn>
 
-                                    <img src={favcountry} alt="Favorite Country"/>
-                                    <a>{traveler.favcountry}</a>
-                                </Location>
-                                
-                            </InfoPart>
+                            <SectionBar />
+
+                            <InfoColumn>
+                                <InfoItem>
+                                    <DateIcon src={dateissue} alt="Date of Issue" />
+                                    <InfoText>{traveler.dateofissue}</InfoText>
+                                </InfoItem>
+                                <InfoItem>
+                                    <CountryIcon src={favcountry} alt="Favorite Country" />
+                                    <InfoText>{traveler.favcountry}</InfoText>
+                                </InfoItem>
+                            </InfoColumn>
                         </Section>
-                        
                     </Introduce>
 
                     <Myunder>
                         <UnderTxt src={undertxt} alt="Under Txt"/>
-                        <BlueBar  src={bluebar} alt="Blue Bar"/>
+                        <BlueBar src={bluebar} alt="Blue Bar"/>
                     </Myunder>
                 </ModalContent>
             </Content>
@@ -104,51 +127,35 @@ const TravelerModal = ({ children, onClose, traveler }) => {
 
 
 
+
+
 const Overlay = styled.div`
 
-    /* Frame 10241 */
-
-    // position: absolute;
     position: fixed;
     width: 1000px;
     height: 620px;
     left: calc(50% - 1000px/2);
     top: calc(50% - 670px/2 + 14.5px);
     background: #FFFFFF;
-  
     box-shadow: 0px 0px 54px rgba(0, 0, 0, 0.05), 1px 10px 24px rgba(0, 0, 0, 0.08);
-    border-radius: 20px;
-
+    border-radius: 14px;
+    overflow: hidden;
     
 `;
 
-// 이거 안 뜬다 => myback 이랑 같은 이미지 뜸 + 모달 밖에 뜬다.
 const Mlogo = styled.img`
-    /* Image0013 copy 2 */
 
     position: absolute;
-    // width: 413.17px;
-    // height: 413.17px;
-    // left: 948px;
-    // top: 588.29px;
-
-    // // background: url(Mlogo.svg);
-    // mix-blend-mode: soft-light;
-    // transform: rotate(-22.38deg);
     z-index: -1;
 `;
 
-// 얘도 뒤에 화면 안뜬다
+
 const Content = styled.div`
-    // background: url(myback.svg) ;
-    background-size: cover;
-    padding: 20px;
-    border-radius: 20px;
+
     position: relative;
-    width: 80%;
-    max-width: 600px;
-    color: white;
-    z-index: 30;
+    width: 100%;
+    height: 100%;
+
 `;
 
 const CloseButton = styled.img`
@@ -164,8 +171,9 @@ const CloseButton = styled.img`
 `;
 
 const ModalContent = styled.div`
-    display: flex;
-    align-items: center;
+    position: relative;
+    width: 100%;
+    height: 100%;
 `;
 
 const Profile = styled.div`
@@ -181,46 +189,33 @@ const Profile = styled.div`
 
 const ProfileImage = styled.img`
     
-    /* Frame 10272 */
-
     box-sizing: border-box;
 
     position: absolute;
     width: 302px;
-    height: 369px;
+    height: 349px;
     left: 0px;
     top: 29px;
 
-    /* Foundation /Blue/Lighter */
     border: 1px solid #C1C3C5;
 
 `;
 
 const GoTraveler = styled.img`
-    /* 대 버튼 */
-    padding: 7px 76px;
-    gap: 10px;
 
     position: absolute;
-    top: 444px;
-
-    background: #FFFFFF;
-
+    top: 416px;
+    left: 100px;
+    gap: 10px;
     display: flex;
-    flex-direction: row;
+    // flex-direction: row;
     justify-content: center;
-    align-items: center;
+    // align-items: center;
     cursor: pointer;
 
-    flex: none;
-    order: 0;
-    align-self: stretch;
-    flex-grow: 0;
 `;
 
 const LogoContainer = styled.div`
-    /* Frame 10256 */
-
     position: absolute;
     width: 544px;
     height: 189px;
@@ -230,23 +225,15 @@ const LogoContainer = styled.div`
 `;
 
 const Twinkle = styled.img`
-
-       /* 로고이미지3 2 */
-
         position: absolute;
         width: 200px;
         height: 199px;
-        left: 812px;
-        top: -20.49px;
-        // z-index: 10;
-        // transform: rotate(-5.31deg);
+        left: 802px;
+        top: -10.49px;;
      
 `;
 
 const Description = styled.div`
-    /* Frame 10251 */
-
-    /* Auto layout */
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -255,14 +242,10 @@ const Description = styled.div`
     gap: 10px;
 
     position: absolute;
-    // width: 591px;
-    // height: 169px;
     left: 373px;
     top: 256px;
-
-
     width: 571px;
-    height: 149px;
+    height: 120px; // 높이 줄임 149px;
 
     font-family: 'AppleSDGothicNeoL00';
     font-style: normal;
@@ -274,322 +257,112 @@ const Description = styled.div`
 
     color: #000000;
 
-    // /* Inside auto layout */
-    // flex: none;
-    // order: 0;
-    // flex-grow: 0;
 
 `;
 
+ 
+
 const Introduce = styled.div`
-    /* Frame 10268 */
-    // position: relative;
     position: absolute;
-    // width: 1068px;
-    width: 1000px;
-    height: 150px;
-    // left: -33px;
+    width: 100%;
+    height: 130px;
     left: 0px;
-    top: 493px;
-    bottom: 0;
+    bottom: 41px;
     border-top: 1px solid #C1C3C5;
-
-    // div {
-    //     /* Rectangle 301 */
-
-    //     box-sizing: border-box;
-
-    //     position: absolute;
-    //     // width: 1000px;
-    //     width: 100%;
-    //     height: 150px;
-    //     left: 0px;
-    //     top: 0px;
-
-    //     /* Foundation /Blue/Lighter */
-    //     border-top: 1px solid #C1C3C5;
-
-    // }
-
-
+    display: flex;
+    align-items: center;
 `;
 
 const Section = styled.div`
-    /* Frame 10262 */
     display: flex;
-    flex-direction: row;
-    align-items: center;
-    padding: 0px;
-    gap: 74px;
-
-    position: absolute;
-    width: 817px;
-    height: 97px;
-    left: 69px;
-    top: 19px;
-    // justify-content: space-between;
-    // padding 20px 50px;
-
-`;
-
-
-// 어째하노 ..
-const SnsPart = styled.div`
-    /* Frame 10232 */
-
-    /* Auto layout */
-    display: flex;
-    // display: fixed;
-    flex-direction: column;
-    // flex-direction: row;
-    align-items: flex-start;
-    // align-items: center;
-    padding: 0px;
-    // gap: 10px;
-
-    position: absolute;
-    // width: 200px;
-    height: 97px;
-    left: 0px;
-    top: 0px;
-
-
-    // 막대기 안 떠
-    span {
-
-        width: 1px;
-        height: 97px;
-        /* Foundation /Blue/Lighter */
-        border: 1px solid #C1C3C5;
-
-    }
-    
-    img {
-        /* sns: */
-
-        width: 35px;
-        height: 24px;
-
-    }
-
-    a {
-
-        display: flex;
-        // flex-direction: column;
-        align-items: flex-start;
-        // align-items: center;
-        text-decoration: none;
-        // padding: 0px;
-        font-size: 14px;
-        width: 200px;
-        height: 78px;
-        margin-left: 5px;
-        color:  #292A2C;
-
-        &:before {
-            content: url(${linkicon});
-            margin-right: 5px;
-        }
-
-        &:hover {
-            text-decoration: underline;
-        }
-
-    }
-`;
-
-const InfoPart = styled.div`
-    display: flex;
-    // flex-direction: column;
     justify-content: space-between;
-    gap: 10px;
+    align-items: flex-start;
+    padding: 0 69px;
+    width: 100%;
+    height: 100%;
+`;
 
-    position: absolute;
-    width: 500px;
-    height: 97px;
-    left: 0px;
-    top: 0px;
+const SectionBar = styled.div`
+    // width: 1px;
+    // height: 100px;
+    // background-color: #C1C3C5;
+    // margin: 0 20px;
+`;
 
-    span {
+const SectionTitle = styled.img`
+    width: 80px;
+    height: 24px;
+`;
 
-        width: 1px;
-        height: 97px;
-        background-color: #C1C3C5;
+const SNSIcon = styled(SectionTitle)`
+    width: 35px;
+    height: 24px;
+`;
 
-    }
+const DateIcon = styled.img`
+    width: 110px;
+    height: 24px;
+`;
 
+const CountryIcon = styled.img`
+    width: 150px;
+    height: 24px;
+`;
 
+const InfoColumn = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 40%;
+    height: 100%;
 `;
 
 const InfoItem = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 10px;
-
-  img {
-    width: 88px;
-    height: 24px;
-  }
-
-  a {
-    font-size: 14px;
-    color: #333;
-  }
-`;
-
-
-const Nick = styled.div`
-    /* Frame 10229 */
-
-    /* Auto layout */
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    padding: 0px;
-
-    width: 99px;
-    height: 46px;
-
-
-    /* Inside auto layout */
-    flex: none;
-    order: 0;
-    flex-grow: 0;
-
-    img {
-        /* Nickname: */
-
-        width: 88px;
-        height: 24px;
-
-        font-family: 'ChosunilboNM';
-        font-style: normal;
-        font-weight: 400;
-        font-size: 16px;
-        line-height: 150%;
-        /* identical to box height, or 24px */
-        text-align: center;
-        letter-spacing: -0.003em;
-        text-transform: uppercase;
-
-        color: #55585B;
-
-
-        /* Inside auto layout */
-        flex: none;
-        order: 0;
-        flex-grow: 0;
-        margin: -8px 0px;
-    }
-
-    a {
-
-        width: 52px;
-        height: 30px;
-
-        font-family: 'AppleSDGothicNeoL00';
-        font-style: normal;
-        font-weight: 400;
-        font-size: 20px;
-        line-height: 150%;
-        /* identical to box height, or 30px */
-        letter-spacing: -0.005em;
-
-        /* Foundation /Blue/Dark */
-        color: #292A2C;
-
-
-        /* Inside auto layout */
-        flex: none;
-        order: 1;
-        flex-grow: 0;
-
-    }
-
 `;
 
-const Location = styled.div`
-    /* Frame 10233 */
-
-    /* Auto layout */
+const SnsLink = styled.a`
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 0px;
-    gap: 5px;
+    align-items: center;
+    text-decoration: none;
+    font-size: 16px;
+    color: #292A2C;
+    margin-bottom: 5px;
 
-    width: 200px;
-    height: 46px;
-
-
-    /* Inside auto layout */
-    flex: none;
-    order: 1;
-    flex-grow: 0;
-
-    img {
-
-        width: 83px;
-        height: 24px;
-
-        // font-family: 'ChosunilboNM';
-        // font-style: normal;
-        // font-weight: 400;
-        // font-size: 16px;
-        // line-height: 150%;
-        // /* identical to box height, or 24px */
-        // text-align: center;
-        letter-spacing: -0.003em;
-        text-transform: uppercase;
-
-        color: #55585B;
-
-
-        /* Inside auto layout */
-        flex: none;
-        order: 0;
-        flex-grow: 0;
-        margin: -8px 0px;
-
+    &:before {
+        content: '';
+        background-image: url(${linkicon});
+        background-size: contain;
+        background-repeat: no-repeat;
+        width: 16px;
+        height: 16px;
+        margin-right: 5px;
+        display: inline-block;
     }
 
-    a {
-
-        width: 35px;
-        height: 30px;
-
-        font-family: 'AppleSDGothicNeoL00';
-        font-style: normal;
-        font-weight: 400;
-        font-size: 20px;
-        line-height: 150%;
-        /* identical to box height, or 30px */
-        letter-spacing: -0.005em;
-
-        /* Foundation /Blue/Dark */
-        color: #292A2C;
-
-
-        /* Inside auto layout */
-        flex: none;
-        order: 1;
-        flex-grow: 0;
-
+    &:hover {
+        text-decoration: underline;
     }
-
 `;
 
-
+const InfoText = styled.span`
+    font-family: 'AppleSDGothicNeoL00', sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 140%;
+    letter-spacing: -0.005em;
+    color: #292A2C;
+`;
 const Myunder = styled.div`
-    /* Frame 10267 */
 
-    // position: absolute;
-    position: relative;
-    // width: 1068px;
+    position: absolute;
     width: 100%;
     height: 41px;
-    left: -53px;
-    top: 601px;
+    left: 0;
     bottom: 0;
 
 `;
@@ -599,32 +372,26 @@ const UnderTxt = styled.img`
     width: 696px;
     height: 27px;
     left: 68px;
-    top: 6px;
+    bottom: 7px;
     z-index: 20;
 
 `;
 
 const BlueBar = styled.div`
-    /* Rectangle 300 */
-
     box-sizing: border-box;
-    position: relative;
-    // position: absolute;
-    width: 1000px;
-    // width: 100%;
+    position: absolute;
+    width: 100%;
     height: 41px;
-    left: 33px;
-    top: 0px;
-    border-radius: 5px;
+    left: 0;
+    bottom: 0;
+    border-radius: 0 0 14px 14px;
 
-    /* MAIN */
     background: #005CF9;
     border-top: 1px solid #000000;
 
 `;
 
 const LogoSection = styled.img`
-    /* 로고이미지 1 */
 
     position: absolute;
     width: 538.86px;
@@ -632,7 +399,6 @@ const LogoSection = styled.img`
     left: -19.91px;
     top: -10.96px;
 
-    // background: url(로고이미지2.png);
     transform: rotate(-0.02deg);
 
 `;

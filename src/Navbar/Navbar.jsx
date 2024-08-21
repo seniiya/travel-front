@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import search from '../components/pic/search.png';
 import logo1 from '../components/pic/logo1.png';
@@ -79,6 +79,7 @@ const NavbarLinks = styled.div`
 const NavbarLogo = styled.div`
   display: flex;
   align-items: center;
+  margin-right: 50px;
 
   .mainHome {
     width: 132px;
@@ -149,6 +150,7 @@ const MusicButton = styled(Link)`
   text-decoration: none;
   color: #333;
   margin-right: 10px;
+  background-color: #eeeeee;
 
   &:hover {
     background-color: #e0e0e0;
@@ -194,9 +196,17 @@ function Navbar() {
   const [clickCount, setClickCount] = useState(0);
   const [travelBagClickCount, setTravelBagClickCount] = useState(0);
   const navigate = useNavigate();
+  const location = useLocation(); 
   const currentSong = "노래 제목 예시 노래 제...";
   const [showSearchSection, setShowSearchSection] = useState(false);
   const [showMusicPlayer, setShowMusicPlayer] = useState(false);
+
+  useEffect( () => {
+    setShowDropdown(false);
+    setShowTravelBagDropdown(false);
+    setShowSearchSection(false);
+    setShowMusicPlayer(false);
+  }, [location]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -229,7 +239,7 @@ function Navbar() {
 
   useEffect(() => {
     if (travelBagClickCount === 2) {
-      navigate('/travel-destinations-bag');
+      navigate('/travel-bag');
       setTravelBagClickCount(0);
     }
 
@@ -251,6 +261,8 @@ function Navbar() {
               setClickCount(prevCount => prevCount + 1);
               setShowDropdown(!showDropdown);
               setShowTravelBagDropdown(false);
+              setShowSearchSection(false);
+              setShowMusicPlayer(false);
             }} style={{ cursor: 'pointer' }}>
               여행지
               <DropdownIcon src={dropdownIcon} alt="dropdown" className={showDropdown ? 'open' : ''} />
@@ -259,6 +271,8 @@ function Navbar() {
               setTravelBagClickCount(prevCount => prevCount + 1);
               setShowTravelBagDropdown(!showTravelBagDropdown);
               setShowDropdown(false);
+              setShowMusicPlayer(false);
+              setShowSearchSection(false);
             }} style={{ cursor: 'pointer' }}>
               여행 가방
               <DropdownIcon src={dropdownIcon} alt="dropdown" className={showTravelBagDropdown ? 'open' : ''} />
@@ -270,12 +284,27 @@ function Navbar() {
             <Link to="/" className="mainHome" />
           </NavbarLogo>
           <NavbarIcons>
-            <SearchIcon onClick={() => setShowSearchSection(!showSearchSection)} />
+            <div onClick={() => {
+              setShowSearchSection(!showSearchSection);
+              setShowDropdown(false);
+              setShowTravelBagDropdown(false);
+              setShowMusicPlayer(false);
+            }} style={{ cursor: 'pointer' }}>
+              <SearchIcon />
+            </div>
             <LoginButton to="/login">로그인</LoginButton>
-            <MusicButton onClick={() => setShowMusicPlayer(!showMusicPlayer)}>
-              <MusicIcon />
-              <MusicText>{currentSong}</MusicText>
-            </MusicButton>
+            <div onClick={() => {
+              setShowMusicPlayer(!showMusicPlayer);
+              setShowDropdown(false);
+              setShowTravelBagDropdown(false);
+              setShowSearchSection(false);
+            }} style={{ cursor: 'pointer' }}>
+              <MusicButton>
+                <MusicIcon />
+                <MusicText>{currentSong}</MusicText>
+              </MusicButton>
+            </div>
+
           </NavbarIcons>
         </div>
       </NavbarContainer>

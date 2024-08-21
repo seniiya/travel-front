@@ -3,18 +3,15 @@ import { Link } from 'react-router-dom';
 import check from '../components/pic/check.svg';
 
 export const loginpage = styled.div`
-    display; flex;
+    display: flex;
     position: absolute;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     width: 584px;
-    height: 532px;
     left: calc(50% - 584px/2);
-    top: calc(50% - 532px/2 + 1.5px);
-    flex-direction: column;
     min-height: 100vh;
     padding: 20px;
-    // justify-content: space-between;
 
 `;
 
@@ -23,6 +20,8 @@ export const InputContainer = styled.div`
     width: 100%;
     display: flex;
     align-items: center;
+    text-align: center;
+    justify-content: center;
 `;
 
 
@@ -31,53 +30,52 @@ export const Icon = styled.img`
     right: 0;
     top: 50%;
     transform: translateY(-50%);
-    width: 20px; /* Adjust size as needed */
+    width: 20px; 
     height: 20px;
-    // margin-left: 10px;
     cursor: pointer;
 `;
 
-export const IconClear = styled.img`
-
-    position: absolute;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 20px; /* Adjust size as needed */
-    height: 20px;
-    cursor: pointer;
+export const IconClear = styled(Icon)`
+    // position: absolute;
+    // right: 0;
+    // top: 50%;
+    // transform: translateY(-50%);
+    // width: 20px; /* Adjust size as needed */
+    // height: 20px;
+    // cursor: pointer;
 `;
 
 export const ErrorMessage = styled.div`
-    color: red;
+    color: #E65F3E;
     font-size: 13px;
     bottom: 0;
-    left: 0;
+    // left: 0;
     // margin-top: 0px;
     // margin-bottom: 0px;
+    text-align: left;
+    width: 100%;
 `;
 
 
 export const LoginPageContainer = styled.div`
     display: flex;
     flex-direction: column;
-    // align-items: flex-start;
     align-items: center;
     padding: 50px 70px;
     width: 400px;
+    min-height: 400px;
     // gap: 10px;
 
     // position: absolute;
     // width: 584px;
-    height: 457.55px;
-    left: 0px;
-    top: 0px;
+    // height: 457.55px;
+    // left: 0px;
+    // top: 0px;
 
     margin: 0 auto;
     margin-bottom: 20px;
 
     background: #FFFFFF;
-    /* 그림자 */
     box-shadow: 0px 2px 14px rgba(0, 0, 0, 0.08);
     border-radius: 12px;
 
@@ -90,11 +88,12 @@ export const LoginMain = styled.div`
     flex-direction: column;
     // align-items: flex-start;
     align-items: center;
-    padding: 50px 70px;
-    gap: 10px;
-    // width: 100%;
+    // padding: 50px 70px;
+    // gap: 10px;
+    width: 100%;
+    height: 100%;
 
-    position: absolute;
+    // position: absolute;
 
 `;
 
@@ -105,8 +104,8 @@ export const RePWMain = styled.div`
     // align-items: flex-start;
     align-items: center;
     // padding: 50px 70px;
-    gap: 10px;
-    // width: 100%;
+    // gap: 10px;
+    width: 100%;
 
     // /* Frame 10018 */
 
@@ -115,68 +114,56 @@ export const RePWMain = styled.div`
 `;
 
 export const Logo = styled.img`
-  align-items: center;
   width: 150px;
   height: auto;
-  margin-bottom: 8px;
+  margin-bottom: 20px;
   marign-top: 20px;
 `;
 
 export const Description = styled.p`
-  margin-bottom: 30px; /* Increased margin for better spacing */
-  color: #333; /* Adjust text color */
-  font-size: 1.1em; /* Slightly larger text for readability */
+  margin-bottom: 30px; 
+  color: #333; 
+  font-size: 18px; 
   margin-top: 8px;
 `;
 
 export const InputForm = styled.div`
-    /* Auto layout */
+
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     // padding-bottom: 40px;
-    padding: 10px;
+    // padding: 10px;
     gap: 20px;
-
-    // width: 444px;
-    // height: 90px;
-    // hegith: auto;
     width: 100%;
-
-
-    /* Inside auto layout */
-    // flex: none;
-    // order: 0;
-    // align-self: stretch;
-    // flex-grow: 0;
-
+    margin-bottom: 20px;
  
 `;
 
 export const InputWrapper = styled.div`
     display: flex;
     align-items: center;
-    // border-bottom: 1px solid #ddd;
     width: 100%;
 `;
 
 export const Input = styled.input`
     flex: 1;
     // width: calc(100% - 30px); /* Adjust width to leave space for icon */
-    width: calc(100% - 150px);
-    padding: 10px 0;
+    // width: calc(100% - 150px);
+    width: 100%;
+    padding: 10px 40px 10px 10px;
+    // padding: 10px 0;
     // padding-right: 30px; /* Adjust padding for icon space */
     border: none;
     border-bottom: 1px solid #ddd;
     outline: none;
-    background-color: transparent; /* Match background color */
+    background-color: transparent; 
     &:focus {
         border-bottom: 2px solid #007bff;
     }
       
 
 `;
-
 
 
 export const HolderTxt = styled.div`
@@ -227,10 +214,10 @@ export const Checkbox = styled.input.attrs({type:'checkbox'})`
   border-radius: 100%;
   border: 1px solid #ccc;
   appearance: none;
-  -webkit-appearance: none;
-  outline: none;
+//   -webkit-appearance: none;
+//   outline: none;
   cursor: pointer;
-  background: ${(props) => (props.checked ? `url(${check}) no-repeat center/contain` : 'none')};
+//   background: ${(props) => (props.checked ? `url(${check}) no-repeat center/contain` : 'none')};
 
   &:checked {
     background: url(${check}) no-repeat center/contain;
@@ -241,29 +228,22 @@ export const Checkbox = styled.input.attrs({type:'checkbox'})`
 export const Label = styled.label`
   font-size: 0.875rem;
   color: #666;
-  flex: none;
-  order: 0;
-  flex-grow: 0;
+//   flex: none;
+//   order: 0;
+//   flex-grow: 0;
 `;
 
 export const Button = styled.button`
-    /* Frame 10010 */
-
-    /* Auto layout */
-    // display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    padding: 0px;
-    gap: 10px;
+    padding: 15px;
 
-    width: 444px;
+    width: 100%;
     height: 50px;
     margin-top: 40px;
     margin-bottom: 20px;
 
-
-    // width: 100%;
     padding: 10px;
     background-color: #005CF9;
     border: none;
@@ -278,175 +258,99 @@ export const Button = styled.button`
 `;
 
 export const UnderText = styled.div`
-/* Frame 10013 */
 
-    /* Auto layout */
     display: flex;
-    flex-direction: row;
     justify-content: space-between;
-    align-items: center;
-    padding: 0px;
-    gap: 226px;
-
-    width: 444px;
-    height: 20px;
-
-
-    /* Inside auto layout */
-    flex: none;
-    order: 1;
-    align-self: stretch;
-    flex-grow: 0;
-
-    display: flex;
-    justify-content: center;
     align-items: center;
     width: 100%;
     margin-top: 1rem;
     font-size: 0.875rem;
+
 `;
 
 export const SignText = styled(Link)`
-    margin: 0 auto;
-    // width: 52px;
-    // height: 20px;
+    // margin: 0 auto;
 
-    font-family: 'AppleSDGothicNeoR00';
-    font-style: normal;
-    font-weight: 400;
-    font-size: 14px;
-    // line-height: 20px;
+    // font-family: 'AppleSDGothicNeoR00';
+    // font-style: normal;
+    // font-weight: 400;
+    // font-size: 14px;
 
-    /* identical to box height */
-    display: flex;
-    align-items: center;
-    letter-spacing: -0.005em;
-
-    /* Foundation /Blue/Normal :active */
+    // display: flex;
+    // align-items: center;
+    // letter-spacing: -0.005em;
     color: #55585B;
-
-
-    /* Inside auto layout */
-    flex: none;
-    order: 0;
-    flex-grow: 0;
     text-decoration: none;
 `;
 
 export const LookText = styled.div`
 
-    /* Auto layout */
     display: flex;
-    // flex-direction: row;
-    // align-items: center;
-    // padding: 0px;
     gap: 7px;
-
-    // margin: 0 auto;
-    // width: 171px;
-    // height: 20px;
-
-
-    /* Inside auto layout */
-    // flex: none;
-    // order: 1;
-    // flex-grow: 0;
 
 `;
 
 export const LoglookLink = styled(Link)`
-    /* 아이디 찾기 */
+    // font-family: 'AppleSDGothicNeoR00';
+    // font-style: normal;
+    // font-weight: 400;
+    // font-size: 14px;
+    // // line-height: 20px;
+    // /* identical to box height */
+    // display: flex;
+    // align-items: center;
+    // letter-spacing: -0.005em;
 
-    // width: 69px;
-    // height: 20px;
-
-    font-family: 'AppleSDGothicNeoR00';
-    font-style: normal;
-    font-weight: 400;
-    font-size: 14px;
-    // line-height: 20px;
-    /* identical to box height */
-    display: flex;
-    align-items: center;
-    letter-spacing: -0.005em;
-
-    /* Foundation /Blue/Normal :active */
     color: #55585B;
-
-
-    /* Inside auto layout */
-    flex: none;
-    order: 0;
-    flex-grow: 0;
     text-decoration: none;
 
 `;
 
 
-
-export const PwlookLink = styled(Link)`
-/* 비밀번호 찾기 */
-
-    // width: 82px;
-    // height: 20px;
-
-    font-family: 'AppleSDGothicNeoR00';
-    font-style: normal;
-    font-weight: 400;
-    font-size: 14px;
-    // line-height: 20px;
-
-    /* identical to box height */
-    display: flex;
-    align-items: center;
-    letter-spacing: -0.005em;
-
-    /* Foundation /Blue/Normal :active */
-    color: #55585B;
-
-
-    /* Inside auto layout */
-    flex: none;
-    order: 2;/
-    flex-grow: 0;
-    text-decoration: none;
-
-`;
+export const PwlookLink = styled(LoglookLink)``;
 
 export const UnderContainer = styled.footer`
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    // align-items: center;
-    padding: 0px;
-    gap: 25px;
-    margin-top: 50px;
-
-    position: absolute;
-    // width: 497px;
+    align-items: center;
+    margin-top: 30px;
     width: 100%;
-    height: 21px;
     max-width: 497px;
-    left: calc(50% - 497px/2 + 0.5px);
-    // transform: translateX(-50%);
-    // top: 507.55px;
+
+    img {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 10px;
+        text-align: center;
+    }
     
 `;
 
-export const UnderLinks = styled(Link)`
+export const UnderLinks = styled.div`
     display: flex;
     gap: 10px;
     margin-bottom: 10px;
     text-align: center;
-    text-decoration: none;
 `;
 
-export const Underlink = styled.div`
+export const Underlink = styled(Link)`
     font-family: 'AppleSDGothicNeoR00';
     font-style: normal;
     font-weight: 400;
     font-size: 14px;
     line-height: 20px;
-    color: #55585B;
+    // color: #A5A8AB;
+    text-decoration: none;
     cursor: pointer;
+    color: ${props => props.color || '#A5A8AB'};
+`;
+
+export const SectionBar = styled.div`
+    margin: auto;
+    align-items: center;
+    justify-content: center;
+    width: 0px;
+    height: 9.5px;
+    border: 1px solid #A5A8AB;
 `;

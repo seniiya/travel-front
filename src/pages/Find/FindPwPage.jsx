@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import logo from '../../components/pic/logo.svg';
+import copyright from '../../components/pic/copyright.svg';
+import * as A from "../Login.style.jsx";
 
 const PageContainer = styled.div`
   display: flex;
@@ -175,7 +177,7 @@ const FindPwPage = () => {
   };
 
   return (
-    <PageContainer>
+    <A.loginpage>
       <FormContainer>
         <Logo src={logo} alt="Memoir Logo" onClick={handleLogoClick} />
         <Description>계정에 등록된 이메일로 인증을 해주세요.</Description>
@@ -211,13 +213,29 @@ const FindPwPage = () => {
           <Button onClick={handlePwReset}>비밀번호 찾기</Button>
           {/* handlePwReset 으로 변경 */}
         </RegisterForm>
-        <Footer>
-          <p>
-            계정을 찾으셨나요? <FooterLink href="/login">로그인</FooterLink> | <FooterLink href="/findid">아이디 찾기</FooterLink>
-          </p>
-        </Footer>
+        <A.UnderText>
+          <A.SignText >계정을 찾으셨나요?</A.SignText>
+              <A.LookText>
+                <A.LoglookLink to="/login">로그인</A.LoglookLink> 
+                <A.SectionBar/> {' '}
+                <A.PwlookLink to="/findid">아이디 찾기</A.PwlookLink>
+              </A.LookText>
+        </A.UnderText>
       </FormContainer>
-    </PageContainer>
+      <A.UnderContainer>
+          <A.UnderLinks>
+              <A.Underlink to='/terms' color='#A5A8AB'>이용약관</A.Underlink> 
+              <A.SectionBar/> {' '}
+              <A.Underlink to='privacy' color='#63676A'>개인정보 처리방침</A.Underlink> 
+              <A.SectionBar/>  {' '}
+              <A.Underlink to='/support' color='#A5A8AB'>고객센터</A.Underlink>  
+              <A.SectionBar/> {' '}
+              <A.Underlink to='/contact' color='#A5A8AB'>Contact Us</A.Underlink>
+          </A.UnderLinks>
+              <img src={copyright} alt='Memoir copyright'/>
+      </A.UnderContainer>
+     
+    </A.loginpage>
   );
 };
 

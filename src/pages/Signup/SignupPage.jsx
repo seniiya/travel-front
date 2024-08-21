@@ -173,7 +173,7 @@ const SignupPage = () => {
   const handleDuplicateCheck = () => {
     // Simulate duplicate check
     let newErrors = { ...errors };
-    if (username === 'duplicate') {
+    if (userId === 'duplicate') {
       newErrors.username = '중복된 아이디 입니다.';
     } else {
       delete newErrors.username;
@@ -213,7 +213,7 @@ const SignupPage = () => {
 
     if (Object.keys(newErrors).length === 0) {
       try {
-        const response = await axios.post('http://localhost:8080/api/v1/auth/signup', {
+        const response = await axios.post('https://81bc-203-255-3-239.ngrok-free.app/api/v1/auth/signup', {
           userid: userId,
           nickname,
           email,

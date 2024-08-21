@@ -118,7 +118,7 @@ const MainPage = () => {
   useEffect(() => {
     const fetchServerLogs = async () => {
       try {
-        const response = await axios.get('http://localhost:8080/api/v1/main/serverLogs');
+        const response = await axios.get('https://81bc-203-255-3-239.ngrok-free.app/api/v1/main/serverLogs');
         if (response.data.isSuccess) {
           setServerLogs(response.data.result);
         } else {

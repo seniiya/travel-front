@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import logo from '../../components/pic/logo.svg';
+import copyright from '../../components/pic/copyright.svg';
+import * as A from "../Login.style.jsx";
 
 const PageContainer = styled.div`
   display: flex;
@@ -133,7 +135,7 @@ const EmailSignupPage = () => {
   
   const handleEmailVerification = async () => {
     try {
-      const response = await axios.post('http://localhost:8080/api/v1/auth/mailSend', { email });
+      const response = await axios.post('https://81bc-203-255-3-239.ngrok-free.app/api/v1/auth/mailSend', { email });
       if (response.data.isSuccess) {
         setIsEmailSent(true);
         setError('');
@@ -165,7 +167,7 @@ const EmailSignupPage = () => {
       return;
     }
     try {
-      const response = await axios.post('http://localhost:8080/api/v1/auth/mailCheck', { 
+      const response = await axios.post('https://81bc-203-255-3-239.ngrok-free.app/api/v1/auth/mailCheck', { 
         email: email, //email, 만 해줘도 되나?? 
         authNum: verificationCode 
       });
@@ -216,21 +218,27 @@ const EmailSignupPage = () => {
           {error && <ErrorMessage>{error}</ErrorMessage>}
           <Button type="submit">이메일 인증</Button>
         </RegisterForm>
-        <Footer>
-          <p>계정이 있으신가요? <FooterLink href="/login">로그인</FooterLink> | <FooterLink href="/findid">아이디 찾기</FooterLink></p>
-        </Footer>
+        <A.UnderText>
+          <A.SignText >계정이 있으신가요?</A.SignText>
+              <A.LookText>
+                <A.LoglookLink to="/login">로그인</A.LoglookLink>
+                <A.SectionBar/> {' '}
+                <A.PwlookLink to="/findid">아이디 찾기</A.PwlookLink>
+              </A.LookText>
+        </A.UnderText>
       </FormContainer>
-      <Footer>
-        <FooterLink href="/terms">이용약관</FooterLink>
-        <span>|</span>
-        <FooterLink href="/privacy">개인정보 처리방침</FooterLink>
-        <span>|</span>
-        <FooterLink href="/support">고객센터</FooterLink>
-        <span>|</span>
-        <FooterLink href="/contact">Contact Us</FooterLink>
-        <span>|</span>
-        <span>&copy; Memoir 2024</span>
-      </Footer>
+      <A.UnderContainer>
+        <A.UnderLinks>
+          <A.Underlink to='/terms' color='#A5A8AB'>이용약관</A.Underlink> 
+          <A.SectionBar/> {' '}
+          <A.Underlink to='privacy' color='#63676A'>개인정보 처리방침</A.Underlink> 
+          <A.SectionBar/>  {' '}
+          <A.Underlink to='/support' color='#A5A8AB'>고객센터</A.Underlink>  
+          <A.SectionBar/> {' '}
+          <A.Underlink to='/contact' color='#A5A8AB'>Contact Us</A.Underlink>
+        </A.UnderLinks>
+          <img src={copyright} alt='Memoir copyright'/>
+      </A.UnderContainer>
     </PageContainer>
   );
 };

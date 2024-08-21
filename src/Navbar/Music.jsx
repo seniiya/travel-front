@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
-import musicPlayerImage from '../components/pic/music.svg'; // 이미지 경로를 적절히 수정하세요
-import sampleAudio from '../assets/10. Music Player - HTML5 Audio API.mov';
+import musicPlayerImage from '../components/pic/music.svg';
+import audioFile from '../assets/beethoven-moonlight-sonata-op-27-nr-2-concert-grand-version-227468.mp3';
 
 const MusicContainer = styled.div`
   position: absolute;
@@ -43,7 +43,6 @@ const Controls = styled.div`
   gap: 15px;
 `;
 
-
 const ControlButton = styled.button`
   background-color: white;
   color: ${props => props.isPlaying && !props.main ? '#888' : 'black'};
@@ -81,23 +80,31 @@ const CloseButton = styled.button`
 const TimeDisplay = styled.div`
   font-size: 14px;
   margin-bottom: 10px;
-`;  
+`;
 
 function Music({ onClose }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
-  const audioRef = useRef(new Audio(sampleAudio));
+  const audioRef = useRef(null);
 
   useEffect(() => {
+    audioRef.current = new Audio(audioFile);
     const audio = audioRef.current;
+
     audio.addEventListener('timeupdate', updateTime);
     audio.addEventListener('loadedmetadata', () => {
       setDuration(audio.duration);
     });
+    audio.addEventListener('error', (e) => {
+      console.error("Audio error:", e);
+    });
 
     return () => {
       audio.removeEventListener('timeupdate', updateTime);
+      audio.removeEventListener('error', (e) => {
+        console.error("Audio error:", e);
+      });
       audio.pause();
     };
   }, []);
@@ -110,7 +117,9 @@ function Music({ onClose }) {
     if (isPlaying) {
       audioRef.current.pause();
     } else {
-      audioRef.current.play();
+      audioRef.current.play().catch(error => {
+        console.error("Audio playback failed:", error);
+      });
     }
     setIsPlaying(!isPlaying);
   };
@@ -125,7 +134,7 @@ function Music({ onClose }) {
     <MusicContainer>
       <MusicPlayer>
         <MusicImage />
-        <SongTitle isPlaying={isPlaying}>샘플 오디오 재생 중</SongTitle>
+        <SongTitle isPlaying={isPlaying}>Beethoven - Moonlight Sonata</SongTitle>
         <TimeDisplay>{formatTime(currentTime)} / {formatTime(duration)}</TimeDisplay>
         <Controls>
           <ControlButton isPlaying={isPlaying} onClick={() => audioRef.current.currentTime -= 10}>&#9668;&#9668;</ControlButton>
@@ -139,7 +148,5 @@ function Music({ onClose }) {
     </MusicContainer>
   );
 }
-
-
 
 export default Music;

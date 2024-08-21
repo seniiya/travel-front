@@ -358,7 +358,7 @@ const WriteHeader = ({ profileImage, writerName, tempSaveCount = 0, onDestinatio
 
   const handleBagSelect = (item) => {
     setSelectedBags(prev => {
-      if (prev.includes(item)) {
+      if (prev.includes(item)) {  
         return prev.filter(bag => bag !== item);
       } else {
         return [...prev, item];

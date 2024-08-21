@@ -142,11 +142,13 @@ export default function RePW() {
             </A.LoginPageContainer>
             <A.UnderContainer>
                 <A.UnderLinks>
-                    {/* to='' 링크 넣어주기 */}
-                    <A.Underlink to="/terms">이용약관</A.Underlink> | {' '}
-                    <A.Underlink to="/privacy">개인정보 처리방침</A.Underlink> |  {' '}
-                    <A.Underlink to="/support">고객센터</A.Underlink>  |  {' '}
-                    <A.Underlink to="/contact">Contact Us</A.Underlink>
+                    <A.Underlink to='/terms' color='#A5A8AB'>이용약관</A.Underlink> 
+                    <A.SectionBar/> {' '}
+                    <A.Underlink to='privacy' color='#63676A'>개인정보 처리방침</A.Underlink> 
+                    <A.SectionBar/>  {' '}
+                    <A.Underlink to='/support' color='#A5A8AB'>고객센터</A.Underlink>  
+                    <A.SectionBar/> {' '}
+                    <A.Underlink to='/contact' color='#A5A8AB'>Contact Us</A.Underlink>
                 </A.UnderLinks>
                     <img src={copyright} alt='Memoir copyright'/>
             </A.UnderContainer>
