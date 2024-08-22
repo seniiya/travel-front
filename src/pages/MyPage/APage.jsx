@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
+import EditProfile from './EditProfile';
 
 import caption from '../../components/pic/caption.svg';
 import bluedrag from '../../components/pic/bluedrag.svg';
-// import hearticon from '../../components/pic/';
-// import scrap from '../../components/pic/';
-// import recordicon from '../../components/pic/';
+import hearticon from '../../components/pic/blackheart.svg';
+import scrapicon from '../../components/pic/blackscrap.svg';
+import recordicon from '../../components/pic/blackrecord.svg';
+import righticon from '../../components/pic/blackright.svg';
+import recordbtn from '../../components/pic/recordicon.svg';
 
 import myback from '../../components/pic/MyImg.svg';
 import idcard from '../../components/pic/idcard.svg';
@@ -24,7 +27,8 @@ import dateissue from '../../components/pic/dateofissue.svg';
 import favcountry from '../../components/pic/FavoriteCountry.svg';
 
 const APage = () => {
-    const traveler = {
+    const [isEditing, setIsEditing] = useState(false);
+    const [traveler, setTraveler] = useState({
         id: 1,
         name: '김태엽',
         imgSrc: sampleDefault,
@@ -36,6 +40,15 @@ const APage = () => {
         likes: '3.2만',
         scraps: '1,312',
         records: '12'
+    });
+
+    const handleEditClick = () => {
+        setIsEditing(true);
+    };
+
+    const handleSaveClick = (editedTraveler) => {
+        setTraveler(editedTraveler);
+        setIsEditing(false);
     };
 
     const simplifyUrl = (url) => {
@@ -50,76 +63,118 @@ const APage = () => {
 
     return (
         <PageContainer>
-            <Content>
-                <BackgroundImage src={myback} alt="Background" />
-                <BigGlass src={bigglasses} alt="BigGlasses"/>
-                <MyAll>
-                    <CaptionBackground />
-                    <Caption src={caption} alt="Caption"/>
-                    <Drag src={bluedrag} alt="Blue Drag"/>
-                </MyAll>
-                <ModalContent>
-                    <Profile>
-                        <ProfileImage src={traveler.imgSrc} alt='Profileimg'/>
-                        <img src={idcard} alt='Idcardtxt'/>
-                    </Profile>
-                    <LogoContainer>
-                        <LogoSection src={logo3} alt="Logo Section"/>
-                    </LogoContainer>
-                    <Twinkle src={twinkle} alt="Twinkle" />
-                    <Description>
-                        {traveler.description}
-                    </Description>
-                
-                    <Introduce>
-                        <Section>
-                            <SectionBar />
+            {isEditing ? (
+                <EditProfile traveler={traveler} onSave={handleSaveClick} />
+            ) : (
+                <Content>
+                    <BackgroundImage src={myback} alt="Background" />
+                    <BigGlass src={bigglasses} alt="BigGlasses"/>
 
-                            <InfoColumn>
-                                <InfoItem>
-                                    <SNSIcon src={snsicon} alt="Sns icon"/>
-                                    {traveler.sns.map((link, index) => (
-                                        <SnsLink key={index} href={link} target="_blank" rel="noopener noreferrer">
-                                            {simplifyUrl(link)}
-                                        </SnsLink>
-                                    ))}
-                                </InfoItem>
-                            </InfoColumn>
+                    <MyAll>
+                        <CaptionBackground />
+                        <Caption src={caption} alt="Caption"/>
+                        <Drag src={bluedrag} alt="Blue Drag"/>
+                        <StatsContainer>
+                            <StatItem>
+                                <StatIcon src={hearticon} alt="Likes" />
+                                <StatText>{traveler.likes}</StatText>
+                            </StatItem>
+                            <StatItem>
+                                <StatIcon src={scrapicon} alt="Scraps" />
+                                <StatText>{traveler.scraps}</StatText>
+                            </StatItem>
+                            <StatItem>
+                                <StatIcon src={recordicon} alt="Records" />
+                                <StatText>{traveler.records}</StatText>
+                            </StatItem>
+                        </StatsContainer>
+                    </MyAll>
 
-                            <SectionBar />
+                    <MagnetChangeButton>
+                        <ButtonContent>
+                            <MagnetChangeCircles>
+                                <Circle color="#FA6259" />
+                                <Circle color="#FAAD2D" />
+                                <Circle color="#A2BDDF" />
+                            </MagnetChangeCircles>
+                            <Set>
+                                <MagnetChangeText>마그넷 변경하기</MagnetChangeText>
+                                <RightIconButton>
+                                    <img src={righticon} alt="Change Magnet" />
+                                </RightIconButton>  
+                            </Set>
+                        </ButtonContent>  
+                    </MagnetChangeButton>
 
-                            <InfoColumn>
-                                <InfoItem>
-                                    <SectionTitle src={nickicon} alt="Nickname icon" />
-                                    <InfoText>{traveler.name}</InfoText>
-                                </InfoItem>
-                                <InfoItem>
-                                    <SectionTitle src={locationicon} alt="Location icon" />
-                                    <InfoText>{traveler.location}</InfoText>
-                                </InfoItem>
-                            </InfoColumn>
+                    <ModalContent>
+                        <Profile>
+                            <ProfileImage src={traveler.imgSrc} alt='Profileimg'/>
+                            <img src={idcard} alt='Idcardtxt'/>
+                        </Profile>
+                        <LogoContainer>
+                            <LogoSection src={logo3} alt="Logo Section"/>
+                        </LogoContainer>
+                        <Twinkle src={twinkle} alt="Twinkle" />
+                        <Description>
+                            {traveler.description}
+                        </Description>
+                    
+                        <Introduce>
+                            <Section>
+                                <SectionBar />
 
-                            <SectionBar />
+                                <InfoColumn>
+                                    <InfoItem>
+                                        <SNSIcon src={snsicon} alt="Sns icon"/>
+                                        {traveler.sns.map((link, index) => (
+                                            <SnsLink key={index} href={link} target="_blank" rel="noopener noreferrer">
+                                                {simplifyUrl(link)}
+                                            </SnsLink>
+                                        ))}
+                                    </InfoItem>
+                                </InfoColumn>
 
-                            <InfoColumn>
-                                <InfoItem>
-                                    <DateIcon src={dateissue} alt="Date of Issue" />
-                                    <InfoText>{traveler.dateofissue}</InfoText>
-                                </InfoItem>
-                                <InfoItem>
-                                    <CountryIcon src={favcountry} alt="Favorite Country" />
-                                    <InfoText>{traveler.favcountry}</InfoText>
-                                </InfoItem>
-                            </InfoColumn>
-                        </Section>
-                    </Introduce>
+                                <SectionBar />
 
-                    <Myunder>
-                        <UnderTxt src={undertxt} alt="Under Txt"/>
-                        <BlueBar src={bluebar} alt="Blue Bar"/>
-                    </Myunder>
-                </ModalContent>
-            </Content>
+                                <InfoColumn>
+                                    <InfoItem>
+                                        <SectionTitle src={nickicon} alt="Nickname icon" />
+                                        <InfoText>{traveler.name}</InfoText>
+                                    </InfoItem>
+                                    <InfoItem>
+                                        <SectionTitle src={locationicon} alt="Location icon" />
+                                        <InfoText>{traveler.location}</InfoText>
+                                    </InfoItem>
+                                </InfoColumn>
+
+                                <SectionBar />
+
+                                <InfoColumn>
+                                    <InfoItem>
+                                        <DateIcon src={dateissue} alt="Date of Issue" />
+                                        <InfoText>{traveler.dateofissue}</InfoText>
+                                    </InfoItem>
+                                    <InfoItem>
+                                        <CountryIcon src={favcountry} alt="Favorite Country" />
+                                        <InfoText>{traveler.favcountry}</InfoText>
+                                    </InfoItem>
+                                </InfoColumn>
+                            </Section>
+                        </Introduce>
+
+                        <Myunder>
+                            <UnderTxt src={undertxt} alt="Under Txt"/>
+                            <BlueBar src={bluebar} alt="Blue Bar"/>
+                        </Myunder>
+                    </ModalContent>
+
+                    <EditProfileButton onClick={handleEditClick}>
+                        <EditProfileText>내 정보 수정하기</EditProfileText>
+                        <EditProfileIcon src={recordbtn} alt="Edit Profile" />
+                    </EditProfileButton>
+
+                </Content>
+            )}
         </PageContainer>
     );
 };
@@ -173,7 +228,7 @@ const CaptionBackground = styled.div`
     width: 75%;
     height: 61px;
     left: 948px;
-    top: 185px;
+    top: 188px;
 
     background-color: #FFFFFF;
     z-index: 1;
@@ -182,20 +237,123 @@ const CaptionBackground = styled.div`
     
 `;
 
+const StatsContainer = styled.div`
+    position: absolute;
+    display: flex;
+    // justify-content: space-around;
+    justify-content: space-between;
+    align-items: center;
+    width: 150px;
+    height: 30px;
+    left: 965px;
+    top: 210px;
+    z-index: 1;
+`;
+
+const StatItem = styled.div`
+    display: flex;
+    align-items: center;
+    margin-right: 5px;
+`;
+
+const StatIcon = styled.img`
+    width: 16px;
+    height: 16px;
+    margin-right: 1px;
+`;
+
+const StatText = styled.span`
+    font-family: 'AppleSDGothicNeoL00', sans-serif;
+    font-size: 14px;
+    color: #292A2C;
+`;
+
 const Drag = styled.img`
-position: absolute;
-width: 70%;
-height: 61px;
-left: 958px;
-top: 195px;
+    position: absolute;
+    width: 63%;
+    height: 61px;
+    left: 960px;
+    top: 195px;
 
-
-// flex: none;
-// order: 3;
-// flex-grow: 0;
-z-index: 3;
+    z-index: 3;
 
 `;
+
+// 마그넷 변경
+const MagnetChangeButton = styled.div`
+    position: absolute;
+    display: flex;
+    align-items: center;
+    // justify-content: space-between;
+    width: 218px;
+    height: 62px;
+    right: 920px;
+    top: 365px;
+    background: #FFFFFF;
+    border-radius: 10px;
+    padding: 0 15px;
+    color: #000000;
+    z-index: 5;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+`;
+
+const ButtonContent = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+`;
+
+const MagnetChangeCircles = styled.div`
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+`;
+
+const Circle = styled.div`
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: ${props => props.color};
+    margin-right: 5px;
+`;
+
+const Set = styled.div`
+    display: flex;
+    // flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    // padding: 0px;
+    // gap: 30px;
+
+    width: 100%;
+    // height: 20px;
+
+`;
+
+const MagnetChangeText = styled.span`
+    font-family: 'AppleSDGothicNeoM00', sans-serif;
+    font-size: 14px;
+`;
+
+const RightIconButton = styled.button`
+    width: 28px;
+    height: 28px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    // padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    img {
+        width: 12px;
+        height: 14px;
+    }
+`;
+
+
 
 const BackgroundImage = styled.img`
     position: absolute;
@@ -402,6 +560,36 @@ const LogoSection = styled.img`
     left: -19.91px;
     top: -10.96px;
     transform: rotate(-0.02deg);
+`;
+
+const EditProfileButton = styled.button`
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 141px;
+    height: 25px;
+    left: 50%;
+    top: 640px;
+    transform: translateX(-60%);
+    bottom: 10px;  // 위치를 약간 더 조정
+    background: none;
+    border: none;
+    cursor: pointer;
+    z-index: 1001;  // 모달 위에 표시되도록 높은 z-index 유지
+`;
+
+const EditProfileText = styled.span`
+    font-family: 'AppleSDGothicNeoM00', sans-serif;
+    font-size: 16px;
+    color: #75797D;
+    margin-right: 10px;
+    white-space: nowrap;
+`;
+
+const EditProfileIcon = styled.img`
+    width: 20px;
+    height: 20px;
 `;
 
 export default APage;

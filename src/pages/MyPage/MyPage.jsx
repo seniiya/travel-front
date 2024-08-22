@@ -15,7 +15,7 @@ const MyPageContainer = styled.div`
   background-image: url(${backgroundImage});
   background-size: cover;
   background-position: center;
-  min-height: 2500px;
+  min-height: ${props => props.minHeight}px;
   display: flex;
   flex-direction: column;
   align-items: center;
