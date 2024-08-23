@@ -71,7 +71,7 @@ export default function PopularPage() {
     }
 
      // HTML 태그 제거 함수
-     const stripHtml = (html) => {
+    const stripHtml = (html) => {
       let tmp = document.createElement("DIV");
       tmp.innerHTML = html;
       return tmp.textContent || tmp.innerText || "";
@@ -93,41 +93,20 @@ export default function PopularPage() {
 
             <SectionWrapper>
               <A.Section>
-                <A.SectionTxt     
-                    $active={activeSection === 'latest'}
-                    onClick={() => handleClick('latest')}>
-                    최신순
-                </A.SectionTxt>
-                <A.SectionBar src={sectionbar} alt="section bar"/>
-                <A.SectionTxt 
-                    $active={activeSection === 'oldest'}
-                    onClick={() => handleClick('oldest')}>
-                    오래된순
-                </A.SectionTxt>
-                <A.SectionBar src={sectionbar} alt="section bar"/>
-                <A.SectionTxt 
-                    $active={activeSection === 'name'}
-                    onClick={() => handleClick('name')}>
-                    이름순
-                </A.SectionTxt>
-                <A.SectionBar src={sectionbar} alt="section bar"/>
-                <A.SectionTxt 
-                    $active={activeSection === 'likes'}
-                    onClick={() => handleClick('likes')}>
-                    좋아요순
-                </A.SectionTxt>
-                <A.SectionBar src={sectionbar} alt="section bar"/>
-                <A.SectionTxt 
-                    $active={activeSection === 'scrap'}
-                    onClick={() => handleClick('scrap')}>
-                    스크랩순
-                </A.SectionTxt>
-                <A.SectionBar src={sectionbar} alt="section bar"/>
-                <A.SectionTxt 
-                    $active={activeSection === 'views'}
-                    onClick={() => handleClick('views')}>
-                    조회순
-                </A.SectionTxt>
+                {['latest', 'oldest', 'name', 'likes', 'scrap', 'views'].map((section, index) => (
+                  <React.Fragment key={section}>
+                    <A.SectionTxt     
+                        $active={activeSection === section}
+                        onClick={() => handleClick(section)}>
+                        {section === 'latest' ? '최신순' :
+                         section === 'oldest' ? '오래된순' :
+                         section === 'name' ? '이름순' :
+                         section === 'likes' ? '좋아요순' :
+                         section === 'scrap' ? '스크랩순' : '조회순'}
+                    </A.SectionTxt>
+                    {index < 5 && <A.SectionBar src={sectionbar} alt="section bar"/>}
+                  </React.Fragment>
+                ))}
               </A.Section>
 
               <WriteSection>
@@ -151,7 +130,7 @@ export default function PopularPage() {
                   className={selectedCard === post.id ? 'active' : ''}
                 >
                  
-                    <CardImg src={ post.repImage ? `http://3.37.134.143:8080/${post.repImage}` : sampleDefault} alt={post.title}/>
+                    <CardImg src={post.repImage || sampleDefault} alt={post.title}/>
                     <Overlay>
                     <LikesScraps>
                       <span>

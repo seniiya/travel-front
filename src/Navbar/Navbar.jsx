@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../pages/Login/AuthContext'; 
 import styled from 'styled-components';
 import search from '../components/pic/search.png';
 import logo1 from '../components/pic/logo1.png';
@@ -192,6 +193,7 @@ const MusicText = styled.span`
 `;
 
 function Navbar() {
+  const { user, logout } = useAuth();
   const [isScrolled, setIsScrolled] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const [showTravelBagDropdown, setShowTravelBagDropdown] = useState(false);
@@ -305,22 +307,30 @@ function Navbar() {
             <Link to="/" className="mainHome" />
           </NavbarLogo>
           <NavbarIcons>
-            <div onClick={() => {
-              setShowSearchSection(!showSearchSection);
-              setShowDropdown(false);
-              setShowTravelBagDropdown(false);
-              setShowMusicPlayer(false);
-            }} style={{ cursor: 'pointer' }}>
-              <SearchIcon />
-            </div>
+          <div onClick={() => {
+            setShowSearchSection(!showSearchSection);
+            setShowDropdown(false);
+            setShowTravelBagDropdown(false);
+            setShowMusicPlayer(false);
+          }} style={{ cursor: 'pointer' }}>
+            <SearchIcon />
+          </div>
+          {user ? (
+            <>
+            {/* 로그인 시에 닉네임이 없고 회원가입할 때 닉네임 세션에 저장되도록 해야함 ㅜㅜ */}
+              <span>{user.nickname || user.userid}님</span>
+              <button onClick={logout}>로그아웃</button>
+            </>
+          ) : (
             <LoginButton to="/login">로그인</LoginButton>
-            <div onClick={() => setShowMusicPlayer(prev => !prev)} style={{ cursor: 'pointer' }}>
-              <MusicButton>
-                <MusicIcon />
-                <MusicText>{currentSongInfo.title}</MusicText>
-              </MusicButton>
-            </div>
-          </NavbarIcons>
+          )}
+          <div onClick={() => setShowMusicPlayer(prev => !prev)} style={{ cursor: 'pointer' }}>
+            <MusicButton>
+              <MusicIcon />
+              <MusicText>{currentSongInfo.title}</MusicText>
+            </MusicButton>
+          </div>
+        </NavbarIcons>
         </div>
       </NavbarContainer>
       {showDropdown && <Dropdown onClose={() => setShowDropdown(false)} />}

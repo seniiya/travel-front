@@ -45,29 +45,7 @@ export default function TravelerRank() {
       // sortTravelers(section);
     };
 
-    // const sortTravelers = (criteria) => {
-    //   let sortedTravelers = [...travelers];
-    //   switch(criteria) {
-    //       case 'rank':
-    //           // 기본 순위는 변경하지 않음
-    //           break;
-    //       case 'join':
-    //           sortedTravelers.sort((a, b) => new Date(b.joinDate) - new Date(a.joinDate));
-    //           break;
-    //       case 'likes':
-    //           sortedTravelers.sort((a, b) => b.totalLikes - a.totalLikes);
-    //           break;
-    //       case 'scrap':
-    //           sortedTravelers.sort((a, b) => b.totalScraps - a.totalScraps);
-    //           break;
-    //       case 'writes':
-    //           sortedTravelers.sort((a, b) => b.totalPosts - a.totalPosts);
-    //           break;
-    //       default:
-    //           break;
-    //   }
-    //   setTravelers(sortedTravelers);
-    // };
+
 
     // 좋아요 누르면 색상 바뀌는 건가? 
     const handleLikeClick = (travelerId) => {
@@ -82,16 +60,22 @@ export default function TravelerRank() {
 
     const fetchTravelers = async () => {
       try {
-        const response = await axios.post('http://3.37.134.143:8080/api/v1/user/allUsers');
+        const response = await axios.get('http://3.37.134.143:8080/api/v1/user/topUsers');
         if (response.data.isSuccess) {
           const enhancedUsers = response.data.result.users.map(user => ({
-            ...user,
-            description: user.description || '소개글이 없습니다.',
+            id: user.id,
+            userid: user.userid,
+            nickname: user.nickname,
+            title: user.title,
+            content: user.content,
+            intro: user.intro || '소개글이 없습니다.',
             totalLikes: user.totalLikes || 0,
             totalScraps: user.totalScraps || 0,
             imgSrc: user.imgSrc || sampleDefault,
+            // 제공 안함 => 모달 뜰 때 안 뜸 ? 
             joinDate: user.joinDate,
             favoriteCountry: user.favoriteCountry,
+            location: user.location,
             sns: user.sns
           }));
           setTravelers(enhancedUsers.slice(0, 30)); // 최대 30명만 
@@ -114,37 +98,21 @@ export default function TravelerRank() {
 
           <TravelerSection>
             <SectionWrapper>
-            <A.Section>
-                <A.SectionTxt     
-                    $active={activeSection === 'rank'}
-                    onClick={() => handleSectionClick('rank')}>
-                순위순
-                </A.SectionTxt>
-                <A.SectionBar src={sectionbar} alt="section bar"/>
-                <A.SectionTxt 
-                    $active={activeSection === 'join'}
-                    onClick={() => handleSectionClick('join')}>
-                가입순
-                </A.SectionTxt>
-                <A.SectionBar src={sectionbar} alt="section bar"/>
-                <A.SectionTxt 
-                    $active={activeSection === 'likes'}
-                    onClick={() => handleSectionClick('likes')}>
-                좋아요순
-                </A.SectionTxt>
-                <A.SectionBar src={sectionbar} alt="section bar"/>
-                <A.SectionTxt 
-                    $active={activeSection === 'scrap'}
-                    onClick={() => handleSectionClick('scrap')}>
-                스크랩순
-                </A.SectionTxt>
-                <A.SectionBar src={sectionbar} alt="section bar"/>
-                <A.SectionTxt 
-                    $active={activeSection === 'writes'}
-                    onClick={() => handleSectionClick('writes')}>
-                기록순
-                </A.SectionTxt>
-            </A.Section>
+              <A.Section>
+                {['rank', 'join', 'likes', 'scrap', 'writes'].map((section, index) => (
+                  <React.Fragment key={section}>
+                    <A.SectionTxt     
+                        $active={activeSection === section}
+                        onClick={() => handleSectionClick(section)}>
+                        {section === 'rank' ? '순위순' :
+                         section === 'join' ? '가입순' :
+                         section === 'likes' ? '좋아요순' :
+                         section === 'scrap' ? '스크랩순' : '기록순'}
+                    </A.SectionTxt>
+                    {index < 4 && <A.SectionBar src={sectionbar} alt="section bar"/>}
+                  </React.Fragment>
+                ))}
+              </A.Section>
             </SectionWrapper>
 
             <TravelersGrid>
@@ -155,24 +123,24 @@ export default function TravelerRank() {
                 >
                   <img src={traveler.imgSrc} alt={`${traveler.name}`} />
                   <div className="traveler-info">
-                    <h2>{index + 1}. {traveler.name}</h2>
+                    <h2>{index + 1}. {traveler.nickname}</h2>
                     {/* 소개글 최대 100자, 요소에는 80자 이상 시 ... 보이게 */}
-                    <Description noDescription={traveler.description === '소개글이 없습니다'}>
-                      {traveler.description.length > 80 ? `${traveler.description.slice(0, 80)}...` : traveler.description}
+                    <Description noDescription={traveler.into === '소개글이 없습니다'}>
+                      {traveler.intro.length > 80 ? `${traveler.intro.slice(0, 80)}...` : traveler.intro}
                     </Description>
                     <div className="traveler-stats">
                       <StatItem>
                         <img src={hearticon} alt="like"/>
-                        <span>{traveler.likes}</span>
+                        <span>{traveler.totalLikes}</span>
                       </StatItem>
                       <StatItem>
                         <img src={scrap } alt="scrap"/>
-                        <span>{traveler.comments}</span>
+                        <span>{traveler.totalScraps}</span>
                       </StatItem>
                       <StatItem>
                         {/* 사진이 동그랗게 잘려서 나옴 */}
                         <img src={recordicon} alt="record"/>
-                        <span>{traveler.shares}</span>
+                        <span>{traveler.totalPosts}</span>
                       </StatItem>
                     </div>
                   </div>

@@ -12,7 +12,6 @@ import plane2 from '../components/pic/plane2.png';
 import folder from '../components/pic/folder.png';
 import imageDefault from '../components/pic/default.png';
 
-
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -99,16 +98,34 @@ const SectionContent = styled.div`
   animation: ${(props) => scrollAnimation(props.duration)} ${(props) => props.duration}s linear infinite;
   animation-play-state: ${(props) => (props.isPaused ? 'paused' : 'running')};
 `;
+const CategoryOverlay = styled.div`
+  display: flex;
+  position: absolute;
+  top: 145px;
+  left: 10px;
+  width: 20px;
+  height: 15px;
+  background-color: #ffffff;
+  color: #005CF9;
+  padding: 4px 4px 2px 6px;
+  font-size: 11px;
+  height: 15px;
+  border: 1px solid #005CF9 ;
+  border-radius: 8px;
+  font-size: 12px;
+  z-index: 1;
+`;
 
 const ContentCard = styled.div`
   display: inline-block;
-  min-width: 280px;
+  width: 280px;
   border-radius: 10px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   background: white;
   transition: transform 0.3s;
   cursor: pointer;
+  position: relative; /* To position the category overlay */
 
   &.active {
     transform: translateY(-20px);
@@ -296,7 +313,7 @@ const Contents = () => {
   const [isPaused3, setIsPaused3] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [topTravelPosts, setTopTravelPosts] = useState([]);
-  const [folderImages, setFolderImages] = useState([]);
+  const [travelBagPosts, setTravelBagPosts] = useState([]);
   const [users, setUsers] = useState([]); 
   const navigate = useNavigate();
 
@@ -337,9 +354,9 @@ const Contents = () => {
             id: user.id,
             name: user.nickname,
             description: `안녕하세요! 저는 ${user.nickname}입니다. 다양한 문화를 경험하며, 전 세계 사람들과 소통하는 것을 즐깁니다...`,
-            likes: Math.floor(Math.random() * 1000), // 랜덤 좋아요 수
-            comments: Math.floor(Math.random() * 500), // 랜덤 댓글 수
-            shares: Math.floor(Math.random() * 100), // 랜덤 공유 수
+            likes: Math.floor(Math.random() * 1000),
+            comments: Math.floor(Math.random() * 500),
+            shares: Math.floor(Math.random() * 100), 
             imgSrc: imageDefault,
           }));
           setUsers(formattedUsers);
@@ -369,13 +386,9 @@ const Contents = () => {
             views: post.viewCount,
             date: post.createDate,
             author: post.user.nickname,
-            authorImage: "",
-            categories: post.categories || [],
             imageUrl: post.imageUrl || imageDefault,
           }));
           setTopTravelPosts(formattedPosts);
-
-          setFolderImages(getShuffledImages(formattedPosts.length));
         }
       } catch (error) {
         console.error('Error fetching top travel posts:', error.message || error);
@@ -383,27 +396,36 @@ const Contents = () => {
       }
     };
 
+    const fetchTravelBagPosts = async () => {
+      try {
+        const response = await axios.get('http://3.37.134.143:8080/api/v1/travelItemPost/allPosts');
+        console.log('Travel Bag API Response:', response);
+
+        if (response.data.isSuccess && response.data.result?.posts?.length > 0) {
+          const formattedPosts = response.data.result.posts.map(post => ({
+            id: post.id,
+            title: post.title,
+            content: post.content,
+            likes: post.likeCount,
+            downloads: post.scrapCount,
+            views: post.viewCount,
+            date: post.createDate,
+            author: post.user.nickname,
+            imageUrl: post.repImage || imageDefault,
+          }));
+          setTravelBagPosts(formattedPosts);
+        }
+      } catch (error) {
+        console.error('Error fetching travel bag posts:', error.message || error);
+        setTravelBagPosts([]);
+      }
+    };
+
     fetchTopTravelPosts();
+    fetchTravelBagPosts();
   }, []);
 
-  const contentCards = topTravelPosts.map((post, index) => (
-    <ContentCard
-      key={post.id}
-      onClick={() => setSelectedCard(index)}
-      className={selectedCard === index ? 'active' : ''}
-    >
-      <img src={post.imageUrl} alt={post.title} />
-      <div className="content">
-        <h3>{post.title}</h3>
-        <p>{post.content.replace(/<\/?[^>]+(>|$)/g, "").substring(0, 100)}...</p>
-        <div className="info">
-          <span>{post.author} | {new Date(post.date).toLocaleDateString()}</span>
-          <span>조회수 {post.views}</span>
-        </div>
-      </div>
-    </ContentCard>
-  ));
-
+  
   return (
     <Container>
       <SectionContainer>
@@ -426,7 +448,20 @@ const Contents = () => {
               onMouseLeave={() => setIsPaused1(false)}
               isPaused={isPaused1}
             >
-              {contentCards}
+              {topTravelPosts.map(post => (post && (
+                <ContentCard key={post.id} onClick={() => setSelectedCard(post.id)}>
+                  <img src={post.imageUrl} alt={post.title} />
+                  <div className="content">
+                    <h3>{post.title}</h3>
+                    <p>{post.content.length > 25 ? `${post.content.substring(0, 25)}...` : post.content}</p>
+                    <div className="info">
+                      <span>{post.author} | {new Date(post.date).toLocaleDateString()}</span>
+                      <span>조회수 {post.views}</span>
+                    </div>
+                  </div>
+                </ContentCard>
+              )
+            ))}
             </SectionContent>
           </div>
         </Draggable>
@@ -448,27 +483,16 @@ const Contents = () => {
           </div>
         </SectionHeader>
         <FolderContainer>
-          {folderImages.map((image, index) => (
-            <FolderCard key={index}>
+          {topTravelPosts.map(post => (
+            <FolderCard key={post.id}>
               <div className="image-wrapper">
                 <img
-                  src={image}
-                  alt={`Folder ${index + 1}`}
-                  onMouseEnter={() => {
-                    const newImages = [...folderImages];
-                    let randomImage = getRandomImage(newImages);
-
-                    while (randomImage === image) {
-                      randomImage = getRandomImage(newImages);
-                    }
-
-                    newImages[index] = randomImage;
-                    setFolderImages(newImages);
-                  }}
+                  src={post.imageUrl}
+                  alt={post.title}
                   className="current"
                 />
               </div>
-              <div>{`Folder ${index + 1}`}</div>
+              <div>{post.title}</div>
             </FolderCard>
           ))}
         </FolderContainer>
@@ -499,7 +523,7 @@ const Contents = () => {
               <img src={traveler.imgSrc} alt={`${traveler.name}`} />
               <div className="traveler-info">
                 <h2>{traveler.name}</h2>
-                <p>{traveler.description}</p>
+                <p>{traveler.description.length > 40 ? `${traveler.description.substring(0, 40)}...` : traveler.description}</p>
                 <div className="traveler-stats">
                   <span>좋아요 {traveler.likes}</span>
                   <span>댓글 {traveler.comments}</span>
@@ -521,7 +545,7 @@ const Contents = () => {
         세계 여행가 전체보기
         <img src={isHovered3 ? plane2 : plane1} alt="비행기" />
       </StyledButton>
-      
+
       <SectionContainer>
         <SectionHeader>
           <img src={mark4} alt="마크" />
@@ -542,7 +566,22 @@ const Contents = () => {
               onMouseLeave={() => setIsPaused3(false)}
               isPaused={isPaused3}
             >
-              {contentCards}
+              {travelBagPosts.map(post => (
+                <ContentCard key={post.id} onClick={() => setSelectedCard(post.id)}>
+                  <CategoryOverlay>
+                    # {post.categories}
+                  </CategoryOverlay>
+                  <img src={post.imageUrl} alt={post.title} />
+                  <div className="content">
+                    <h3>{post.title}</h3>
+                    <p>{post.content.substring(0, 100)}...</p>
+                    <div className="info">
+                      <span>{post.author} | {new Date(post.date).toLocaleDateString()}</span>
+                      <span>조회수 {post.views}</span>
+                    </div>
+                  </div>
+                </ContentCard>
+              ))}
             </SectionContent>
           </div>
         </Draggable>

@@ -157,7 +157,7 @@ const MainPage = () => {
         </FolderCard>
         <FolderCard>
           <div>• 쌓인 기록</div>
-          <span>{serverLogs.allPosts}명</span>
+          <span>{serverLogs.allPosts}개</span>
         </FolderCard>
         <FolderCard>
           <div>• 총 기록일</div>

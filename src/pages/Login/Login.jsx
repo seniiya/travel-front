@@ -8,19 +8,20 @@ import cancel from '../../components/pic/cancel.svg';
 import * as A from "../Login.style.jsx";
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
+import { useAuth } from "./AuthContext.jsx";
 import axios from 'axios';
 
 
 
 export default function Login() {
-
+    const { login } = useAuth();
     const { register, handleSubmit, formState: { errors }} = useForm();
     const [ loginError, setLoginError ] = useState("");
     const navigate = useNavigate();
     const [ showPw, setShowPw ] = useState(false);
     const [ idValue, setIdValue ] = useState("");
     const [ pwValue, setPwValue ] = useState("");
-
+    
     const handleLogoClick = () => {
         navigate('/');
       };
@@ -66,12 +67,20 @@ export default function Login() {
                     // 로그인 성공 시 토큰 저장 
                     localStorage.setItem('token', result.result.token);
                     localStorage.setItem('userid', result.result.userid);
+                    localStorage.setItem('usernickame', result.result.nickname);
 
                     // 성공 시 메인 페이지로 이동 (오른쪽 상단에 +)
                     navigate('/');
+
+                    // AuthContext의 login 함수 호출
+                    login(result.result.token, {
+                        userid: result.result.userid,
+                        nickname: result.result.nickname
+                    });
+
+                    navigate('/');
                 } else {
                     console.log("login failed:", result.message);
-                    // 토큰이 빈 문자열일 경우에도 로그인 실패로 처리 
                     setLoginError("로그인에 실패했습니다. 다시 시도해주세요.");
                 }
             } catch (error) {
@@ -82,12 +91,10 @@ export default function Login() {
                     setLoginError("서버와 통신 중 오류가 발생했습니다. 나중에 다시 시도해주세요.");
                 }
             }
-               
         } else {
             setLoginError("아이디(로그인 전용 아이디) 또는 비밀번호가 잘못되었습니다. 아이디와 비밀번호를 정확히 입력해 주세요.")
         }
     };
-
     const handlePwVisible = () => {
         setShowPw(!showPw);
     };

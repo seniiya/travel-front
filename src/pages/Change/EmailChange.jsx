@@ -146,7 +146,7 @@ const EmailChange = () => {
 
   const fetchUserInfo = async (token) => {
     try {
-      const response = await axios.post('https://a162-203-255-3-239.ngrok-free.app/api/v1/user/userInfo', {
+      const response = await axios.post('http://3.37.134.143:8080/api/v1/user/userInfo', {
         headers: { Authorization: `Bearer ${token}` }
       });
       setUserInfo(response.data.result);
@@ -176,7 +176,7 @@ const EmailChange = () => {
     }
     setEmailError('');
     try {
-      const response = await axios.post('api/v1/auth/mailSend', { email });
+      const response = await axios.post('http://3.37.134.143:8080/api/v1/auth/mailSend', { email });
       if (response.data.isSuccess) {
         setIsEmailVerified(true);
         alert('인증번호를 발송했습니다. 인증번호가 오지 않으면 입력하신 정보를 다시 한번 확인해 주세요.');
@@ -205,9 +205,8 @@ const EmailChange = () => {
       setCodeError('인증번호는 숫자만 입력 가능합니다.');
       return;
     }
-    // Here you would typically verify the code with your backend
-    // For now, we'll just simulate a successful verification
-    if (verificationCode === '123456') { // Example verification code
+
+    if (verificationCode === '123456') { 
       alert('메일 변경이 완료되었습니다.');
       navigate('/');
     } else {
