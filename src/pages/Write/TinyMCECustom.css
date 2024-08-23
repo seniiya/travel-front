@@ -32,29 +32,58 @@
 .tox .tox-toolbar__primary {
   background: white !important;
   padding: 0 !important;
-  justify-content: center !important;
+  justify-content: center !important; /* 중앙 정렬 */
   height: 100%;
   display: flex;
   align-items: center;
+  width: 100%;
+  max-width: 1200px;
 }
 
 .tox .tox-toolbar__group {
   border: none !important;
-  padding: 0 !important;
+  padding: 0 10px !important;
   height: 100%;
   display: flex;
   align-items: center;
-  justify-content: center;
 }
 
 /* 버튼 스타일 */
 .tox .tox-tbtn {
-  color: #333 !important;
-  margin: 0 2px !important;
+  color: #75797d !important;
+  margin: 0 3px !important;
+  width: auto !important;
+  height: 40px !important; /* 버튼 높이 증가 */
+  padding: 0 8px !important; /* 패딩 추가 */
 }
 
 .tox .tox-tbtn:hover {
   background-color: #f0f0f0 !important;
+}
+
+/* 폰트 선택과 스타일 선택 버튼 스타일 */
+.tox .tox-tbtn--select {
+  width: auto !important;
+  padding: 0 12px !important; /* 패딩 증가 */
+  min-width: 130px !important; /* 최소 너비 증가 */
+}
+
+/* 아이콘 크기 조정 */
+.tox .tox-tbtn__icon-wrap {
+  width: 28px !important; /* 아이콘 컨테이너 크기 증가 */
+  height: 28px !important;
+}
+
+.tox .tox-tbtn__icon-wrap svg {
+  width: 22px !important; /* 아이콘 크기 증가 */
+  height: 22px !important;
+}
+
+/* 툴바 텍스트 스타일 */
+.tox .tox-tbtn__select-label {
+  overflow: visible !important;
+  white-space: nowrap !important;
+  font-size: 14px !important; /* 폰트 크기 증가 */
 }
 
 /* 편집 영역 스타일 */
@@ -70,4 +99,39 @@
 /* 에디터 내용 영역 패딩 제거 */
 .tox .tox-edit-area__iframe {
   padding-top: 0 !important;
+}
+
+/* 드롭다운 메뉴 스타일 */
+.tox .tox-collection__item {
+  padding: 8px 12px !important;
+}
+
+.tox .tox-collection__item-label {
+  font-size: 14px !important;
+}
+
+/* 드롭다운 메뉴 호버 효과 */
+.tox .tox-collection__item--active,
+.tox .tox-collection__item:hover {
+  background-color: #f0f0f0 !important;
+}
+
+/* 스플릿 버튼 스타일 */
+.tox .tox-split-button {
+  margin: 0 3px !important;
+}
+
+.tox .tox-split-button__chevron {
+  width: 16px !important;
+}
+
+/* 모바일 대응 */
+@media (max-width: 768px) {
+  .tox .tox-toolbar__primary {
+    flex-wrap: wrap !important;
+  }
+
+  .tox .tox-tbtn--select {
+    min-width: 100px !important;
+  }
 }

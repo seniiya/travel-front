@@ -117,20 +117,29 @@ const MainPage = () => {
 
   useEffect(() => {
     const fetchServerLogs = async () => {
-      try {
-        const response = await axios.get('http://localhost:8080/api/v1/main/serverLogs');
-        if (response.data.isSuccess) {
-          setServerLogs(response.data.result);
-        } else {
-          console.error('API 요청 실패:', response.data.message);
-        }
-      } catch (error) {
-        console.error('서버 로그를 가져오는 중 오류가 발생했습니다:', error);
+        try {
+            const response = await axios.get('https://a162-203-255-3-239.ngrok-free.app/api/v1/main/serverLogs');
+            
+            if (response.data) {
+                if (response.data.isSuccess) {
+                    setServerLogs(response.data.result);
+                } else {
+                    console.error('API 요청 실패:', response.data.message || '알 수 없는 오류가 발생했습니다.');
+                }
+            } else {
+                console.error('API 요청 실패: 응답 데이터가 비어 있습니다.');
+            }
+        } catch (error) {
+          if (error.code === 'ERR_NETWORK') {
+              alert('네트워크 오류. 인터넷 연결을 확인하세요.');
+          } else {
+              console.error('서버 로그를 가져오는 중 오류가 발생했습니다:', error);
+          }
       }
     };
-
     fetchServerLogs();
-  }, []);
+}, []);
+
 
   return (
     <MainContainer>

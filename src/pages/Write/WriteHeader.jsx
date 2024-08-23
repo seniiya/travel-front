@@ -139,14 +139,6 @@ const RightSection = styled.div`
 `;
 
 
-const Button = styled.button`
-  padding: 8px 16px;
-  margin-left: 10px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-`;
-
 const SaveButton = styled.button`
   padding: 6px 12px;
   border: none;
@@ -305,13 +297,12 @@ const Checkbox = ({ checked, onChange, label, isMainCategory = false }) => (
 const WriteHeader = ({ profileImage, writerName, tempSaveCount = 0, onDestinationSelect, onModalChange}) => {
   const [showTravelDestinations, setShowTravelDestinations] = useState(false);
   const [showTravelBags, setShowTravelBags] = useState(false);
-  const [destinationsChecked, setDestinationsChecked] = useState(false);
-  const [bagsChecked, setBagsChecked] = useState(false);
+  const [activeCheckbox, setActiveCheckbox] = useState(null);
   const [selectedDestination, setSelectedDestination] = useState('');
-  const [selectedBag, setSelectedBag] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState('');
-  
+  const [selectedBags, setSelectedBags] = useState([]);
+
 
   const categories = {
     '대한민국': ['서울·경기도', '강원도', '경상북도', '경상남도', '전라북도', '전라남도', '제주도', '충청북도', '충청남도'],
@@ -335,8 +326,29 @@ const WriteHeader = ({ profileImage, writerName, tempSaveCount = 0, onDestinatio
 
   const handleDestinationSelect = (item) => {
     setSelectedDestination(item);
-    setDestinationsChecked(true);
     onDestinationSelect(item);
+  };
+
+  const handleCheckboxChange = (type) => {
+    if (activeCheckbox === type) {
+      setActiveCheckbox(null);
+      setShowTravelDestinations(false);
+      setShowTravelBags(false);
+      if (type === 'destinations') {
+        setSelectedDestination('');
+      } else {
+        setSelectedBags([]);
+      }
+    } else {
+      setActiveCheckbox(type);
+      setShowTravelDestinations(type === 'destinations');
+      setShowTravelBags(type === 'bags');
+      if (type === 'destinations') {
+        setSelectedBags([]);
+      } else {
+        setSelectedDestination('');
+      }
+    }
   };
 
   const handleSaveClick = () => {
@@ -364,10 +376,8 @@ const WriteHeader = ({ profileImage, writerName, tempSaveCount = 0, onDestinatio
         return [...prev, item];
       }
     });
-    setBagsChecked(true);
   };
 
-  const [selectedBags, setSelectedBags] = useState([]);
 
   return (
     <>
@@ -379,16 +389,9 @@ const WriteHeader = ({ profileImage, writerName, tempSaveCount = 0, onDestinatio
           <WriterName>{writerName}</WriterName>
           <NavLinks>
           <NavItem>
-            <Checkbox 
-              checked={destinationsChecked} 
-              onChange={() => {
-                setDestinationsChecked(prev => !prev);
-                setShowTravelDestinations(prev => !prev);
-                setShowTravelBags(false);
-                if (!destinationsChecked) {
-                  setSelectedDestination('');
-                }
-              }}
+          <Checkbox 
+              checked={activeCheckbox === 'destinations'} 
+              onChange={() => handleCheckboxChange('destinations')}
               label="여행지"
               isMainCategory={true}
             />
@@ -396,23 +399,13 @@ const WriteHeader = ({ profileImage, writerName, tempSaveCount = 0, onDestinatio
               src={dropdownIcon} 
               alt="dropdown" 
               className={showTravelDestinations ? 'open' : ''} 
-              onClick={() => {
-                setShowTravelDestinations(prev => !prev);
-                setShowTravelBags(false);
-              }}
+              onClick={() => handleCheckboxChange('destinations')}
             />
           </NavItem>
           <NavItem>
-            <Checkbox 
-              checked={bagsChecked}
-              onChange={() => {
-                setBagsChecked(prev => !prev);
-                setShowTravelBags(prev => !prev);
-                setShowTravelDestinations(false);
-                if (!bagsChecked) {
-                  setSelectedBags([]);
-                }
-              }}
+          <Checkbox 
+              checked={activeCheckbox === 'bags'}
+              onChange={() => handleCheckboxChange('bags')}
               label="여행 가방"
               isMainCategory={true}
             />
@@ -420,11 +413,8 @@ const WriteHeader = ({ profileImage, writerName, tempSaveCount = 0, onDestinatio
               src={dropdownIcon} 
               alt="dropdown" 
               className={showTravelBags ? 'open' : ''} 
-              onClick={() => {
-                setShowTravelBags(prev => !prev);
-                setShowTravelDestinations(false);
-              }}
-            />
+              onClick={() => handleCheckboxChange('bags')}
+            />  
           </NavItem>
           </NavLinks>
         </LeftSection>
@@ -441,7 +431,7 @@ const WriteHeader = ({ profileImage, writerName, tempSaveCount = 0, onDestinatio
             <SaveButton onClick={handleCompleteClick}>기록완료</SaveButton>
         </RightSection>
         </HeaderContent>
-      {showTravelDestinations && (
+        {showTravelDestinations && (
           <DropdownContainer>
             <DropdownContent>
               {Object.entries(categories).map(([category, items]) => (
@@ -460,7 +450,7 @@ const WriteHeader = ({ profileImage, writerName, tempSaveCount = 0, onDestinatio
                 </CategoryColumn>
               ))}
             </DropdownContent>
-            <CloseButton onClick={() => setShowTravelDestinations(false)}>✕</CloseButton>
+            <CloseButton onClick={() => handleCheckboxChange('destinations')}>✕</CloseButton>
           </DropdownContainer>
         )}
         {showTravelBags && (
@@ -489,10 +479,11 @@ const WriteHeader = ({ profileImage, writerName, tempSaveCount = 0, onDestinatio
                 </CategoryColumn>
               ))}
             </DropdownContent>
-            <CloseButton onClick={() => setShowTravelBags(false)}>✕</CloseButton>
+            <CloseButton onClick={() => handleCheckboxChange('bags')}>✕</CloseButton>
           </DropdownContainer>
         )}
         </HeaderContainer>
+
         {showModal && (
           <>
             <Overlay onClick={closeModal} />
