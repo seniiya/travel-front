@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 
 const DropdownContainer = styled.div`
   background-color: white;
@@ -71,14 +72,24 @@ const categories = [
   ['유아', '기타']
 ];
 
-function TravelBagDropdown({ onClose }) {
+function TravelBagDropdown({ onClose, setSelectedCategory }) {
+  const navigate = useNavigate();
+
+  const handleCategoryClick = (category) => {
+    setSelectedCategory(category);
+    navigate('/travel-bag');
+    onClose();
+  };
+
   return (
     <DropdownContainer>
       <DropdownContent>
         {categories.map((category, index) => (
           <CategoryColumn key={index}>
             {category.map((item, itemIndex) => (
-              <CategoryItem key={itemIndex}>{item}</CategoryItem>
+              <CategoryItem key={itemIndex} onClick={() => handleCategoryClick(item)}>
+                {item}
+              </CategoryItem>
             ))}
           </CategoryColumn>
         ))}
