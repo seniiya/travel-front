@@ -39,7 +39,6 @@ const Logo = styled.img`
   filter: brightness(1.5) contrast(0.9) saturate(1) hue-rotate(-180deg);
 `;
 
-
 const Heading = styled.h2`
   font-size: 18px;
   font-weight: 700;
@@ -118,14 +117,23 @@ const MainPage = () => {
   useEffect(() => {
     const fetchServerLogs = async () => {
       try {
-        const response = await axios.get('https://81bc-203-255-3-239.ngrok-free.app/api/v1/main/serverLogs');
-        if (response.data.isSuccess) {
-          setServerLogs(response.data.result);
-        } else {
-          console.error('API 요청 실패:', response.data.message);
+        const response = await axios.get('http://3.37.134.143:8080/api/v1/main/serverLogs');
+        console.log('API Response:', response);
+
+        if (response.headers['content-type'].includes('application/json')) {
+          const { isSuccess, result } = response.data;
+          if (isSuccess) {
+            setServerLogs(result);
+          }
         }
       } catch (error) {
-        console.error('서버 로그를 가져오는 중 오류가 발생했습니다:', error);
+        if (error.response) {
+          console.error('서버에서 오류를 응답했습니다:', error.response.data);
+        } else if (error.request) {
+          console.error('응답을 받을 수 없습니다:', error.request);
+        } else {
+          console.error('요청을 처리하는 중 오류가 발생했습니다:', error.message);
+        }
       }
     };
 
@@ -149,7 +157,7 @@ const MainPage = () => {
         </FolderCard>
         <FolderCard>
           <div>• 쌓인 기록</div>
-          <span>{serverLogs.allPosts}명</span>
+          <span>{serverLogs.allPosts}개</span>
         </FolderCard>
         <FolderCard>
           <div>• 총 기록일</div>
