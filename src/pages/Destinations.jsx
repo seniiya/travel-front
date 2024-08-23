@@ -1,226 +1,13 @@
+// Destinations.jsx
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import axios from 'axios';
 import write from '../components/pic/write.png';
 import like from '../components/pic/whiteLike.svg';
 import scrap from '../components/pic/whiteScrap.svg';
-import link_src from '../components/pic/link.svg';
+import link from '../components/pic/whiteLink.svg';
 import img from '../components/pic/default.png';
-
-const PageContainer = styled.div`
-  max-width: 1920px;
-  margin: 50px 30px;
-
-  @media (max-width: 1000px) {
-    margin: 20px 10px;
-  }
-
-  @media (max-width: 500px) {
-    margin: 10px 50px;
-  }
-`;
-
-const SortingContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 18px;
-  margin: 120px 300px 60px 300px;
-
-  @media (max-width: 1700px) {
-    margin: 20px 20px;
-    font-size: 17px;
-    margin: 100px 250px 60px 250px;
-  }
-
-  @media (max-width: 1500px) {
-    font-size: 16px;
-    margin: 90px 200px 60px 200px;
-  }
-
-  @media (max-width: 1300px) {
-    font-size: 15px;
-    margin: 90px 150px 60px 150px;
-  }
-
-  @media (max-width: 1100px) {
-    font-size: 14px;
-    margin: 90px 130px 60px 125px;
-  }
-
-  @media (max-width: 900px) {
-    font-size: 13px;
-    margin: 80px 100px 60px 100px;
-  }
-
-  @media (max-width: 700px) {
-    font-size: 12px;
-    margin: 80px 80px 60px 80px;
-  }
-
-  @media (max-width: 600px) {
-    font-size: 11px;
-    margin: 80px 60px 60px 60px;
-  }
-
-  @media (max-width: 500px) {
-    font-size: 10px;
-    margin: 80px 40px 60px 40px;
-  }
-
-  @media (max-width: 400px) {
-    margin: 80px 30px 60px 30px;
-  }
-
-  @media (max-width: 300px) {
-    margin: 80px 20px 60px 20px;
-  }
-
-
-  span {
-    cursor: pointer;
-    padding: 5px;
-    transition: background-color 0.3s;
-    color: #b4b7b9;
-  }
-
-  span.active {
-    background-color: #ffffff;
-    color: #005cf9;
-  }
-
-  span.separator {
-    cursor: default;
-    padding: 0 10px;
-  }
-`;
-
-const SortOptions = styled.div`
-  display: flex;
-  align-items: center;
-
-  @media (max-width: 480px) {
-    flex-wrap: wrap;
-    gap: 5px;
-  }
-`;
-
-const WriteButton = styled.button`
-  display: flex;
-  align-items: center;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding-left: 15px;
-  font-size: 16px;
-  color: #b4b7b9;
-
-  img {
-    width: 20px;
-    height: 20px;
-    margin-left: 5px;
-  }
-
-    
-  @media (max-width: 1700px) {
-    font-size: 17px;
-  }
-
-  @media (max-width: 1500px) {
-    font-size: 16px;
-  }
-
-  @media (max-width: 1300px) {
-    font-size: 15px;
-  }
-
-  @media (max-width: 1100px) {
-    font-size: 14px;
-  }
-
-  @media (max-width: 900px) {
-    font-size: 13px;
-  }
-
-  @media (max-width: 700px) {
-    font-size: 12px;
-  }
-
-  @media (max-width: 600px) {
-    font-size: 11px;
-  }
-
-  @media (max-width: 500px) {
-    font-size: 10px;
-  }
-
-`;
-
-const CardGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
-  margin-bottom: 50px;
-
-  @media (max-width: 1024px) {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
-  @media (max-width: 768px) {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  @media (max-width: 480px) {
-    grid-template-columns: 1fr;
-  }
-`;
-
-const Pagination = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 20px;
-  margin-bottom: 200px;
-  font-size: 20px;
-
-  span, button {
-    margin: 0 5px;
-    align-items: center;
-    cursor: pointer;
-    padding: 10px;
-    border: none;
-    user-select: none;
-    color: black;
-    background: none;
-    transition: border 0.3s ease;
-  }
-
-  span.active {
-    background-color: #ffffff;
-    color: #005cf9;
-  }
-
-  button {
-    display: flex;
-    background-color: #f7f7f7;
-    border: none;
-    width: 30px;
-    height: 30px;
-    border-radius: 1000px;
-    padding: 6px;
-    font-size: 15px;
-  }
-
-  button:disabled {
-    color: #ddd;
-    border: none;
-  }
-
-  @media (max-width: 480px) {
-    font-size: 16px;
-    margin-bottom: 30px;
-  }
-`;
 
 function Destinations({ selectedDest }) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -228,6 +15,12 @@ function Destinations({ selectedDest }) {
   const [destinations, setDestinations] = useState([]);
   const [minPageIdx, setMinPageIdx] = useState(1);
   const [maxPageIdx, setMaxPageIdx] = useState(1);
+  const [activeCard, setActiveCard] = useState(null);
+  const navigate = useNavigate();
+  
+  const handleWriteButtonClick = () => {
+    navigate('/write');
+  };
 
   useEffect(() => {
     fetchDestinations();
@@ -235,18 +28,31 @@ function Destinations({ selectedDest }) {
 
   const fetchDestinations = async () => {
     try {
-      const response = await axios.get('/api/v1/travelPost/allPosts', {
+      const [continent, country] = selectedDest.split(' - ');
+
+      const response = await axios.get('http://3.37.134.143:8080/api/v1/travelPost/allPosts', {
         params: {
           orderBy: sortCriteria,
           page: currentPage,
+          continent: continent === '여행지' ? null : continent,
+          country: country === '전체' || !country ? null : country,
         },
       });
-      const { posts, minPageIdx, maxPageIdx } = response.data.result;
-      setDestinations(posts);
-      setMinPageIdx(minPageIdx);
-      setMaxPageIdx(maxPageIdx);
+
+      if (response.data.isSuccess) {
+        const { posts, minPageIdx, maxPageIdx } = response.data.result;
+        setDestinations(posts);
+        setMinPageIdx(minPageIdx);
+        setMaxPageIdx(maxPageIdx);
+      } else {
+        console.error('API 요청에 실패했습니다:', response.data.message);
+      }
     } catch (error) {
-      console.error('여행지 데이터를 가져오는 중 오류가 발생했습니다:', error);
+      if (error.response) {
+        console.error(`여행지 데이터를 가져오는 중 오류가 발생했습니다: ${error.response.status}`, error.response.data);
+      } else if (error.request) {
+        alert('서버로부터 응답이 없습니다. 네트워크 연결을 확인하세요.');
+      } 
     }
   };
 
@@ -326,16 +132,44 @@ function Destinations({ selectedDest }) {
             스크랩순
           </span>
         </SortOptions>
-        <WriteButton>
+        <WriteButton onClick={handleWriteButtonClick}>
           글쓰기
           <img src={write} alt="write" />
         </WriteButton>
       </SortingContainer>
+
       <CardGrid>
-        {destinations.map(destination => (
-          <StyledCard key={destination.id} destination={destination} />
+        {destinations.map((card) => (
+          <Card
+            key={card.id}
+            isActive={activeCard === card.id} 
+            onClick={() => setActiveCard(card.id)}
+          >
+            <CardImageContainer>
+              <CardImage src={card.repImage || img} alt={card.title} />
+              <Overlay>
+                <span><img src={like} alt="like" /> {card.likeCount}</span>&emsp;&emsp;
+                <span><img src={scrap} alt="scrap" /> {card.scrapCount}</span>
+                &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+                <span><img src={link} alt="link" /></span>
+              </Overlay>
+            </CardImageContainer>
+            <CardContent>
+              <h2>{card.title}</h2>
+              <p>{card.content.length > 50 ? `${card.content.substring(0, 50)}...` : card.content}</p>
+              <CardFooter>
+                <CardFooterLeft>
+                  <span>{card.user.nickname} | {new Date(card.createDate).toLocaleDateString()}</span>
+                </CardFooterLeft>
+                <CardFooterRight>
+                  <span>조회수 {card.viewCount}</span>
+                </CardFooterRight>
+              </CardFooter>
+            </CardContent>
+          </Card>
         ))}
       </CardGrid>
+
       <Pagination>
         <button onClick={handleFirstPage} disabled={currentPage === minPageIdx}>
           &lt;&lt;
@@ -373,57 +207,212 @@ function Destinations({ selectedDest }) {
   );
 }
 
-const StyledCard = ({ destination }) => {
-  const formatViews = (views) => {
-    return parseInt(views) >= 999 ? '999+' : views;
-  };
+const PageContainer = styled.div`
+  max-width: 1920px;
+  margin: 20px 30px;
 
-  const imageUrl = destination.repImage
-    ? destination.repImage.startsWith('http')
-      ? destination.repImage
-      : `${process.env.REACT_APP_BASE_URL}${destination.repImage.replace(/\\/g, '/')}`
-    : img; // 기본 이미지 사용
+  @media (max-width: 1000px) {
+    margin: 20px 10px;
+  }
 
-  return (
-    <Card>
-      <CardImage src={imageUrl} alt={destination.title} />
-      <Overlay>
-        <LikesScraps>
-          <span>
-            <img src={like} alt="like" />
-            {destination.likeCount}
-          </span>
-          <span>
-            <img src={scrap} alt="scrap" />
-            {destination.scrapCount || 0}
-          </span>
-          <span>
-            <img src={link_src} alt="link" />
-          </span>
-        </LikesScraps>
-      </Overlay>
-      <CardContent>
-        <h2>{destination.title}</h2>
-        <p>{destination.content}</p>
-      </CardContent>
-      <CardFooter>
-        <CardFooterLeft>
-          <span>{destination.user.nickname}</span>
-          <span>| {destination.createDate}</span>
-        </CardFooterLeft>
-        <CardFooterRight>
-          <span>조회수 {formatViews(destination.viewCount)}</span>
-        </CardFooterRight>
-      </CardFooter>
-    </Card>
-  );
-};
+  @media (max-width: 500px) {
+    margin: 10px 50px;
+  }
+`;
+
+const SortingContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 18px;
+  margin: 120px 300px 60px 300px;
+
+  @media (max-width: 1700px) {
+    margin: 20px 20px;
+    font-size: 17px;
+    margin: 100px 250px 60px 250px;
+  }
+
+  @media (max-width: 1500px) {
+    font-size: 16px;
+    margin: 90px 200px 60px 200px;
+  }
+
+  @media (max-width: 1300px) {
+    font-size: 15px;
+    margin: 90px 150px 60px 150px;
+  }
+
+  @media (max-width: 1100px) {
+    font-size: 14px;
+    margin: 90px 130px 60px 125px;
+  }
+
+  @media (max-width: 900px) {
+    font-size: 13px;
+    margin: 80px 100px 60px 100px;
+  }
+
+  @media (max-width: 700px) {
+    font-size: 12px;
+    margin: 80px 80px 60px 80px;
+  }
+
+  @media (max-width: 600px) {
+    font-size: 11px;
+    margin: 80px 60px 60px 60px;
+  }
+
+  @media (max-width: 500px) {
+    font-size: 10px;
+    margin: 80px 40px 60px 40px;
+  }
+
+  span {
+    cursor: pointer;
+    padding: 5px;
+    transition: background-color 0.3s;
+    color: #b4b7b9;
+  }
+
+  span.active {
+    background-color: #ffffff;
+    color: #005cf9;
+  }
+
+  span.separator {
+    cursor: default;
+    padding: 0 10px;
+  }
+`;
+
+const SortOptions = styled.div`
+  display: flex;
+  align-items: center;
+
+  @media (max-width: 480px) {
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+`;
+
+const WriteButton = styled.button`
+  display: flex;
+  align-items: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding-left: 15px;
+  font-size: 16px;
+  color: #b4b7b9;
+
+  img {
+    width: 20px;
+    height: 20px;
+    margin-left: 5px;
+  }
+
+  @media (max-width: 1700px) {
+    font-size: 17px;
+  }
+
+  @media (max-width: 1500px) {
+    font-size: 16px;
+  }
+
+  @media (max-width: 1300px) {
+    font-size: 15px;
+  }
+
+  @media (max-width: 1100px) {
+    font-size: 14px;
+  }
+
+  @media (max-width: 900px) {
+    font-size: 13px;
+  }
+
+  @media (max-width: 700px) {
+    font-size: 12px;
+  }
+
+  @media (max-width: 600px) {
+    font-size: 11px;
+  }
+
+  @media (max-width: 500px) {
+    font-size: 10px;
+  }
+`;
+
+const CardGrid = styled.div`
+  display: grid;
+  margin: 100px 200px 0 200px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0px;
+  margin-bottom: 50px;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+`;
+
+const Pagination = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  margin-bottom: 200px;
+  font-size: 20px;
+
+  span, button {
+    margin: 0 5px;
+    align-items: center;
+    cursor: pointer;
+    padding: 10px;
+    border: none;
+    user-select: none;
+    color: black;
+    background: none;
+    transition: border 0.3s ease;
+  }
+
+  span.active {
+    background-color: #ffffff;
+    color: #005cf9;
+  }
+
+  button {
+    display: flex;
+    background-color: #f7f7f7;
+    border: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 1000px;
+    padding: 6px;
+    font-size: 15px;
+  }
+
+  button:disabled {
+    color: #ddd;
+    border: none;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 16px;
+    margin-bottom: 30px;
+  }
+`;
 
 const Card = styled.div`
-  width: 240px;
-  height: 320px;
+  width: 280px;
+  height: 340px;
   border-radius: 8px;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   position: relative;
   cursor: pointer;
@@ -434,7 +423,7 @@ const Card = styled.div`
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
 
     img {
-      filter: brightness(50%);
+      filter: brightness(0%);
     }
 
     div {
@@ -447,6 +436,10 @@ const Card = styled.div`
   }
 `;
 
+const CardImageContainer = styled.div`
+  position: relative;
+`;
+
 const CardImage = styled.img`
   width: 100%;
   height: 150px;
@@ -457,40 +450,29 @@ const CardImage = styled.img`
 
 const Overlay = styled.div`
   position: absolute;
-  top: 15px;
+  bottom: 0;
   left: 0;
   width: 100%;
-  height: 40%;
-  display: flex;
-  align-items: end;
+  background: none;
   color: white;
-  font-size: 15px;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  border-radius: 10px 10px 0 0;
-  margin-left: 3px;
-`;
-
-const LikesScraps = styled.div`
+  padding: 5px;
   display: flex;
-  gap: 10px;
+  justify-content: space-end;
 
   span {
     display: flex;
     align-items: center;
-
+    gap: 5px;
     img {
-      width: 20px;
-      height: 20px;
-      margin-right: 5px;
-      color: white;
+      width: 16px;
+      height: 16px;
     }
   }
 `;
 
 const CardContent = styled.div`
   margin-left: 10px;
-  height: 115px;
+  height: 90px;
   h2 {
     font-size: 20px;
 
@@ -501,6 +483,7 @@ const CardContent = styled.div`
   p {
     font-size: 15px;
     color: #75797d;
+    height: 85px;
 
     @media (max-width: 480px) {
       font-size: 14px;
@@ -510,10 +493,11 @@ const CardContent = styled.div`
 
 const CardFooter = styled.div`
   display: flex;
+  top: 200px;
   justify-content: space-between;
   font-size: 13px;
   color: #75797d;
-  margin: 10px;
+  margin: 10px 5px 10px 5px;
 
   @media (max-width: 480px) {
     font-size: 12px;
@@ -522,7 +506,7 @@ const CardFooter = styled.div`
 
 const CardFooterLeft = styled.div`
   display: flex;
-  gap: 3px;
+  gap: 10px;
 `;
 
 const CardFooterRight = styled.div`
