@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../pages/Login/AuthContext'; 
 import styled from 'styled-components';
 import search from '../components/pic/search.png';
 import logo1 from '../components/pic/logo1.png';
@@ -9,6 +10,8 @@ import TravelBagDropdown from './TravelBagDropdown';
 import dropdownIcon from '../components/pic/화살표.png';
 import SearchSection from './SearchSection';
 import Music from './Music';
+import useAudioPlayer from './AudioHook/useAudioPlayer';
+import audioSrc from '../assets/for-her-chill-upbeat-summel-travel-vlog-and-ig-music-royalty-free-use-202298.mp3';
 
 const NavbarWrapper = styled.div`
   position: fixed;
@@ -189,7 +192,8 @@ const MusicText = styled.span`
   }
 `;
 
-function Navbar() {
+function Navbar({ setSelectedDest }) {
+  const { user, logout } = useAuth()
   const [isScrolled, setIsScrolled] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const [showTravelBagDropdown, setShowTravelBagDropdown] = useState(false);
@@ -197,16 +201,37 @@ function Navbar() {
   const [travelBagClickCount, setTravelBagClickCount] = useState(0);
   const navigate = useNavigate();
   const location = useLocation(); 
-  const currentSong = "노래 제목 예시 노래 제...";
   const [showSearchSection, setShowSearchSection] = useState(false);
   const [showMusicPlayer, setShowMusicPlayer] = useState(false);
+  
+  const [currentSongInfo, setCurrentSongInfo] = useState({
+    title: '노래 제목 예시 노래 제...',
+    isPlaying: false,
+    currentTime: 0,
+    duration: 0
+  });
 
-  useEffect( () => {
-    setShowDropdown(false);
-    setShowTravelBagDropdown(false);
-    setShowSearchSection(false);
-    setShowMusicPlayer(false);
-  }, [location]);
+  const { isPlaying, currentTime, duration, togglePlay, seekTo } = useAudioPlayer(audioSrc);
+
+  useEffect(() => {
+    setCurrentSongInfo(prev => ({
+      ...prev,
+      isPlaying,
+      currentTime,
+      duration,
+      title: isPlaying ? 'Ludoric - Summer Travel Vlog' : '노래 제목 예시 노래 제...'
+    }));
+  }, [isPlaying, currentTime, duration]);
+
+  useEffect(() => {
+    const currentPath = location.pathname;
+    if(currentPath !== '/') {
+      setShowDropdown(false);
+      setShowTravelBagDropdown(false);
+      setShowSearchSection(false);
+      setShowMusicPlayer(false);
+    }
+  }, [location.pathname]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -250,8 +275,6 @@ function Navbar() {
     return () => clearTimeout(timer);
   }, [travelBagClickCount]);
 
-
- 
   return (
     <NavbarWrapper>
       <NavbarContainer isScrolled={isScrolled}>
@@ -284,34 +307,44 @@ function Navbar() {
             <Link to="/" className="mainHome" />
           </NavbarLogo>
           <NavbarIcons>
-            <div onClick={() => {
-              setShowSearchSection(!showSearchSection);
-              setShowDropdown(false);
-              setShowTravelBagDropdown(false);
-              setShowMusicPlayer(false);
-            }} style={{ cursor: 'pointer' }}>
-              <SearchIcon />
-            </div>
+          <div onClick={() => {
+            setShowSearchSection(!showSearchSection);
+            setShowDropdown(false);
+            setShowTravelBagDropdown(false);
+            setShowMusicPlayer(false);
+          }} style={{ cursor: 'pointer' }}>
+            <SearchIcon />
+          </div>
+          {user ? (
+            <>
+              <span>{user.nickname}님</span>
+              <button onClick={logout}>로그아웃</button>
+            </>
+          ) : (
             <LoginButton to="/login">로그인</LoginButton>
-            <div onClick={() => {
-              setShowMusicPlayer(!showMusicPlayer);
-              setShowDropdown(false);
-              setShowTravelBagDropdown(false);
-              setShowSearchSection(false);
-            }} style={{ cursor: 'pointer' }}>
-              <MusicButton>
-                <MusicIcon />
-                <MusicText>{currentSong}</MusicText>
-              </MusicButton>
-            </div>
-
-          </NavbarIcons>
+          )}
+          <div onClick={() => setShowMusicPlayer(prev => !prev)} style={{ cursor: 'pointer' }}>
+            <MusicButton>
+              <MusicIcon />
+              <MusicText>{currentSongInfo.title}</MusicText>
+            </MusicButton>
+          </div>
+        </NavbarIcons>
         </div>
       </NavbarContainer>
-      {showDropdown && <Dropdown onClose={() => setShowDropdown(false)} />}
+      {showDropdown && <Dropdown onClose={() => setShowDropdown(false)} setSelectedDest={setSelectedDest} />}
       {showTravelBagDropdown && <TravelBagDropdown onClose={() => setShowTravelBagDropdown(false)} />}
       {showSearchSection && <SearchSection onClose={() => setShowSearchSection(false)} />}
-      {showMusicPlayer && <Music onClose={() => setShowMusicPlayer(false)} />}
+      {showMusicPlayer && (
+        <Music 
+          onClose={() => setShowMusicPlayer(false)}
+          isPlaying={isPlaying}
+          currentTime={currentTime}
+          duration={duration}
+          togglePlay={togglePlay}
+          seekTo={seekTo}
+        />
+      )}
     </NavbarWrapper>
   );
 }
