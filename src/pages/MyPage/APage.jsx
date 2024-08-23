@@ -30,7 +30,7 @@ const APage = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [traveler, setTraveler] = useState({
         id: 1,
-        name: '김태엽',
+        nickname: '김태엽',
         imgSrc: sampleDefault,
         description: '안녕하세요, 25살의 여행가 김태엽입니다. 📸 ✈️호주의 문화와 풍경을 사랑하며, 필름 카메라로 순간을 담는 것을 즐깁니다. 여행을 통해 얻은 경험을 사진과 이야기로 나누고 싶어요. 많은 분들에게 영감을 주는 것이 제 꿈입니다. 잘 부탁드려요! 🙏✨',
         sns: ['https://pretty.youtube.com', 'https://pretty.youtube.com', 'https://pretty.youtube.com'],
@@ -139,7 +139,7 @@ const APage = () => {
                                 <InfoColumn>
                                     <InfoItem>
                                         <SectionTitle src={nickicon} alt="Nickname icon" />
-                                        <InfoText>{traveler.name}</InfoText>
+                                        <InfoText>{traveler.nickname}</InfoText>
                                     </InfoItem>
                                     <InfoItem>
                                         <SectionTitle src={locationicon} alt="Location icon" />

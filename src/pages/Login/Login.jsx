@@ -52,7 +52,7 @@ export default function Login() {
 
             
             try {
-                const response = await axios.post ('https://81bc-203-255-3-239.ngrok-free.app/api/v1/auth/signIn', {
+                const response = await axios.post ('http://3.37.134.143:8080/api/v1/auth/signIn', {
                     userid: data.id,
                     password: data.pw
                 });
@@ -157,7 +157,8 @@ export default function Login() {
                         <A.SignText to='/emailsignup'>회원가입</A.SignText>
                         {/* 이메일 인증 후 회원가입 창으로 넘어감  */}
                         <A.LookText>
-                            <A.LoglookLink to="/findid">아이디 찾기</A.LoglookLink> | {' '}
+                            <A.LoglookLink to="/findid">아이디 찾기</A.LoglookLink> 
+                            <A.SectionBar/> {' '}
                             <A.PwlookLink to="/findpw">비밀번호 찾기</A.PwlookLink>
                         </A.LookText>
                     </A.UnderText>

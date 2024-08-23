@@ -45,7 +45,7 @@ export default function RePW() {
 
         try {
             // 재설정은 경로가 어떻게 되는지 몰라서 비번초기화와 동일하게
-            const response = await axios.post('http://localhost:8080/api/v1/user/repassword', {
+            const response = await axios.post('https://a162-203-255-3-239.ngrok-free.app/api/v1/user/repassword', {
                 userId: userId,
                 password: data.password
             });

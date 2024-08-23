@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import logo from '../../components/pic/logo.svg';
 import copyright from '../../components/pic/copyright.svg';
 import * as A from "../Login.style.jsx";
@@ -132,6 +133,28 @@ const EmailChange = () => {
   const [isEmailVerified, setIsEmailVerified] = useState(false);
   const [emailError, setEmailError] = useState('');
   const [codeError, setCodeError] = useState('');
+  const [userInfo, setUserInfo] = useState(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/login');
+      return;
+    }
+    fetchUserInfo(token);
+  }, [navigate]);
+
+  const fetchUserInfo = async (token) => {
+    try {
+      const response = await axios.post('https://a162-203-255-3-239.ngrok-free.app/api/v1/user/userInfo', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setUserInfo(response.data.result);
+    } catch (error) {
+      console.error('Error fetching user info:', error);
+      navigate('/login');
+    }
+  };
 
   const handleLogoClick = () => {
     navigate('/');
@@ -142,15 +165,25 @@ const EmailChange = () => {
     return re.test(String(email).toLowerCase());
   };
 
-  const handleEmailVerification = () => {
+  const handleEmailVerification = async () => {
     if (!email) {
       setEmailError('이메일을 입력해주세요.');
-    } else if (!validateEmail(email)) {
+      return;
+    }
+    if (!validateEmail(email)) {
       setEmailError('유효한 이메일 주소를 입력해주세요.');
-    } else {
-      setEmailError('');
-      setIsEmailVerified(true);
-      alert('인증번호를 발송했습니다. 인증번호가 오지 않으면 입력하신 정보를 다시 한번 확인해 주세요.');
+      return;
+    }
+    setEmailError('');
+    try {
+      const response = await axios.post('api/v1/auth/mailSend', { email });
+      if (response.data.isSuccess) {
+        setIsEmailVerified(true);
+        alert('인증번호를 발송했습니다. 인증번호가 오지 않으면 입력하신 정보를 다시 한번 확인해 주세요.');
+      }
+    } catch (error) {
+      console.error('Error sending verification email:', error);
+      setEmailError('인증 메일 발송에 실패했습니다. 다시 시도해 주세요.');
     }
   };
 

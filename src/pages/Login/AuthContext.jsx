@@ -15,7 +15,8 @@ export const AuthProvider = ({ children }) => {
 
   const fetchUserInfo = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/api/v1/user/info', {
+      //  여기도 get => post 
+      const response = await axios.post('http://3.37.134.143:8080/api/v1/user/userInfo', {
         headers: { Authorization: `Bearer ${token}` }
       });
       setUser(response.data.result);

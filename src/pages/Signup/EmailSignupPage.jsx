@@ -92,27 +92,7 @@ const Button = styled.button`
   }
 `;
 
-const Footer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 20px;
-  font-size: 0.9em;
-  text-align: center;
-  color: #666; /* Adjust text color */
-  gap: 5px; /* Add gap between elements */
-`;
 
-const FooterLink = styled.a`
-  color: #007bff;
-  text-decoration: none;
-  margin: 0 5px; /* Add margin for spacing */
-  &:hover {
-    text-decoration: underline;
-  }
-  color: #55585B;
-
-`;
 
 //추가
 const ErrorMessage = styled.p`
@@ -135,15 +115,15 @@ const EmailSignupPage = () => {
   
   const handleEmailVerification = async () => {
     try {
-      const response = await axios.post('https://81bc-203-255-3-239.ngrok-free.app/api/v1/auth/mailSend', { email });
+      const response = await axios.post('http://3.37.134.143:8080/api/v1/auth/mailSend', { 
+        email: 'seeunbana@naver.com' });
       if (response.data.isSuccess) {
         setIsEmailSent(true);
         setError('');
         alert('인증번호를 발송했습니다. 인증번호가 오지 않으면 입력하신 정보를 다시 한번 확인해 주세요.');
       } else {
-        // Check for specific error messages from the server
+        // 중복확인 api 명세서 적용 안 시켜도 되나 ? 
         if (response.data.message === 'DUPLICATE_EMAIL') {
-          // 이거 중복된 거 맞나??
           setError('중복된 이메일입니다.');
         } else if (response.data.message === 'INVALID_EMAIL_FORMAT') {
           setError('올바른 이메일 형식이 아닙니다.');
@@ -167,7 +147,7 @@ const EmailSignupPage = () => {
       return;
     }
     try {
-      const response = await axios.post('https://81bc-203-255-3-239.ngrok-free.app/api/v1/auth/mailCheck', { 
+      const response = await axios.post('http://3.37.134.143:8080/api/v1/auth/mailCheck', { 
         email: email, //email, 만 해줘도 되나?? 
         authNum: verificationCode 
       });
@@ -204,18 +184,14 @@ const EmailSignupPage = () => {
               type="text"
               placeholder="인증번호"
               value={verificationCode}
-              // onChange={(e) => setVerificationCode(e.target.value)}
-              // disabled={!isEmailSent}
               onChange={(e) => {
                 console.log('Verification code changed:', e.target.value);
                 setVerificationCode(e.target.value);
               }}
-              // disabled={!isEmailSent}
-              // 입력이 안 된다면 isemailsent 주석처리 후 실행
             />
           </InputWrapper>
-          {/* 추가 */}
           {error && <ErrorMessage>{error}</ErrorMessage>}
+
           <Button type="submit">이메일 인증</Button>
         </RegisterForm>
         <A.UnderText>

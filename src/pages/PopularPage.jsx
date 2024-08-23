@@ -29,9 +29,23 @@ export default function PopularPage() {
     }, [activeSection]);
 
     const fetchTopPosts = async () => {
+
+      setIsLoading(true);
+      setError(null);
+      
+      // activeSection에 따라 orderBy 값 설정
+      const orderBy = {
+        'latest': 'latest',
+        'oldest': 'oldest',
+        'name': 'name',
+        'likes': 'likes',
+        'scrap': 'scrap',
+        'views': 'views'
+      }[activeSection] || 'latest';
+
       try {
-        const response = await axios.get('https://81bc-203-255-3-239.ngrok-free.app/api/v1/travelPost/topTravelPosts', {
-                params: { orderBy: activeSection },
+        const response = await axios.get('http://3.37.134.143:8080/api/v1/travelPost/topTravelPosts', {
+                // params: {  },
                 withCredentials: true
             });
             if (response.data && response.data.isSuccess) {
@@ -137,7 +151,7 @@ export default function PopularPage() {
                   className={selectedCard === post.id ? 'active' : ''}
                 >
                  
-                    <CardImg src={ post.repImage ? `https://81bc-203-255-3-239.ngrok-free.app${post.repImage}` : sampleDefault} alt={post.title}/>
+                    <CardImg src={ post.repImage ? `http://3.37.134.143:8080/${post.repImage}` : sampleDefault} alt={post.title}/>
                     <Overlay>
                     <LikesScraps>
                       <span>

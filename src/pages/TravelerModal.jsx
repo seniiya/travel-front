@@ -34,21 +34,16 @@ const TravelerModal = ({ children, onClose, traveler }) => {
     }
 
     const simplifyUrl = (url) => {
-        // Remove protocol and 'www.' if present
         let simplified = url.replace(/^(https?:\/\/)?(www\.)?/, '');
         
-        // Split the remaining string by '/'
         let parts = simplified.split('/');
         
-        // Get the domain part
         let domain = parts[0];
         
-        // Special case for 'x.com'
         if (domain === 'x.com') {
             return 'x';
         }
         
-        // For other cases, return the first part of the domain
         return domain.split('.')[0];
     };
 
@@ -94,7 +89,7 @@ const TravelerModal = ({ children, onClose, traveler }) => {
                                 </InfoItem>
                                 <InfoItem>
                                     <SectionTitle src={locationicon} alt="Location icon" />
-                                    <InfoText>{traveler.location}</InfoText>
+                                    <InfoText>{traveler.location || ' '}</InfoText>
                                 </InfoItem>
                             </InfoColumn>
 
@@ -103,11 +98,11 @@ const TravelerModal = ({ children, onClose, traveler }) => {
                             <InfoColumn>
                                 <InfoItem>
                                     <DateIcon src={dateissue} alt="Date of Issue" />
-                                    <InfoText>{traveler.dateofissue}</InfoText>
+                                    <InfoText>{traveler.dateofissue || ' '}</InfoText>
                                 </InfoItem>
                                 <InfoItem>
                                     <CountryIcon src={favcountry} alt="Favorite Country" />
-                                    <InfoText>{traveler.favcountry}</InfoText>
+                                    <InfoText>{traveler.favcountry || ' '}</InfoText>
                                 </InfoItem>
                             </InfoColumn>
                         </Section>

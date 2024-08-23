@@ -1,8 +1,7 @@
-//수정 전
-
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
+import axios from 'axios';
 import logo from '../../components/pic/logo.svg';
 import copyright from '../../components/pic/copyright.svg';
 import visible from '../../components/pic/visible.svg';
@@ -10,26 +9,21 @@ import invisible from '../../components/pic/invisible.svg';
 import cancel from '../../components/pic/cancel.svg';
 import * as A from "../Login.style.jsx";
 
-
-
-
-
 export default function IdChange() {
-
-    const { register, handleSubmit, formState: { errors }} = useForm();
-    const [ loginError, setLoginError ] = useState("");
+    const { register, handleSubmit, formState: { errors } } = useForm();
+    const [loginError, setLoginError] = useState("");
     const navigate = useNavigate();
-    const [ showPw, setShowPw ] = useState(false);
-    const [ idValue, setIdValue ] = useState("");
-    const [ pwValue, setPwValue ] = useState("");
+    const [showPw, setShowPw] = useState(false);
+    const [idValue, setIdValue] = useState("");
+    const [pwValue, setPwValue] = useState("");
 
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [newId, setNewId] = useState("");
+    const [userInfo, setUserInfo] = useState(null);
 
     const handleLogoClick = () => {
         navigate('/');
-      };
-
+    };
 
     const validationRules = {
         id: {
@@ -41,33 +35,67 @@ export default function IdChange() {
         pw: {
             required: true,
             minLength: 8,
-            pattern:  /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/
+            pattern: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/
         }
     };
-    // 영문자 + 숫자 
 
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            fetchUserInfo(token);
+        }
+    }, []);
 
-    const onLoginSubmit = (data) => {
-        console.log("Login attempt:", data);
-
-        // 프론트엔드 유효성 검사
-        if (validationRules.id.pattern.test(data.id) &&
-            validationRules.pw.pattern.test(data.pw)) {
-            
-            console.log("Login successful");
+    const fetchUserInfo = async (token) => {
+        try {
+            const response = await axios.post('https://a162-203-255-3-239.ngrok-free.app/api/v1/user/userInfo', {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            setUserInfo(response.data.result);
             setIsLoggedIn(true);
-            setLoginError("");
-        } else {
+        } catch (error) {
+            console.error("Failed to fetch user info:", error);
+        }
+    };
+
+    const onLoginSubmit = async (data) => {
+        try {
+            const response = await axios.post('https://a162-203-255-3-239.ngrok-free.app/api/v1/auth/signIn', {
+                userid: data.id,
+                password: data.pw
+            });
+            
+            if (response.data.isSuccess) {
+                console.log("Login successful");
+                localStorage.setItem('token', response.data.result.token);
+                setIsLoggedIn(true);
+                setLoginError("");
+                fetchUserInfo(response.data.result.token);
+            }
+        } catch (error) {
             setLoginError("아이디(로그인 전용 아이디) 또는 비밀번호가 잘못되었습니다. 아이디와 비밀번호를 정확히 입력해 주세요.");
         }
     };
 
-    const onIdChangeSubmit = (e) => {
+    const onIdChangeSubmit = async (e) => {
         e.preventDefault();
-        if(validationRules.id.pattern.test(newId)) {
-            console.log("ID changed successfully to:", newId);
-            alert('아이디 변경이 완료 되었습니다. 다시 로그인해 주세요.');
-            navigate('/login');
+        if (validationRules.id.pattern.test(newId)) {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await axios.post('https://a162-203-255-3-239.ngrok-free.app/api/v1/user/updateId', {
+                    newId: newId
+                }, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+
+                if (response.data.isSuccess) {
+                    alert('아이디 변경이 완료 되었습니다. 다시 로그인해 주세요.');
+                    localStorage.removeItem('token');
+                    navigate('/login');
+                }
+            } catch (error) {
+                alert('아이디 변경에 실패했습니다. 다시 시도해주세요.');
+            }
         } else {
             alert('유효하지 않은 아이디 형식입니다. 다시 시도해주세요.');
         }
@@ -77,20 +105,19 @@ export default function IdChange() {
         setShowPw(!showPw);
     };
 
-  
     const handleIdChange = (e) => {
         setIdValue(e.target.value);
     };
-   
+
     const handlePwChange = (e) => {
         setPwValue(e.target.value);
     };
-  
+
     const clearIdInput = () => {
         setIdValue("");
     };
 
-    return ( 
+    return (
         <A.loginpage>
             <A.LoginPageContainer>
                 <A.LoginMain>
@@ -98,7 +125,7 @@ export default function IdChange() {
                     {!isLoggedIn ? (
                         <>
                             <A.Description>아이디 변경을 위해 로그인 해주세요.</A.Description>
-                            <form onSubmit = {handleSubmit(onLoginSubmit)} style={{width: '100%'}}>
+                            <form onSubmit={handleSubmit(onLoginSubmit)} style={{width: '100%'}}>
                                 <A.InputForm>
                                     <A.InputContainer>
                                         <A.InputWrapper>
@@ -124,7 +151,7 @@ export default function IdChange() {
                                             onChange={handlePwChange}
                                         />
                                         {pwValue && (
-                                        <A.Icon src={ showPw ? invisible : visible } alt="Visible" onClick={handlePwVisible}/>                 
+                                        <A.Icon src={showPw ? invisible : visible} alt="Visible" onClick={handlePwVisible}/>                 
                                         )}
                                     </A.InputContainer>
                                 </A.InputForm>
@@ -170,7 +197,6 @@ export default function IdChange() {
                         </>
                     )}
                 </A.LoginMain>
-
             </A.LoginPageContainer>
             <A.UnderContainer>
                 <A.UnderLinks>
@@ -182,7 +208,7 @@ export default function IdChange() {
                     <A.SectionBar/> {' '}
                     <A.Underlink to='/contact' color='#A5A8AB'>Contact Us</A.Underlink>
                 </A.UnderLinks>
-                    <img src={copyright} alt='Memoir copyright'/>
+                <img src={copyright} alt='Memoir copyright'/>
             </A.UnderContainer>
         </A.loginpage>
     )

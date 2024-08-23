@@ -141,7 +141,7 @@ const FindPwPage = () => {
     e.preventDefault();
     if (validateEmail()) {
       try {
-        const response = await axios.post('http://localhost:8080/api/v1/auth/mailSend', { email });
+        const response = await axios.post('https://6bd2-203-255-3-239.ngrok-free.app/api/v1/auth/mailSend', { email });
         if (response.data.success) {
           alert('인증번호를 발송했습니다. 인증번호가 오지 않으면 입력하신 정보를 다시 한번 확인해 주세요.');
         } else {
@@ -160,7 +160,7 @@ const FindPwPage = () => {
     if (verificationId && verificationCode) {  // verificationId를 userId 대신 사용
       try {
         // 비번 새로 바꾸는 api 명세서 있나요??  경로를 어떻게.. 
-        const response = await axios.post('http://localhost:8080/api/v1/user/repassword', { userId: verificationId, password: verificationCode });
+        const response = await axios.post('https://6bd2-203-255-3-239.ngrok-free.app/api/v1/user/repassword', { userId: verificationId, password: verificationCode });
         if (response.data.userId) {
           alert('비밀번호 초기화가 완료되었습니다. 새 비밀번호를 설정해주세요.');
           navigate('/repasswd', { state: { userId: response.data.userId } });

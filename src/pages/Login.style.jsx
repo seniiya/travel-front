@@ -258,27 +258,16 @@ export const Button = styled.button`
 `;
 
 export const UnderText = styled.div`
-
     display: flex;
     justify-content: space-between;
     align-items: center;
     width: 100%;
     margin-top: 1rem;
-    font-size: 0.875rem;
+    font-size: 15px;
 
 `;
 
 export const SignText = styled(Link)`
-    // margin: 0 auto;
-
-    // font-family: 'AppleSDGothicNeoR00';
-    // font-style: normal;
-    // font-weight: 400;
-    // font-size: 14px;
-
-    // display: flex;
-    // align-items: center;
-    // letter-spacing: -0.005em;
     color: #55585B;
     text-decoration: none;
 `;

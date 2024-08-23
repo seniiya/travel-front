@@ -141,7 +141,8 @@ const FindIdPage = () => {
     e.preventDefault();
     if (validateEmail()) {
       try {
-        const response = await axios.post('http://localhost:8080/api/v1/auth/mailSend', { email });
+        const response = await axios.post('api/v1/auth/mailSend', { 
+          email: 'seeunbana@naver.com' });
         if (response.data.isSuccess) {
           setIsEmailSent(true);
           window.alert('인증번호를 발송했습니다. 이메일을 확인해 주세요.');
@@ -162,12 +163,12 @@ const FindIdPage = () => {
     }
 
     try { 
-      const checkResponse = await axios.post('http://localhost:8080/api/v1/auth/mailCheck', { 
+      const checkResponse = await axios.post('https://a162-203-255-3-239.ngrok-free.app/api/v1/auth/mailCheck', { 
         email, 
         authNum: verificationCode  });
         // 아니라면 email authNum만 
       if (checkResponse.data.isSuccess) {
-        const findIdResponse = await axios.post('http://localhost:8080/api/v1/user/findUserId', { email });
+        const findIdResponse = await axios.post('https://a162-203-255-3-239.ngrok-free.app/api/v1/user/findUserId', { email });
         if (findIdResponse.data.isSuccess) {
           const userId = findIdResponse.data.result.userid;
           window.alert(`www.memoir.com 내용: 메일 인증이 완료 되었습니다. 회원님의 아이디는 ${userId} 입니다.`);
@@ -205,7 +206,6 @@ const FindIdPage = () => {
               type="text"
               placeholder="인증번호"
               value={verificationCode}
-              // value={authNum} 위에 email, authNum만 적었다면 
               onChange={(e) => setVerificationCode(e.target.value)}
             />
           </A.InputContainer>

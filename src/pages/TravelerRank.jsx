@@ -82,14 +82,17 @@ export default function TravelerRank() {
 
     const fetchTravelers = async () => {
       try {
-        const response = await axios.get('/api/v1/user/allUsers');
+        const response = await axios.post('http://3.37.134.143:8080/api/v1/user/allUsers');
         if (response.data.isSuccess) {
           const enhancedUsers = response.data.result.users.map(user => ({
             ...user,
             description: user.description || '소개글이 없습니다.',
             totalLikes: user.totalLikes || 0,
             totalScraps: user.totalScraps || 0,
-            imgSrc: user.imgSrc || sampleDefault
+            imgSrc: user.imgSrc || sampleDefault,
+            joinDate: user.joinDate,
+            favoriteCountry: user.favoriteCountry,
+            sns: user.sns
           }));
           setTravelers(enhancedUsers.slice(0, 30)); // 최대 30명만 
         }

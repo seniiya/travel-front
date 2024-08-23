@@ -1,53 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
 import Draggable from 'react-draggable';
 import mark1 from '../components/pic/mark1.png';
 import mark2 from '../components/pic/mark2.png';
 import mark3 from '../components/pic/mark3.png';
-import mark4 from '../components/pic//mark4.png';
+import mark4 from '../components/pic/mark4.png';
 import plane1 from '../components/pic/plane1.png';
 import plane2 from '../components/pic/plane2.png';
 import folder from '../components/pic/folder.png';
-import sampleDefault from '../components/pic/samples/sample.jpeg'; /* 서버에서 받아오게 */
-import sampleDefault2 from '../components/pic/samples/sample2.jpeg';
-import sampleDefault3 from '../components/pic/samples/sample3.jpeg';
-import sampleDefault4 from '../components/pic/samples/sample4.jpeg';
-import sampleDefault5 from '../components/pic/samples/sample5.jpeg';
-import sampleDefault6 from '../components/pic/samples/sample6.jpeg';
-import sampleDefault7 from '../components/pic/samples/sample7.jpeg';
-import sampleDefault8 from '../components/pic/samples/sample8.jpeg';
-import sampleDefault9 from '../components/pic/samples/sample9.jpeg';
-import sampleDefault10 from '../components/pic/samples/sample10.jpeg';
-import sampleDefault11 from '../components/pic/samples/sample11.jpeg';
-import sampleDefault12 from '../components/pic/samples/sample12.jpeg';
-import sampleDefault13 from '../components/pic/samples/sample13.jpeg';
-import sampleDefault14 from '../components/pic/samples/sample14.jpeg';
-import sampleDefault15 from '../components/pic/samples/sample15.jpeg';
-import sampleDefault16 from '../components/pic/samples/sample16.jpeg';
+import imageDefault from '../components/pic/default.png';
 
-const images = [
-  sampleDefault, sampleDefault2, sampleDefault3, sampleDefault4,
-  sampleDefault5, sampleDefault6, sampleDefault7, sampleDefault8,
-  sampleDefault9, sampleDefault10, sampleDefault11, sampleDefault12,
-  sampleDefault13, sampleDefault14, sampleDefault15, sampleDefault16
-];
-
-const shuffleArray = (array) => {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-  return array;
-};
-
-const getShuffledImages = (count) => {
-  return shuffleArray(images.slice()).slice(0, count);
-};
-
-const getRandomImage = (usedImages) => {
-  const availableImages = images.filter(img => !usedImages.includes(img));
-  return availableImages[Math.floor(Math.random() * availableImages.length)];
-};
 
 const Container = styled.div`
   display: flex;
@@ -301,7 +265,6 @@ const PageButtonContainer = styled.div`
   gap: 20px;
   margin: 30px;
   padding-left: 80px;
-  
 `;
 
 const PageButton = styled.button`
@@ -322,7 +285,6 @@ const PageButton = styled.button`
     background-color: #e0e0e0;
   }
 `;
-
 const Contents = () => {
   const [isHovered1, setIsHovered1] = useState(false);
   const [isHovered2, setIsHovered2] = useState(false);
@@ -333,167 +295,25 @@ const Contents = () => {
   const [isPaused1, setIsPaused1] = useState(false);
   const [isPaused3, setIsPaused3] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [topTravelPosts, setTopTravelPosts] = useState([]);
+  const [folderImages, setFolderImages] = useState([]);
+  const [users, setUsers] = useState([]); 
+  const navigate = useNavigate();
 
-  const travelFolders = [
-    { name: '• 삿포로' },
-    { name: '• 나트랑' },
-    { name: '• 대만' },
-    { name: '• 이탈리아' },
-    { name: '• 괌' },
-    { name: '• 사이판' },
-    { name: '• 다낭' },
-    { name: '• 방콕파타야' },
-  ];
-
-  const shuffledImages = getShuffledImages(travelFolders.length);
-  const [folderImages, setFolderImages] = useState(shuffledImages);
-
-  const handleMouseEnterFolder = (index) => {
-    const newImages = [...folderImages];
-    const currentImage = newImages[index];
-    let randomImage = getRandomImage(newImages);
-
-    while (randomImage === currentImage) {
-      randomImage = getRandomImage(newImages);
-    }
-
-    newImages[index] = randomImage;
-    setFolderImages(newImages);
+  const handleDestinationsButtonClick = () => {
+    navigate('/travel-destinations');
+  };
+  const handleTravelerButtonClick = () => {
+    navigate('/traveler-rank');
+  };
+  const handleTravelbagsButtonClick = () => {
+    navigate('/travel-bag');
   };
 
-  const contentCards = Array.from({ length: 100 }, (_, index) => (
-    <ContentCard
-      key={index}
-      onClick={() => setSelectedCard(index)}
-      className={selectedCard === index ? 'active' : ''}
-    >
-      <img src={sampleDefault} alt="샘플" />
-      <div className="content">
-        <h3>제목입니다</h3>
-        <p>내용입니다 내용입니다 내용입니다 내용입니다</p>
-        <div className="info">
-          <span>김태엽 | 2024-08-24</span>
-          <span>조회수 999+</span>
-        </div>
-      </div>
-    </ContentCard>
-  ));
-
-  const worldTravelers = [
-    {
-      id: 1,
-      name: '김태엽',
-      description: '안녕하세요! 저는 여행을 사랑하는 25살 김태엽입니다. 새로운 장소를 탐험하고, 다양한 문화를 경험하며, 전 세계 사람들과 소통하는 것을 즐깁니다...',
-      likes: '3.2만',
-      comments: 1312,
-      shares: 5,
-      imgSrc: sampleDefault 
-    },
-    {
-      id: 2,
-      name: '김태엽',
-      description: '안녕하세요! 저는 여행을 사랑하는 25살 김태엽입니다. 새로운 장소를 탐험하고, 다양한 문화를 경험하며, 전 세계 사람들과 소통하는 것을 즐깁니다...',
-      likes: '3.2만',
-      comments: 1312,
-      shares: 5,
-      imgSrc: sampleDefault2 
-    },
-    {
-      id: 3,
-      name: '김태엽',
-      description: '안녕하세요! 저는 여행을 사랑하는 25살 김태엽입니다. 새로운 장소를 탐험하고, 다양한 문화를 경험하며, 전 세계 사람들과 소통하는 것을 즐깁니다...',
-      likes: '3.2만',
-      comments: 1312,
-      shares: 5,
-      imgSrc: sampleDefault3 
-    },
-    {
-      id: 4,
-      name: '김태엽',
-      description: '안녕하세요! 저는 여행을 사랑하는 25살 김태엽입니다. 새로운 장소를 탐험하고, 다양한 문화를 경험하며, 전 세계 사람들과 소통하는 것을 즐깁니다...',
-      likes: '3.2만',
-      comments: 1312,
-      shares: 5,
-      imgSrc: sampleDefault4 
-    },
-    {
-      id: 5,
-      name: '김태엽',
-      description: '안녕하세요! 저는 여행을 사랑하는 25살 김태엽입니다. 새로운 장소를 탐험하고, 다양한 문화를 경험하며, 전 세계 사람들과 소통하는 것을 즐깁니다...',
-      likes: '3.2만',
-      comments: 1312,
-      shares: 5,
-      imgSrc: sampleDefault5 
-    },
-    {
-      id: 6,
-      name: '김태엽',
-      description: '안녕하세요! 저는 여행을 사랑하는 25살 김태엽입니다. 새로운 장소를 탐험하고, 다양한 문화를 경험하며, 전 세계 사람들과 소통하는 것을 즐깁니다...',
-      likes: '3.2만',
-      comments: 1312,
-      shares: 5,
-      imgSrc: sampleDefault6 
-    },
-    {
-      id: 7,
-      name: '김태엽',
-      description: '안녕하세요! 저는 여행을 사랑하는 25살 김태엽입니다. 새로운 장소를 탐험하고, 다양한 문화를 경험하며, 전 세계 사람들과 소통하는 것을 즐깁니다...',
-      likes: '3.2만',
-      comments: 1312,
-      shares: 5,
-      imgSrc: sampleDefault7
-    },
-    {
-      id: 8,
-      name: '김태엽',
-      description: '안녕하세요! 저는 여행을 사랑하는 25살 김태엽입니다. 새로운 장소를 탐험하고, 다양한 문화를 경험하며, 전 세계 사람들과 소통하는 것을 즐깁니다...',
-      likes: '3.2만',
-      comments: 1312,
-      shares: 5,
-      imgSrc: sampleDefault8
-    },
-    {
-      id: 9,
-      name: '김태엽',
-      description: '안녕하세요! 저는 여행을 사랑하는 25살 김태엽입니다. 새로운 장소를 탐험하고, 다양한 문화를 경험하며, 전 세계 사람들과 소통하는 것을 즐깁니다...',
-      likes: '3.2만',
-      comments: 1312,
-      shares: 5,
-      imgSrc: sampleDefault9
-    },
-    {
-      id: 10,
-      name: '김태엽',
-      description: '안녕하세요! 저는 여행을 사랑하는 25살 김태엽입니다. 새로운 장소를 탐험하고, 다양한 문화를 경험하며, 전 세계 사람들과 소통하는 것을 즐깁니다...',
-      likes: '3.2만',
-      comments: 1312,
-      shares: 5,
-      imgSrc: sampleDefault10
-    },
-    {
-      id: 11,
-      name: '김태엽',
-      description: '안녕하세요! 저는 여행을 사랑하는 25살 김태엽입니다. 새로운 장소를 탐험하고, 다양한 문화를 경험하며, 전 세계 사람들과 소통하는 것을 즐깁니다...',
-      likes: '3.2만',
-      comments: 1312,
-      shares: 5,
-      imgSrc: sampleDefault11
-    },
-    {
-      id: 12,
-      name: '김태엽',
-      description: '안녕하세요! 저는 여행을 사랑하는 25살 김태엽입니다. 새로운 장소를 탐험하고, 다양한 문화를 경험하며, 전 세계 사람들과 소통하는 것을 즐깁니다...',
-      likes: '3.2만',
-      comments: 1312,
-      shares: 5,
-      imgSrc: sampleDefault12
-    }
-  ];
-
   const travelersPerPage = 6;
-  const maxPage = Math.ceil(worldTravelers.length / travelersPerPage);
+  const maxPage = Math.ceil(users.length / travelersPerPage);
   const startIdx = (currentPage - 1) * travelersPerPage;
-  const selectedTravelers = worldTravelers.slice(startIdx, startIdx + travelersPerPage);
+  const selectedTravelers = users.slice(startIdx, startIdx + travelersPerPage);
 
   const handleNextPage = () => {
     if (currentPage < maxPage) {
@@ -506,6 +326,83 @@ const Contents = () => {
       setCurrentPage(currentPage - 1);
     }
   };
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await axios.get('http://3.37.134.143:8080/api/v1/user/allUsers');
+
+        if (response.data.isSuccess && response.data.result.users.length > 0) {
+          const formattedUsers = response.data.result.users.map(user => ({
+            id: user.id,
+            name: user.nickname,
+            description: `안녕하세요! 저는 ${user.nickname}입니다. 다양한 문화를 경험하며, 전 세계 사람들과 소통하는 것을 즐깁니다...`,
+            likes: Math.floor(Math.random() * 1000), // 랜덤 좋아요 수
+            comments: Math.floor(Math.random() * 500), // 랜덤 댓글 수
+            shares: Math.floor(Math.random() * 100), // 랜덤 공유 수
+            imgSrc: imageDefault,
+          }));
+          setUsers(formattedUsers);
+        }
+      } catch (error) {
+        console.error('Error fetching users:', error.message || error);
+        setUsers([]);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+
+  useEffect(() => {
+    const fetchTopTravelPosts = async () => {
+      try {
+        const response = await axios.get('http://3.37.134.143:8080/api/v1/travelPost/topTravelPosts');
+        console.log('API Response:', response);
+
+        if (response.data.isSuccess && response.data.result?.topTravelPosts?.length > 0) {
+          const formattedPosts = response.data.result.topTravelPosts.map(post => ({
+            id: post.id,
+            title: post.title,
+            content: post.content,
+            likes: post.likeCount,
+            downloads: post.scrapCount,
+            views: post.viewCount,
+            date: post.createDate,
+            author: post.user.nickname,
+            authorImage: "",
+            categories: post.categories || [],
+            imageUrl: post.imageUrl || imageDefault,
+          }));
+          setTopTravelPosts(formattedPosts);
+
+          setFolderImages(getShuffledImages(formattedPosts.length));
+        }
+      } catch (error) {
+        console.error('Error fetching top travel posts:', error.message || error);
+        setTopTravelPosts([]);
+      }
+    };
+
+    fetchTopTravelPosts();
+  }, []);
+
+  const contentCards = topTravelPosts.map((post, index) => (
+    <ContentCard
+      key={post.id}
+      onClick={() => setSelectedCard(index)}
+      className={selectedCard === index ? 'active' : ''}
+    >
+      <img src={post.imageUrl} alt={post.title} />
+      <div className="content">
+        <h3>{post.title}</h3>
+        <p>{post.content.replace(/<\/?[^>]+(>|$)/g, "").substring(0, 100)}...</p>
+        <div className="info">
+          <span>{post.author} | {new Date(post.date).toLocaleDateString()}</span>
+          <span>조회수 {post.views}</span>
+        </div>
+      </div>
+    </ContentCard>
+  ));
 
   return (
     <Container>
@@ -541,6 +438,7 @@ const Contents = () => {
         금주의 기록 전체보기
         <img src={isHovered1 ? plane2 : plane1} alt="비행기" />
       </StyledButton>
+
       <SectionContainer>
         <SectionHeader>
           <img src={mark2} alt="마크" />
@@ -550,22 +448,32 @@ const Contents = () => {
           </div>
         </SectionHeader>
         <FolderContainer>
-          {travelFolders.map((folderItem, index) => (
+          {folderImages.map((image, index) => (
             <FolderCard key={index}>
               <div className="image-wrapper">
                 <img
-                  src={folderImages[index]}
-                  alt={folderItem.name}
-                  onMouseEnter={() => handleMouseEnterFolder(index)}
+                  src={image}
+                  alt={`Folder ${index + 1}`}
+                  onMouseEnter={() => {
+                    const newImages = [...folderImages];
+                    let randomImage = getRandomImage(newImages);
+
+                    while (randomImage === image) {
+                      randomImage = getRandomImage(newImages);
+                    }
+
+                    newImages[index] = randomImage;
+                    setFolderImages(newImages);
+                  }}
                   className="current"
                 />
               </div>
-              <div>{folderItem.name}</div>
+              <div>{`Folder ${index + 1}`}</div>
             </FolderCard>
           ))}
         </FolderContainer>
       </SectionContainer>
-      <StyledButton
+      <StyledButton onClick={handleDestinationsButtonClick}
         onMouseEnter={() => setIsHovered2(true)}
         onMouseLeave={() => setIsHovered2(false)}
       >
@@ -606,13 +514,14 @@ const Contents = () => {
           <PageButton onClick={handleNextPage} disabled={currentPage === maxPage}>{'>'}</PageButton>
         </PageButtonContainer>
       </SectionContainer>
-      <StyledButton
+      <StyledButton onClick={handleTravelerButtonClick}
         onMouseEnter={() => setIsHovered3(true)}
         onMouseLeave={() => setIsHovered3(false)}
       >
         세계 여행가 전체보기
         <img src={isHovered3 ? plane2 : plane1} alt="비행기" />
       </StyledButton>
+      
       <SectionContainer>
         <SectionHeader>
           <img src={mark4} alt="마크" />
@@ -638,7 +547,7 @@ const Contents = () => {
           </div>
         </Draggable>
       </SectionContainer>
-      <StyledButton
+      <StyledButton onClick={handleTravelbagsButtonClick}
         onMouseEnter={() => setIsHovered4(true)}
         onMouseLeave={() => setIsHovered4(false)}
       >
