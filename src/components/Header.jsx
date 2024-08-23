@@ -212,8 +212,7 @@ const getSubCategory = (dest) => {
 
 function Header({ selectedDest, setSelectedDest }) {
   const [activeDropdown, setActiveDropdown] = useState(null);
-  const navigate = useNavigate();  // useNavigate 초기화
-
+  const navigate = useNavigate();
   const toggleDropdown = (index) => {
     setActiveDropdown(prevIndex => (prevIndex === index ? null : index));
   };
@@ -222,7 +221,7 @@ function Header({ selectedDest, setSelectedDest }) {
     const displayDest = dest === '전체' ? `여행지 - 전체` : dest;
     setSelectedDest(displayDest);
     setActiveDropdown(null); 
-    navigate('/travel-destinations');  // 페이지 이동
+    navigate('/travel-destinations');
   };
 
   return (
