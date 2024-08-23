@@ -9,6 +9,7 @@ export const ContentWrapper = styled.div`
   margin-top: 100px;
   margin-bottom: 1000px;
   min-height: 1000px;
+  align-items: center;
 `;
 
 export const HeaderWrapper = styled.div`

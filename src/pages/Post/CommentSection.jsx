@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import styled from 'styled-components';
 
 import sampleDefault from './postpage/sample.jpeg'; 
@@ -61,7 +62,7 @@ const RightActions = styled.div`
 
 const ActionLink = styled.span`
   cursor: pointer;
-   color: #C1C3C5;
+  color: #C1C3C5;
 `;
 
 const RepliesWrapper = styled.div`
@@ -118,54 +119,57 @@ const BottomSubmitButton = styled.button`
     background-color: #C1C3C5;
   }
 `;
-
-
-
-const Comment = ({ author, text, time, isMyComment, replies, onDelete, onReplySubmit }) => {
+const Comment = ({ commentId, author, text, time, isMyComment, replies = [], onDelete, onReplySubmit }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isReplying, setIsReplying] = useState(false);
-  const [areRepliesVisible, setAreRepliesVisible] = useState(true); // State for toggling replies
+  const [areRepliesVisible, setAreRepliesVisible] = useState(true);
   const [editedText, setEditedText] = useState(text);
   const [replyText, setReplyText] = useState('');
 
-  const handleEditClick = () => {
-    setIsEditing(true);
+  const handleDeleteClick = async () => {
+    const confirmed = window.confirm("삭제하시겠습니까?");
+    if (confirmed) {
+      try {
+        const response = await axios.get(`http://3.37.134.143:8080/api/v1/comment/${commentId}/delete`, {
+          params: { userid: 'miriya' } // 유저 ID를 실제 로그인된 사용자 ID로 대체
+        });
+        if (response.data.isSuccess) {
+          onDelete(commentId);
+        } else {
+          console.error('댓글 삭제 실패:', response.data.message);
+        }
+      } catch (error) {
+        console.error('댓글 삭제 중 오류 발생:', error);
+      }
+    }
   };
 
-  const handleReplyClick = () => {
-    setIsReplying(true);
+  const handleEditClick = () => {
+    setIsEditing(true);
   };
 
   const handleTextChange = (e) => {
     setEditedText(e.target.value);
   };
 
-  const handleReplyTextChange = (e) => {
-    setReplyText(e.target.value);
-  };
-
   const handleSaveClick = () => {
-    // Logic to save the edited comment
     console.log("Edited text:", editedText);
     setIsEditing(false);
   };
 
+  const handleReplyClick = () => {
+    setIsReplying(true);
+  };
+
+  const handleReplyTextChange = (e) => {
+    setReplyText(e.target.value);
+  };
+
   const handleReplySubmit = () => {
     if (replyText.trim() === '') return;
-    onReplySubmit(replyText);
+    onReplySubmit(commentId, replyText);
     setReplyText('');
     setIsReplying(false);
-  };
-
-  const handleDeleteClick = () => {
-    const confirmed = window.confirm("삭제하시겠습니까?");
-    if (confirmed) {
-      onDelete();
-    }
-  };
-
-  const toggleRepliesVisibility = () => {
-    setAreRepliesVisible(!areRepliesVisible);
   };
 
   return (
@@ -182,47 +186,44 @@ const Comment = ({ author, text, time, isMyComment, replies, onDelete, onReplySu
           <BottomCommentInput
             type="text"
             value={editedText}
-            onChange={handleTextChange}
+            onChange={(e) => setEditedText(e.target.value)}
           />
-          <BottomSubmitButton onClick={handleSaveClick}>등록</BottomSubmitButton>
+          <BottomSubmitButton onClick={handleSaveClick}>Save</BottomSubmitButton>
         </CommentInputContainer>
       ) : (
         <CommentText>{text}</CommentText>
       )}
       <CommentActions>
         <LeftActions>
-          {replies && replies.length > 0 && (
-            <ActionLink onClick={toggleRepliesVisibility}>
-              답글 {replies.length}개 {areRepliesVisible ? '' : ''}
+          {replies.length > 0 && (
+            <ActionLink onClick={() => setAreRepliesVisible(!areRepliesVisible)}>
+              답글 {replies.length} {areRepliesVisible ? '' : ''}
             </ActionLink>
           )}
-          <ActionLink onClick={handleReplyClick}>답글 쓰기</ActionLink>
+          <ActionLink onClick={handleReplyClick}>답글달기</ActionLink>
         </LeftActions>
         {isMyComment && (
           <RightActions>
-            {!isEditing && (
-              <ActionLink onClick={handleEditClick}>수정</ActionLink>
-            )}
-            {!isEditing && (
-              <ActionLink onClick={handleDeleteClick}>삭제</ActionLink>
-            )}
+            {!isEditing && <ActionLink onClick={handleEditClick}>Edit</ActionLink>}
+            {!isEditing && <ActionLink onClick={handleDeleteClick}>Delete</ActionLink>}
           </RightActions>
         )}
       </CommentActions>
-      {areRepliesVisible && replies && replies.length > 0 && (
+      {areRepliesVisible && (
         <RepliesWrapper>
           <RepliesImage src={repliesIcon} alt="Replies Icon" />
           <RepliesContainer>
             {replies.map((reply, index) => (
               <Comment
                 key={index}
-                author={reply.author}
-                text={reply.text}
-                time={reply.time}
-                isMyComment={reply.isMyComment}
+                commentId={reply.commentId}
+                author={`User ${reply.userId}`} 
+                text={reply.content}
+                time={reply.time || ""} 
+                isMyComment={reply.userId === 'miriya'} 
                 replies={reply.replies}
-                onDelete={() => console.log("댓글 삭제")} // 삭제 됐다
-                onReplySubmit={(text) => console.log("작성한 댓글:", text)} // 작성한 댓글
+                onDelete={onDelete}
+                onReplySubmit={onReplySubmit}
               />
             ))}
           </RepliesContainer>
@@ -232,81 +233,119 @@ const Comment = ({ author, text, time, isMyComment, replies, onDelete, onReplySu
         <CommentInputContainer>
           <BottomCommentInput
             type="text"
-            placeholder="답글을 입력해 주세요."
+            placeholder="댓글을 입력해주세요."
             value={replyText}
-            onChange={handleReplyTextChange}
+            onChange={(e) => setReplyText(e.target.value)}
           />
-          <BottomSubmitButton onClick={handleReplySubmit}>등록</BottomSubmitButton>
+          <BottomSubmitButton onClick={handleReplySubmit}>확인</BottomSubmitButton>
         </CommentInputContainer>
       )}
     </CommentContainer>
   );
 };
 
-const CommentSection = ({ comments }) => {
-  const [commentList, setCommentList] = useState(comments);
+const CommentSection = ({ postId }) => {
+  const [commentList, setCommentList] = useState([]);
   const [commentText, setCommentText] = useState('');
+
+  useEffect(() => {
+    const fetchComments = async () => {
+      try {
+        const response = await axios.get(`http://3.37.134.143:8080/api/v1/comment/comments?postId=${postId}`);
+        if (response.data.isSuccess) {
+          const commentsWithReplies = response.data.result.comments.map(comment => ({
+            ...comment,
+            replies: comment.replies || [], // Ensure replies are initialized
+          }));
+          setCommentList(commentsWithReplies);
+        } else {
+          console.error('Failed to load comments:', response.data.message);
+        }
+      } catch (error) {
+        console.error('Error loading comments:', error);
+      }
+    };
+
+    fetchComments();
+  }, [postId]);
 
   const handleCommentChange = (e) => {
     setCommentText(e.target.value);
   };
 
-  const handleCommentSubmit = () => {
+  const handleCommentSubmit = async () => {
     if (commentText.trim() === '') return;
-
-    const newComment = {
-      author: "New User", // 코멘트에 작성되는 사용자명 // 나중에 연동시키면 됨
-      text: commentText,
-      time: new Date().toISOString(),
-      isMyComment: true,
-      replies: [],
-    };
-
-    setCommentList([...commentList, newComment]);
-    setCommentText('');
+    try {
+      const payload = {
+        userid: 'miriya', // 아이디 변경해야함
+        postId: postId,
+        content: commentText
+      };
+      const response = await axios.post('http://3.37.134.143:8080/api/v1/comment', payload);
+      if (response.data.isSuccess) {
+        const newComment = { ...response.data.result, replies: [] };
+        setCommentList([...commentList, newComment]);
+        setCommentText('');
+      } else {
+        console.error('Failed to post comment:', response.data.message);
+      }
+    } catch (error) {
+      console.error('Error posting comment:', error);
+    }
   };
 
-  const handleDeleteComment = (index) => {
-    setCommentList(commentList.filter((_, i) => i !== index));
+  const handleDeleteComment = (commentId) => {
+    setCommentList(commentList.filter(comment => comment.commentId !== commentId));
   };
 
-  const handleReplySubmit = (index, replyText) => {
-    const updatedComments = [...commentList];
-    updatedComments[index].replies.push({
-      author: "New User", // 서버로 전송 시 사용자 명
-      text: replyText,
-      time: new Date().toISOString(),
-      isMyComment: true,
-      replies: [],
-    });
-    setCommentList(updatedComments);
+  const handleReplySubmit = async (commentId, replyText) => {
+    try {
+      const payload = {
+        userid: 'miriya', 
+        postId: postId,
+        content: replyText,
+        parentCommentId: commentId
+      };
+      const response = await axios.post('http://3.37.134.143:8080/api/v1/comment', payload);
+      if (response.data.isSuccess) {
+        const updatedComments = commentList.map(comment =>
+          comment.commentId === commentId
+            ? { ...comment, replies: [...comment.replies, response.data.result] }
+            : comment
+        );
+        setCommentList(updatedComments);
+      } else {
+        console.error('Failed to post reply:', response.data.message);
+      }
+    } catch (error) {
+      console.error('Error posting reply:', error);
+    }
   };
 
   return (
     <div>
-      <div>
-      <CommentCount>댓글 {comments.length}</CommentCount>
-      </div>
+      <CommentCount>Comments {commentList.length}</CommentCount>
       {commentList.map((comment, index) => (
         <Comment
           key={index}
-          author={comment.author}
-          text={comment.text}
-          time={comment.time || "2024-08-24 12:50"}
-          isMyComment={comment.isMyComment || false}
+          commentId={comment.commentId}
+          author={`User ${comment.userId}`}
+          text={comment.content}
+          time={comment.time || ""}
+          isMyComment={comment.userId === 'miriya'}
           replies={comment.replies}
-          onDelete={() => handleDeleteComment(index)}
-          onReplySubmit={(replyText) => handleReplySubmit(index, replyText)}
+          onDelete={handleDeleteComment}
+          onReplySubmit={handleReplySubmit}
         />
       ))}
       <CommentInputContainer>
         <BottomCommentInput
           type="text"
-          placeholder="댓글을 입력해 주세요."
+          placeholder="댓글을 입력해주세요"
           value={commentText}
           onChange={handleCommentChange}
         />
-        <BottomSubmitButton onClick={handleCommentSubmit}>등록</BottomSubmitButton>
+        <BottomSubmitButton onClick={handleCommentSubmit}>Submit</BottomSubmitButton>
       </CommentInputContainer>
     </div>
   );

@@ -1,4 +1,5 @@
-import React, { useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
+import axios from 'axios'; 
 import styled from "styled-components";
 import PostContent from "./Post/PostContent";
 import CommentSection from "./Post/CommentSection";
@@ -119,130 +120,85 @@ const AuthorDateWrapper = styled.div`
 
 const randomImage = images[Math.floor(Math.random() * images.length)];
 
-const post = {
-  country: "대한민국",
-  region: "제주도",
-  title: "제주도 여행 : 숨겨진 보석 같은 휴양지",
-  author: "김태엽",
-  authorImage: randomImage,
-  date: "2024-08-24 12:50",
-  likes: 32000,
-  downloads: 1312,
-  views: 762000,
-  content: [
-    { type: 'text', text: '본문입니다', align: 'left' },
-    { type: 'image', src: randomImage, alt: '제주' },
-    { type: 'text', text: '본문입니다', align: 'center' },
-    { type: 'map', map: <iframe src="https://maps.google.com/..."></iframe> },
-    { type: 'image', src: randomImage, alt: '음식' },
-    { type: 'text', text: '본문입니다', align: 'right' }
-  ],
-  comments: [
-    {
-      author: "윤다희",
-      text: "댓글 입니다",
-      time: "2024-08-24 12:50",
-      isMyComment: false,
-      replies: [
-        {
-          author: "김태연",
-          text: "댓글 입니다",
-          time: "2024-08-24 12:50",
-          isMyComment: true,
-        },
-      ],
-    },
-    {
-      author: "윤커카",
-      text: "댓글 입니다",
-      time: "2024-08-24 12:50",
-      isMyComment: false,
-      replies: [
-        {
-          author: "김태연",
-          text: "댓글 입니다",
-          time: "2024-08-24 12:50",
-          isMyComment: true,
-        },
-      ],
-    },
-    {
-      author: "윤커카",
-      text: "댓글 입니다",
-      time: "2024-08-24 12:50",
-      isMyComment: false,
-      replies: [
-        {
-          author: "김태연",
-          text: "댓글 입니다",
-          time: "2024-08-24 12:50",
-          isMyComment: true,
-        },
-      ],
-    },
-  ],
-  location: "제주도",
-};
-
 
 const isLoggedIn = true;
 const isWrittenIn = true;
+const PostPage_title = () => {
+  const [post, setPost] = useState(null);
+  const commentSectionRef = useRef(null);
 
-const PostPage = () => {
-  const commentSectionRef = useRef(null); // 코멘트 섹션으로 감
+  useEffect(() => {
+    const fetchPost = async () => {
+      try {
+        const response = await axios.get('http://3.37.134.143:8080/api/v1/travelPost/1');  // Adjusted the URL
+        if (response.data.isSuccess) {
+          setPost(response.data.result);
+        } else {
+          console.error('Failed to fetch post:', response.data.message);
+        }
+      } catch (error) {
+        console.error('Error fetching post:', error);
+      }
+    };
+
+    fetchPost();
+  }, []);
 
   const scrollToComments = () => {
     if (commentSectionRef.current) {
       commentSectionRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   };
+
+  if (!post) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <GlobalStyle>
       <ContentWrapper>
         <MainContent id="main-content">
           <HeaderWrapper>
-            <Subtitle>{`${post.country} - ${post.region}`}</Subtitle>
             <Title>{post.title}</Title>
+            <Subtitle>{`${post.continent} - ${post.country}`}</Subtitle>
+            <div style={{ textAlign: 'center' }}>
+              <img src={post.repImage} alt="Representative" style={{ width: '100%', height: 'auto' }} />
+            </div>
             <AuthorDateWrapper>
               <MetaInfo>
                 <div className="author-date">
-                  <img src={post.authorImage} alt="Author" />
-                  <span>{`${post.author} | ${post.date}`}</span>
+                  <span>{`${post.user.nickname} | ${new Date(post.createDate).toLocaleDateString()}`}</span>
                 </div>
                 <div className="stats">
                   <div className="stat-item">
                     <img src={heartImage} alt="Likes" />
-                    <span>{`${post.likes.toLocaleString()}`}</span>
+                    <span>{`${post.likeCount.toLocaleString()}`}</span>
                   </div>
                   <div className="stat-item">
-                    <img src={downloadImage} alt="Downloads" />
-                    <span>{`${post.downloads.toLocaleString()}`}</span>
+                    <img src={downloadImage} alt="Scraps" />
+                    <span>{`${post.scrapCount.toLocaleString()}`}</span>
                   </div>
                   <div className="stat-item">
                     <img src={viewImage} alt="Views" />
-                    <span>{`${post.views.toLocaleString()}`}</span>
+                    <span>{`${post.viewCount.toLocaleString()}`}</span>
                   </div>
                 </div>
               </MetaInfo>
             </AuthorDateWrapper>
-            <EditButton isVisible={isLoggedIn && isWrittenIn}>
-              수정하기
-              <img src={rewriteImage} alt="Edit" />
-            </EditButton>
           </HeaderWrapper>
 
           <PostContent content={post.content} />
-          <div ref={commentSectionRef}>  {/* 댓글 */}
-            <CommentSection comments={post.comments} />
+          <div ref={commentSectionRef}>
+            <CommentSection postId={post.id} />
           </div>
         </MainContent>
 
         <SidebarWrapper>
-          <Sidebar scrollToComments={scrollToComments} /> {/* 버튼 누르면 코멘트로 감 */}
+          <Sidebar scrollToComments={scrollToComments} postId={post.id} />
         </SidebarWrapper>
-    </ContentWrapper>
-    </GlobalStyle >
+      </ContentWrapper>
+    </GlobalStyle>
   );
 };
 
-export default PostPage;
+export default PostPage_title;

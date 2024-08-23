@@ -19,6 +19,8 @@ import Contents from './pages/Contents';
 import SearchSection from './Navbar/SearchSection';
 import PostPage_tag from './pages/PostPage_tag.jsx';
 import PostPage_title from './pages/PostPage_title.jsx';
+import PostList from './pages/PostList.jsx';
+import PostPage_tagcopy from './pages/PostPage_tagcopy.jsx';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <BrowserRouter> 
@@ -40,8 +42,10 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <Route path='/findid' element={<FindIdPage/>}/>
         <Route path='/findpw' element={<FindPwPage/>}/>
         <Route path='/repasswd' element={<RePW/>}/>
-        <Route path='/PostPage_tag' element={<PostPage_tag/>}/>
-        <Route path='/postpage_title' element={<PostPage_title/>}/>
+        <Route path='/postlist' element={<PostList/>}/>
+        <Route path="/posttag" element={<PostPage_tagcopy/>} />
+        <Route path="/post_tag/:id" element={<PostPage_tag/>} />
+        <Route path='/post_title/:id' element={<PostPage_title/>}/>
         <Route path="/travel-destinations" element={<TravelDestinations />} />
         <Route path="/travel-bags" element={<TravelBags />} />
         <Route path="/search" element={<SearchSection />} />
