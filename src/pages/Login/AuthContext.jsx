@@ -22,6 +22,7 @@ export const AuthProvider = ({ children }) => {
       setUser(userData);
       // 사용자 정보를 세션 스토리지에 저장합니다.
       sessionStorage.setItem('user', JSON.stringify(userData));
+      sessionStorage.setItem('nickname', userData.nickname);
     } catch (error) {
       console.error('Error fetching user info:', error);
       logout();
@@ -31,6 +32,7 @@ export const AuthProvider = ({ children }) => {
   const login = (newToken, userData) => {
     sessionStorage.setItem('token', newToken);
     sessionStorage.setItem('user', JSON.stringify(userData));
+    sessionStorage.setItem('nickname', userData.nickname);
     setToken(newToken);
     setUser(userData);
 
@@ -39,6 +41,7 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     sessionStorage.removeItem('token');
     sessionStorage.removeItem('user');
+    sessionStorage.removeItem('nickname');
     setToken(null);
     setUser(null);
   };

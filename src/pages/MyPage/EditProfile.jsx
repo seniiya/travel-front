@@ -115,10 +115,12 @@ const EditContainer = styled.div`
     padding: 20px;
     background: #FFFFFF;
     border-radius: 14px;
-    height: 100%;
+    height: 140%;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    box-shadow: 0px 0px 54px rgba(0, 0, 0, 0.05), 1px 10px 24px rgba(0, 0, 0, 0.08);
+
 `;
 
 const EditForm = styled.form`

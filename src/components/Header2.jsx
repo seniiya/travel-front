@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import mark4 from '../components/pic/mark4.png';
 
@@ -81,7 +81,6 @@ const MainNav = styled.nav`
   font-size: 17px;
 
   @media (max-width: 768px) {
-
     align-items: flex-start;
     gap: 10px;
   }
@@ -98,6 +97,7 @@ const MainNavLink = styled.a`
   font-size: 1em;
   border-bottom: ${({ active }) => (active ? '2px solid #005cf9' : 'none')};
   padding-bottom: 5px;
+  cursor: pointer;
 
   @media (max-width: 768px) {
     font-size: 0.9em;
@@ -108,111 +108,92 @@ const MainNavLink = styled.a`
   }
 `;
 
-function Header2() {
-  const [activeLink, setActiveLink] = useState('/travel-bag');
-
-  const handleClick = (href) => {
-    setActiveLink(href);
-  };
-
+function Header2({ selectedCategory, setSelectedCategory }) {
   return (
     <HeaderWrapper>
       <SectionHeader>
         <img src={mark4} alt="마크" />
         <div>
-          <h2>여행 가방 - 전체</h2>
+          <h2>{selectedCategory}</h2>
           <p>여행가들의 가방 속 빠질 수 없는 이것!</p>
         </div>
       </SectionHeader>
       <MainNav>
         <MainNavLink
-          href="/travel-bag"
-          active={activeLink === '/travel-bag'}
-          onClick={() => handleClick('/travel-bag')}
+          active={selectedCategory === '여행 가방 - 전체'}
+          onClick={() => setSelectedCategory('여행 가방 - 전체')}
         >
           전체
         </MainNavLink>
         <MainNavLink
-          href="#airport"
-          active={activeLink === '#airport'}
-          onClick={() => handleClick('#airport')}
+          active={selectedCategory === '공항'}
+          onClick={() => setSelectedCategory('공항')}
         >
           공항
         </MainNavLink>
         <MainNavLink
-          href="#clothing"
-          active={activeLink === '#clothing'}
-          onClick={() => handleClick('#clothing')}
+          active={selectedCategory === '의류·신발'}
+          onClick={() => setSelectedCategory('의류·신발')}
         >
-          의류 ∙ 신발
+          의류·신발
         </MainNavLink>
         <MainNavLink
-          href="#fashion"
-          active={activeLink === '#fashion'}
-          onClick={() => handleClick('#fashion')}
+          active={selectedCategory === '패션 소품'}
+          onClick={() => setSelectedCategory('패션 소품')}
         >
           패션 소품
         </MainNavLink>
         <MainNavLink
-          href="#bags"
-          active={activeLink === '#bags'}
-          onClick={() => handleClick('#bags')}
+          active={selectedCategory === '가방·캐리어'}
+          onClick={() => setSelectedCategory('가방·캐리어')}
         >
-          가방 ∙ 캐리어
+          가방·캐리어
         </MainNavLink>
         <MainNavLink
-          href="#life-beauty"
-          active={activeLink === '#life-beauty'}
-          onClick={() => handleClick('#life-beauty')}
+          active={selectedCategory === '라이프·뷰티'}
+          onClick={() => setSelectedCategory('라이프·뷰티')}
         >
-          라이프 ∙ 뷰티
+          라이프·뷰티
         </MainNavLink>
         <MainNavLink
-          href="#infants"
-          active={activeLink === '#infants'}
-          onClick={() => handleClick('#infants')}
+          active={selectedCategory === '유아'}
+          onClick={() => setSelectedCategory('유아')}
         >
           유아
         </MainNavLink>
         <MainNavLink
-          href="#tickets"
-          active={activeLink === '#tickets'}
-          onClick={() => handleClick('#tickets')}
+          active={selectedCategory === '티켓'}
+          onClick={() => setSelectedCategory('티켓')}
         >
           티켓
         </MainNavLink>
         <MainNavLink
-          href="#passport-visa"
-          active={activeLink === '#passport-visa'}
-          onClick={() => handleClick('#passport-visa')}
+          active={selectedCategory === '여권·비자'}
+          onClick={() => setSelectedCategory('여권·비자')}
         >
-          여권 ∙ 비자
+          여권·비자
         </MainNavLink>
         <MainNavLink
-          href="#medical-safety"
-          active={activeLink === '#medical-safety'}
-          onClick={() => handleClick('#medical-safety')}
+          active={selectedCategory === '의료·영양'}
+          onClick={() => setSelectedCategory('의료·영양')}
         >
-          의료 ∙ 안전
+          의료·영양
         </MainNavLink>
         <MainNavLink
-          href="#web-app"
-          active={activeLink === '#web-app'}
-          onClick={() => handleClick('#web-app')}
+          active={selectedCategory === '웹·앱'}
+          onClick={() => setSelectedCategory('웹·앱')}
         >
-          웹 ∙ 앱
+          웹·앱
         </MainNavLink>
         <MainNavLink
-          href="#sports-leisure"
-          active={activeLink === '#sports-leisure'}
-          onClick={() => handleClick('#sports-leisure')}
+          active={selectedCategory === '스포츠·레저'}
+          onClick={() => setSelectedCategory('스포츠·레저')}
         >
-          스포츠 ∙ 레저
+          스포츠·레저
         </MainNavLink>
         <MainNavLink
-          href="#other"
-          active={activeLink === '#other'}
-          onClick={() => handleClick('#other')}
+          active={selectedCategory === '기타'}
+          onClick={() => setSelectedCategory('기타')}
         >
           기타
         </MainNavLink>

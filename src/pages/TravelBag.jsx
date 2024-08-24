@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import imageDefault from '../components/pic/default.png';
 import write from '../components/pic/write.png';
 import like from '../components/pic/grayLike.png';
 import scrap from '../components/pic/grayScrap.png';
-
 const SortingContainer = styled.div`
   display: flex;
   margin-top: 80px;
@@ -251,12 +252,20 @@ const Pagination = styled.div`
   justify-content: center;
   margin-top: 20px;
 
-  button, span {
-    margin: 0 5px;
+  button{
+    margin: 0 15px;
     padding: 8px 12px;
     border: none;
-    background-color: none;
+    background-color: #eeeeee;
+    border-radius: 100px;
     cursor: pointer;
+  }
+
+  span {
+    border: none;
+    background-color: none;
+    margin: 0 5px;
+    padding: 8px 12px;
   }
 
   .active {
@@ -265,58 +274,59 @@ const Pagination = styled.div`
   }
 `;
 
-function TravelBag() {
+function TravelBag({ selectedCategory }) {
   const itemsPerPage = 16;
   const [currentPage, setCurrentPage] = useState(1);
   const [sortCriteria, setSortCriteria] = useState('latest');
   const [activeCard, setActiveCard] = useState(null);
+  const [cards, setCards] = useState([]);
+  const [maxPageIdx, setMaxPageIdx] = useState(1);
+  const navigate = useNavigate();
 
-  const cards = [
-    { id: 1, imgSrc: imageDefault, title: '제목1입니다', content: '내용입니다', likes: 3200, views: 1310, date: '2024.08.11', tags: ['공항', '공항', '공항', '공항', '공항'], scraps: 3000 },
-    { id: 2, imgSrc: imageDefault, title: '제목2입니다', content: '내용입니다', likes: 3201, views: 1311, date: '2024.08.12', tags: ['공항', '가방·캐리어', '공항', '공항', '공항'], scraps: 3000 },
-    { id: 3, imgSrc: imageDefault, title: '제목3입니다', content: '내용입니다', likes: 3202, views: 1312, date: '2024.08.13', tags: ['공항', '공항', '공항', '공항', '공항'], scraps: 3000 },
-    { id: 4, imgSrc: imageDefault, title: '제목4입니다', content: '내용입니다', likes: 3203, views: 1313, date: '2024.08.14', tags: ['공항', '공항', '유아', '공항', '공항'], scraps: 3000 },
-    { id: 5, imgSrc: imageDefault, title: '제목5입니다', content: '내용입니다', likes: 3204, views: 1314, date: '2024.08.15', tags: ['공항', '공항', '공항', '공항', '공항'], scraps: 3000 },
-    { id: 6, imgSrc: imageDefault, title: '제목6입니다', content: '내용입니다', likes: 3205, views: 1315, date: '2024.08.16', tags: ['공항', '공항', '공항', '공항', '공항'], scraps: 3000 },
-    { id: 7, imgSrc: imageDefault, title: '제목7입니다', content: '내용입니다', likes: 3206, views: 1316, date: '2024.08.17', tags: ['공항', '유아', '공항', '공항', '공항'], scraps: 3000 },
-    { id: 8, imgSrc: imageDefault, title: '제목8입니다', content: '내용입니다', likes: 3207, views: 1317, date: '2024.08.18', tags: ['티켓', '공항', '공항', '공항', '공항'], scraps: 3000 },
-    { id: 9, imgSrc: imageDefault, title: '제목9입니다', content: '내용입니다', likes: 3208, views: 1318, date: '2024.08.19', tags: ['웹·앱', '웹·앱', '공항', '공항', '공항'], scraps: 3000 },
-    { id: 10, imgSrc: imageDefault, title: '제목10입니다', content: '내용입니다', likes: 3209, views: 1319, date: '2024.08.20', tags: ['공항', '공항', '공항', '공항', '공항'], scraps: 3000 },
-    { id: 11, imgSrc: imageDefault, title: '제목11입니다', content: '내용입니다', likes: 3210, views: 1320, date: '2024.08.21', tags: ['공항', '공항', '공항', '공항', '공항'], scraps: 3000 },
-    { id: 12, imgSrc: imageDefault, title: '제목12입니다', content: '내용입니다', likes: 3211, views: 1321, date: '2024.08.22', tags: ['공항', '공항', '공항', '공항', '공항'], scraps: 3000 },
-    { id: 13, imgSrc: imageDefault, title: '제목13입니다', content: '내용입니다', likes: 3212, views: 1322, date: '2024.08.23', tags: ['공항', '공항', '공항', '공항', '공항'], scraps: 3000 },
-    { id: 14, imgSrc: imageDefault, title: '제목14입니다', content: '내용입니다', likes: 3213, views: 1323, date: '2024.08.24', tags: ['의류·신발', '의류·신발', '의류·신발', '공항', '공항'], scraps: 3000 },
-    { id: 15, imgSrc: imageDefault, title: '제목15입니다', content: '내용입니다', likes: 3214, views: 1324, date: '2024.08.25', tags: ['패션 소품', '패션 소품', '패션 소품', '공항', '공항'], scraps: 3000 },
-    { id: 16, imgSrc: imageDefault, title: '제목16입니다', content: '내용입니다', likes: 3215, views: 1325, date: '2024.08.26', tags: ['유아', '유아', '유아', '공항', '공항'], scraps: 3000 },
-    { id: 17, imgSrc: imageDefault, title: '제목17입니다', content: '내용입니다', likes: 3216, views: 1326, date: '2024.08.27', tags: ['유아', '유아', '유아', '공항', '공항'], scraps: 3000 },
+  const handleWriteButtonClick = () => {
+    navigate('/write');
+  };
 
-  ];
+  useEffect(() => {
+    const fetchCards = async () => {
+      try {
+        const response = await axios.get('http://3.37.134.143:8080/api/v1/travelItemPost/allPosts', {
+          params: {
+            orderBy: sortCriteria,
+            page: currentPage,
+          },
+        });
+        const data = response.data.result;
+        const formattedCards = data.posts.map((post) => ({
+          id: post.id,
+          imgSrc: post.repImage ? `http://3.37.134.143:8080${post.repImage}` : imageDefault,
+          title: post.title,
+          content: post.content,
+          likes: post.likeCount,
+          views: post.viewCount,
+          date: new Date(post.createDate).toLocaleDateString(),
+          tags: post.categories,
+          scraps: post.scrapCount,
+        }));
 
-  const maxPageIdx = Math.ceil(cards.length / itemsPerPage);
+        const filteredCards = selectedCategory === '여행 가방 - 전체'
+          ? formattedCards
+          : formattedCards.filter(card => card.tags.includes(selectedCategory));
+
+        setCards(filteredCards);
+        setMaxPageIdx(data.maxPageIdx);
+      } catch (error) {
+        console.error('Failed to fetch cards:', error);
+      }
+    };
+
+    fetchCards();
+  }, [sortCriteria, currentPage, selectedCategory]); // 선택된 카테고리에 따라 리렌더링
 
   const handleSortChange = (criteria) => {
     setSortCriteria(criteria);
     setCurrentPage(1);
   };
-
-  const sortedCards = [...cards].sort((a, b) => {
-    switch (sortCriteria) {
-      case 'latest':
-        return b.id - a.id;
-      case 'oldest':
-        return a.id - b.id;
-      case 'views':
-        return b.views - a.views;
-      case 'likes':
-        return b.likes - a.likes;
-      case 'name':
-        return a.title.localeCompare(b.title);
-      case 'scraps':
-        return b.scraps - a.scraps;
-      default:
-        return 0;
-    }
-  });
 
   const handleNextPage = () => {
     setCurrentPage((prevPage) => Math.min(prevPage + 1, maxPageIdx));
@@ -341,9 +351,6 @@ function TravelBag() {
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
-
-  const startIdx = (currentPage - 1) * itemsPerPage;
-  const currentCards = sortedCards.slice(startIdx, startIdx + itemsPerPage);
 
   return (
     <TravelBagWrapper>
@@ -391,13 +398,13 @@ function TravelBag() {
             스크랩순
           </span>
         </SortOptions>
-        <WriteButton>
+        <WriteButton onClick={handleWriteButtonClick}>
           글쓰기
           <img src={write} alt="write" />
         </WriteButton>
       </SortingContainer>
       <GridContainer>
-        {currentCards.map((card) => (
+        {cards.map((card) => (
           <Card
             key={card.id}
             isActive={activeCard === card.id} 
@@ -414,7 +421,7 @@ function TravelBag() {
             <img src={card.imgSrc} alt={card.title} />
             <div className="card-content">
               <h2>{card.title}</h2>
-              <p>{card.content}</p>
+              <p>{card.content.length > 20 ? `${card.content.substring(0, 20)}...` : card.content}</p>
               <div className="meta-info">
                 <div className="left-section">
                   <span><img src={like} alt="like" /> {card.likes}</span>

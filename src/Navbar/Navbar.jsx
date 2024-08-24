@@ -192,6 +192,15 @@ const MusicText = styled.span`
   }
 `;
 
+const UserName = styled.span`
+  cursor: pointer;
+  color: #007bff;
+  &:hover {
+    text-decoration: underline;
+  }
+`;
+
+
 function Navbar() {
   const { user, logout } = useAuth();
   const [isScrolled, setIsScrolled] = useState(false);
@@ -203,6 +212,7 @@ function Navbar() {
   const location = useLocation(); 
   const [showSearchSection, setShowSearchSection] = useState(false);
   const [showMusicPlayer, setShowMusicPlayer] = useState(false);
+  const [nickname, setNickname] = useState(sessionStorage.getItem('nickname'));
   
   const [currentSongInfo, setCurrentSongInfo] = useState({
     title: '노래 제목 예시 노래 제...',
@@ -210,6 +220,11 @@ function Navbar() {
     currentTime: 0,
     duration: 0
   });
+
+  const handleUserNameClick = () => {
+    navigate('/MyPage');
+  };
+
 
   const { isPlaying, currentTime, duration, togglePlay, seekTo } = useAudioPlayer(audioSrc);
 
@@ -275,6 +290,12 @@ function Navbar() {
     return () => clearTimeout(timer);
   }, [travelBagClickCount]);
 
+  useEffect(() => {
+    if (user) {
+      setNickname(user.nickname || sessionStorage.getItem('nickname'));
+    }
+  }, [user]);
+
   return (
     <NavbarWrapper>
       <NavbarContainer isScrolled={isScrolled}>
@@ -318,7 +339,9 @@ function Navbar() {
           {user ? (
             <>
             {/* 로그인 시에 닉네임이 없고 회원가입할 때 닉네임 세션에 저장되도록 해야함 ㅜㅜ */}
-              <span>{user.nickname || user.userid}님</span>
+              <UserName onClick={handleUserNameClick}>
+                {user.nickname || user.userid}님
+              </UserName>
               <button onClick={logout}>로그아웃</button>
             </>
           ) : (

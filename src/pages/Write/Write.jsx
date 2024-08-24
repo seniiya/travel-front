@@ -1,15 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
 import styled from 'styled-components';
 import WriteHeader from './WriteHeader';
+import LocationModal from './LocationModal';
 import './TinyMCECustom.css';
 import profileImage from '../../components/pic/image 53.png';
-// import locationIcon from '../../components/pic/toolbar/위치아이콘.png';
-import locationIcon from '../../components/pic/toolbar/위치아이콘.svg';
-// import imageIcon from '../../components/pic/toolbar/사진첨부.png';
-import imageIcon from '../../components/pic/toolbar/사진첨부.svg';
-import fontIcon from '../../components/pic/toolbar/폰트아이콘.png';
-import paragraphIcon from '../../components/pic/toolbar/본문.png';
+import locationIcon from '../../components/pic/toolbar/위치아이콘.png';
+import imageIcon from '../../components/pic/toolbar/사진첨부.png';
+import locationWrite from '../../components/pic/locationWrite.png';
 
 const WriteContainer = styled.div`
   width: 100%;
@@ -48,13 +46,56 @@ const Write = () => {
   const [title, setTitle] = useState('');
   const [selectedDestination, setSelectedDestination] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
+  const editorRef = useRef(null);
 
   const handleEditorChange = (content, editor) => {
     setContent(content);
   };
 
-  const handleModalChange = (isOpen) => { // 수정
+  const handleModalChange = (isOpen) => {
     setIsModalOpen(isOpen);
+  };
+
+  const handleLocationSelect = (location) => {
+    const locationHtml = `
+      <div class="selected-location-box mceNonEditable">
+        <img src="${locationWrite}" alt="Location Icon" class="location-icon">
+        <div class="location-info">
+          ${location.pointOfInterest 
+            ? `<div class="point-of-interest">${location.pointOfInterest}</div>`
+            : ''
+          }
+          <div class="formatted-address">${location.address}</div>
+        </div>
+      </div>
+    `;
+    
+    if (editorRef.current) {
+      editorRef.current.insertContent(locationHtml);
+    }
+    setIsLocationModalOpen(false);
+  };
+
+  const handleFileAttachment = () => {
+    const input = document.createElement('input');
+    input.setAttribute('type', 'file');
+    input.setAttribute('accept', 'image/*');
+    input.click();
+
+    input.onchange = async () => {
+      const file = input.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const imageHtml = `<img src="${e.target.result}" alt="Attached Image" style="max-width: 100%; height: auto;" />`;
+          if (editorRef.current) {
+            editorRef.current.insertContent(imageHtml);
+          }
+        };
+        reader.readAsDataURL(file);
+      }
+    };
   };
 
   return (
@@ -78,6 +119,7 @@ const Write = () => {
         />
         <Editor
           apiKey="3llja0vwv8x7zavvqpxewy591rc1v1ly32owzvge6o5ccx2e"
+          onInit={(evt, editor) => editorRef.current = editor}
           value={content}
           init={{
             height: 500,
@@ -89,22 +131,56 @@ const Write = () => {
               'insertdatetime media table paste code help wordcount checklist'
             ],
             toolbar: 'location attachment | ' +
-                    'fontselect formatselect | ' +
-                    'bold italic underline strikethrough | ' +
-                    'numlist bullist checklist | ' +
-                    'alignleft aligncenter alignright alignjustify | ' +
-                    'undo redo',
+                     'fontselect styleselect | ' +
+                     'bold italic underline strikethrough forecolor | ' +
+                     'numlist bullist | ' +
+                     'alignleft aligncenter alignright alignjustify | ' +
+                     'undo redo',
             toolbar_sticky: true,
             toolbar_sticky_offset: 85,
             toolbar_mode: 'sliding',
             statusbar: false,
-            content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:16px; padding-top: 48px; }',
-            icons: 'custom', // 커스텀 아이콘 사용
+            content_style: `
+              body { font-family:Helvetica,Arial,sans-serif; font-size:16px; padding-top: 48px; }
+              .selected-location-box {
+                width: 700px;
+                min-height: 80px;
+                background-color: white;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                border-radius: 8px;
+                display: flex;
+                align-items: center;
+                margin: 20px auto;
+                padding: 15px;
+                box-sizing: border-box;
+                cursor: default;
+              }
+              .selected-location-box .location-icon {
+                width: 40px;
+                height: 40px;
+                margin-right: 15px;
+              }
+              .selected-location-box .location-info {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+              }
+              .selected-location-box .point-of-interest {
+                font-weight: bold;
+                font-size: 18px;
+                margin-bottom: 8px;
+              }
+              .selected-location-box .formatted-address {
+                font-size: 14px;
+                color: #555;
+              }
+            `,
+            noneditable_class: 'mceNonEditable',
             font_formats: '기본서체=Helvetica,Arial,sans-serif;본고딕 R=Noto Sans KR;본고딕 L=Noto Sans KR Light;나눔고딕=Nanum Gothic;본명조=Noto Serif KR;궁서=Gungsuh',
             style_formats: [
               { title: '제목 1', format: 'h1' },
               { title: '제목 2', format: 'h2' },
-              { title: '제목 3', format: 'h3' },
+              { title: '제목 3', format: 'h3' },  
               { title: '본문 1', format: 'p' },
               { title: '본문 2', selector: 'p', classes: 'body-text-2' },
               { title: '본문 3', selector: 'p', classes: 'body-text-3' }
@@ -113,66 +189,29 @@ const Write = () => {
             language_url: './ko_KR.js',
             setup: function (editor) {
               editor.ui.registry.addIcon('location', `<img src="${locationIcon}" width="24" height="24" alt="Location" />`);
-              editor.ui.registry.addIcon('attachment', `<img src="${imageIcon}" width="24" height="24" alt="Location" />`); // SVG 아이콘 추가
-              editor.ui.registry.addIcon('customfont', `<img src="${fontIcon}" width="24" height="24" alt="Font" />`);
-              editor.ui.registry.addIcon('customformat', `<img src="${paragraphIcon}" width="24" height="24" alt="Format" />`);
-
+              editor.ui.registry.addIcon('attachment', `<img src="${imageIcon}" width="24" height="24" alt="Attachment" />`);
 
               editor.ui.registry.addButton('location', {
                 icon: 'location',
                 tooltip: '위치 추가',
-                onAction: function () {
-                  // 위치 추가 로직
-                }
+                onAction: () => setIsLocationModalOpen(true)
               });
 
-            editor.ui.registry.addButton('attachment', {
-              icon: 'attachment',
-              tooltip: '첨부파일',
-              onAction: function () {
-                // 첨부파일 추가 로직
-              }
-            });
-
-            editor.ui.registry.addButton('customfont', {
-              icon: 'customfont',
-              tooltip: '기본 서체',
-              type: 'listbox',
-              onAction: function (api) {
-                editor.execCommand('FontName', false, api.getValue());
-              },
-              fetch: function (callback) {
-                const items = editor.getParam('font_formats').split(';').map(item => {
-                  const [title, value] = item.split('=');
-                  return { type: 'choiceitem', text: title, value: value };
-                });
-                callback(items);
-              }
-            });
-
-             editor.ui.registry.addButton('customformat', {
-        icon: 'customformat',
-        tooltip: '본문',
-        type: 'listbox',
-        onAction: function (api) {
-          editor.formatter.apply(api.getValue());
-        },
-        fetch: function (callback) {
-          const items = editor.getParam('style_formats').map(format => ({
-            type: 'choiceitem',
-            text: format.title,
-            value: format.format || format.classes
-          }));
-          callback(items);
-        }
-      });
-
-
-          }
-        }}
-        onEditorChange={handleEditorChange}
-      />
+              editor.ui.registry.addButton('attachment', {
+                icon: 'attachment',
+                tooltip: '첨부파일',
+                onAction: handleFileAttachment
+              });
+            }
+          }}
+          onEditorChange={handleEditorChange}
+        />
       </EditorContainer>
+      <LocationModal 
+        isOpen={isLocationModalOpen}
+        onClose={() => setIsLocationModalOpen(false)}
+        onSelectLocation={handleLocationSelect}
+      />
     </WriteContainer>
   );
 };

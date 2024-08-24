@@ -10,6 +10,9 @@ import mark4 from '../components/pic/mark4.png';
 import plane1 from '../components/pic/plane1.png';
 import plane2 from '../components/pic/plane2.png';
 import folder from '../components/pic/folder.png';
+import likes from '../components/pic/grayLike.png';
+import scraps from '../components/pic/grayScrap.png';
+import write from '../components/pic/write.png';
 import imageDefault from '../components/pic/default.png';
 
 const Container = styled.div`
@@ -98,6 +101,7 @@ const SectionContent = styled.div`
   animation: ${(props) => scrollAnimation(props.duration)} ${(props) => props.duration}s linear infinite;
   animation-play-state: ${(props) => (props.isPaused ? 'paused' : 'running')};
 `;
+
 const CategoryOverlay = styled.div`
   display: flex;
   position: absolute;
@@ -239,7 +243,6 @@ const TravelerCard = styled.div`
   background: white;
   transition: transform 0.3s;
   cursor: pointer;
-  margin-bottom: 10px;
 
   &.active {
     transform: translateY(-20px);
@@ -254,24 +257,44 @@ const TravelerCard = styled.div`
 
   .traveler-info {
     flex-grow: 1;
-    padding: 10px;
     h2 {
       margin: 0;
-      font-size: 18px;
-      font-weight: 400;
+      font-size: 20px;
+      font-weight: 500;
     }
     p {
-      font-size: 14px;
+      height: 70px;
+      font-size: 17px;
       color: #555;
       margin-right: 10px;
     }
     .traveler-stats {
       display: flex;
-      margin-top: 10px;
-      font-size: 12px;
-      color: #888;
+      font-size: 15px;
+      color: #C1C3C5;
+      margin-bottom: 10px;
     }
-}
+  }
+`;
+
+const TravelerStats = styled.div`
+  display: flex;
+  align-items: center;
+  font-size: 15px;
+  color: #888;
+  align-items: center;
+  img {
+    width: 16px;
+    height: 16px;
+    margin: 5px 5px 0 5px;
+  }
+
+  span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+  }
 `;
 
 const PageButtonContainer = styled.div`
@@ -302,6 +325,7 @@ const PageButton = styled.button`
     background-color: #e0e0e0;
   }
 `;
+
 const Contents = () => {
   const [isHovered1, setIsHovered1] = useState(false);
   const [isHovered2, setIsHovered2] = useState(false);
@@ -347,16 +371,16 @@ const Contents = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get('http://3.37.134.143:8080/api/v1/user/allUsers');
+        const response = await axios.get('http://3.37.134.143:8080/api/v1/user/topUsers');
 
         if (response.data.isSuccess && response.data.result.users.length > 0) {
           const formattedUsers = response.data.result.users.map(user => ({
             id: user.id,
             name: user.nickname,
-            description: `안녕하세요! 저는 ${user.nickname}입니다. 다양한 문화를 경험하며, 전 세계 사람들과 소통하는 것을 즐깁니다...`,
-            likes: Math.floor(Math.random() * 1000),
-            comments: Math.floor(Math.random() * 500),
-            shares: Math.floor(Math.random() * 100), 
+            description: user.intro,
+            likes: user.likeCount,  
+            comments: user.scrapCount,
+            shares: user.postCount, 
             imgSrc: imageDefault,
           }));
           setUsers(formattedUsers);
@@ -369,6 +393,7 @@ const Contents = () => {
 
     fetchUsers();
   }, []);
+
 
   useEffect(() => {
     const fetchTopTravelPosts = async () => {
@@ -523,12 +548,12 @@ const Contents = () => {
               <img src={traveler.imgSrc} alt={`${traveler.name}`} />
               <div className="traveler-info">
                 <h2>{traveler.name}</h2>
-                <p>{traveler.description.length > 40 ? `${traveler.description.substring(0, 40)}...` : traveler.description}</p>
-                <div className="traveler-stats">
-                  <span>좋아요 {traveler.likes}</span>
-                  <span>댓글 {traveler.comments}</span>
-                  <span>공유 {traveler.shares}</span>
-                </div>
+                <p>{traveler.description.length > 50 ? `${traveler.description.substring(0, 50)}...` : traveler.description}</p>
+                <TravelerStats>
+                  <span><img src={likes} alt="like" />{traveler.likes}</span>&ensp;
+                  <span><img src={scraps} alt="scrap" /> {traveler.comments}</span>&ensp;
+                  <span><img src={write} alt="write" /> {traveler.shares}</span>
+                </TravelerStats>
               </div>
             </TravelerCard>
           ))}

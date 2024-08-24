@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import styled from 'styled-components';
-import { AuthProvider } from './pages/Login/AuthContext.jsx';
+import { AuthProvider, useAuth } from './pages/Login/AuthContext.jsx';
 import axios from 'axios';
 import './index.css';
 import MainPage from './pages/MainPage.jsx';
@@ -31,6 +31,7 @@ import WritePage from './pages/Write/Write.jsx';
 import PostPage_tag from './pages/PostPage_tag.jsx';
 import PostPage_title from './pages/PostPage_title.jsx';
 import MyPage from './pages/MyPage/MyPage.jsx';
+import TravelBagDropdown from './Navbar/TravelBagDropdown.jsx'
 
 
 const AppContainer = styled.div`
@@ -53,10 +54,20 @@ function SearchSectionWrapper() {
 
 function AppContent() {
   const [selectedDest, setSelectedDest] = useState('여행지 - 전체');
+  const [selectedCategory, setSelectedCategory] = useState('여행 가방 - 전체'); // 추가된 상태
+  const { token } = useAuth();
   const location = useLocation();
   console.log("현재 경로:", location.pathname); 
   const isWritePage = location.pathname === '/write';
   const noFooterPaths = ['/login', '/signup', '/emailsignup', '/findid', '/findpw', '/repasswd', '/write', '/emailchange', '/id-change', '/pw-change', '/leave', '/MyPage'];
+  
+  useEffect(() => {
+    if (token) {
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    } else {
+      delete axios.defaults.headers.common['Authorization'];
+    }
+  }, [token]);
 
   return (
     <AppContainer>
@@ -75,7 +86,10 @@ function AppContent() {
           <Route path='/pw-change' element={<PwChange/>}/>
           <Route path='/leave' element={<Leave/>}/>
           <Route path="/travel-destinations" element={<><Header selectedDest={selectedDest} setSelectedDest={setSelectedDest} /><TravelDestinations selectedDest={selectedDest} /></>} />
-          <Route path="/travel-bag" element={<div><Header2 /><TravelBag /></div>} />
+          <Route path="/travel-bag" element={<>
+            <Header2 selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} />
+            <TravelBag selectedCategory={selectedCategory} />
+          </>} />
           <Route path='/traveler-rank' element={<TravelerRank/>}/>
           <Route path='/popular-page' element={<PopularPage/>}/>
           <Route path="/search" element={<SearchSectionWrapper />} />
@@ -92,25 +106,7 @@ function AppContent() {
 }
 
 function App() {
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    }
-
-    axios.interceptors.response.use(
-      (response) => response,
-      (error) => {
-        if (error.response.status === 401) {
-          // 토큰이 만료되었거나 유효하지 않은 경우
-          localStorage.removeItem('token');
-          // 로그인 페이지로 리다이렉트
-          window.location.href = '/login';
-        }
-        return Promise.reject(error);
-      }
-    );
-  }, []);
+  
 
   
   return (

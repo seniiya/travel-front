@@ -20,7 +20,6 @@ export default function PopularPage() {
     const [activeSection, setActiveSection] = useState('latest');
     const [selectedCard, setSelectedCard] = useState(null);
     const [topPosts, setTopPosts] = useState([]);
-
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
 
@@ -29,27 +28,34 @@ export default function PopularPage() {
     }, [activeSection]);
 
     const fetchTopPosts = async () => {
-
       setIsLoading(true);
       setError(null);
       
-      // activeSection에 따라 orderBy 값 설정
-      const orderBy = {
-        'latest': 'latest',
-        'oldest': 'oldest',
-        'name': 'name',
-        'likes': 'likes',
-        'scrap': 'scrap',
-        'views': 'views'
-      }[activeSection] || 'latest';
+
 
       try {
         const response = await axios.get('http://3.37.134.143:8080/api/v1/travelPost/topTravelPosts', {
                 // params: {  },
                 withCredentials: true
             });
-            if (response.data && response.data.isSuccess) {
-              setTopPosts(response.data.result.topTravelPosts);
+            console.log('API Response:', response);  // 디버깅용 로그
+            
+            if (response.data.isSuccess && response.data.result?.topTravelPosts?.length > 0) {
+              const formattedPosts = response.data.result.topTravelPosts.map(post => ({
+                id: post.id,
+                nickname: post.nickname,
+                title: post.title,
+                content: post.content,
+                continent: post.continent,
+                country: post.country,
+                likeCount: post.likeCount,
+                scrapCount: post.scrapCount,
+                viewCount: post.viewCount,
+                createDate: post.createDate,
+                repImage: post.repImage,
+                user: post.user
+              }));
+              setTopPosts(formattedPosts);
             } else {
               throw new Error(response.data?.message || '데이터를 불러오는데 실패했습니다.');
             }
@@ -130,7 +136,7 @@ export default function PopularPage() {
                   className={selectedCard === post.id ? 'active' : ''}
                 >
                  
-                    <CardImg src={post.repImage || sampleDefault} alt={post.title}/>
+                    <CardImg src={post.repImage} alt={post.title}/>
                     <Overlay>
                     <LikesScraps>
                       <span>
@@ -149,7 +155,6 @@ export default function PopularPage() {
                   
                   <div className="content">
                     <h3>{post.title}</h3>
-                    {/* 이미지 등록 안 되어있으면 기본 이미지로 보이도록 */}
                     <p>{stripHtml(post.content).length > 100 ? stripHtml(post.content).slice(0, 100) + '...' : stripHtml(post.content)}</p>
                     <div className="info">
                     <span>{post.user.nickname} | {new Date(post.createDate).toLocaleDateString()}</span>

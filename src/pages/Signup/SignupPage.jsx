@@ -225,20 +225,27 @@ const SignupPage = () => {
   };
 
   const handleDuplicateCheck = async () => {
-    const userIdUnique = await checkUnique('userid', userId);
-    const nicknameUnique = await checkUnique('nickname', nickname);
+    try {
+      const userIdResponse = await checkUnique('userid', userId);
+      const nicknameResponse = await checkUnique('nickname', nickname);
+      const emailResponse = await checkUnique('email', email);
 
-    setDuplicateCheckResult(prev => ({
-      ...prev,
-      userId: userIdUnique,
-      nickname: nicknameUnique
-    }));
+      setDuplicateCheckResult({
+        userId: userIdResponse,
+        nickname: nicknameResponse,
+        email: emailResponse
+      });
 
-    let newErrors = {};
-    if (!userIdUnique) newErrors.userId = '이미 사용 중인 아이디입니다.';
-    if (!nicknameUnique) newErrors.nickname = '이미 사용 중인 닉네임입니다.';
+      let newErrors = {};
+      if (!userIdResponse) newErrors.userId = '이미 사용 중인 아이디입니다.';
+      if (!nicknameResponse) newErrors.nickname = '이미 사용 중인 닉네임입니다.';
+      if (!emailResponse) newErrors.email = '이미 사용 중인 이메일입니다.';
 
-    setErrors(prevErrors => ({ ...prevErrors, ...newErrors }));
+      setErrors(prevErrors => ({ ...prevErrors, ...newErrors }));
+
+    } catch (error) {
+      console.error('중복 확인 중 오류 발생:', error);
+    }
   };
 
 
@@ -282,6 +289,7 @@ const SignupPage = () => {
         });
         if (response.data.isSuccess && response.data.result.token) {
           localStorage.setItem('token', response.data.result.token);
+          localStorage.setItem('nickname', nickname);  // 닉네임 저장
           navigate('/');
         }
       } catch (error) {

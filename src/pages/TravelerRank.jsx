@@ -75,7 +75,7 @@ export default function TravelerRank() {
             // 제공 안함 => 모달 뜰 때 안 뜸 ? 
             joinDate: user.joinDate,
             favoriteCountry: user.favoriteCountry,
-            location: user.location,
+            location: user,
             sns: user.sns
           }));
           setTravelers(enhancedUsers.slice(0, 30)); // 최대 30명만 
@@ -121,7 +121,7 @@ export default function TravelerRank() {
                   key={traveler.id}
                   onClick={() => handleClick(traveler)}
                 >
-                  <img src={traveler.imgSrc} alt={`${traveler.name}`} />
+                  <img src={traveler.imgSrc}  alt={`${traveler.name}`}className="profile-image" />
                   <div className="traveler-info">
                     <h2>{index + 1}. {traveler.nickname}</h2>
                     {/* 소개글 최대 100자, 요소에는 80자 이상 시 ... 보이게 */}
@@ -134,7 +134,7 @@ export default function TravelerRank() {
                         <span>{traveler.totalLikes}</span>
                       </StatItem>
                       <StatItem>
-                        <img src={scrap } alt="scrap"/>
+                        <img src={scrap} alt="scrap"/>
                         <span>{traveler.totalScraps}</span>
                       </StatItem>
                       <StatItem>
@@ -260,12 +260,22 @@ const TravelerCard = styled.div`
     box-shadow: none;
   }
 
-  img {
+  .profile-image {
     margin: 6px;
     width: 140px;
     height: 160px;
     object-fit: cover;
     border-radius: 10px;
+  }
+
+
+  img {
+    margin: 6px;
+    width: 140px;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 0px;
+    // 이 부분
 
   }
 
@@ -290,7 +300,6 @@ const TravelerCard = styled.div`
 
 const Description = styled.p`
     font-size: 14px;
-    // color: #555;
     width: 200px;
     color: ${props => props.noDescription ? '#AAAAAA' : 'inherit'};
 `;
@@ -302,12 +311,12 @@ const StatItem = styled.div`
 
   img {
     margin-right: 5px;
-    width: 12px;
+    width: 14px;
     height: 12px;
   }
 
   span {
-    font-size: 12px;
+    font-size: 14px;
   }
 `;
 
