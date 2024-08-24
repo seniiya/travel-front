@@ -1,13 +1,17 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import * as A from "../Login.style.jsx";
+import { useAuth } from "../../pages/Login/AuthContext.jsx";
+
 
 import addImg from '../../components/pic/addImg.svg';
 
 
 const EditProfile = ({ traveler, onSave }) => {
     const [editedTraveler, setEditedTraveler] = useState(traveler);
+    const { user, logout } = useAuth();
+    const navigate = useNavigate();
 
     const handleInputChange = (e) => {
         const { nickname, value } = e.target;
@@ -97,7 +101,7 @@ const EditProfile = ({ traveler, onSave }) => {
                 <A.UnderLinks>
                     <A.Underlink to='/leave'>탈퇴하기</A.Underlink>
                     <A.SectionBar/>
-                    <A.Underlink to='/'>로그아웃</A.Underlink>
+                    <A.Underlink onClick={logout} to='/'>로그아웃</A.Underlink>
                 </A.UnderLinks>
                 <A.UnderLinks>
                     <A.Underlink to='/emailchange'>이메일 변경</A.Underlink>

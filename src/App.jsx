@@ -30,6 +30,8 @@ import Music from './Navbar/Music.jsx';
 import WritePage from './pages/Write/Write.jsx';
 import PostPage_tag from './pages/PostPage_tag.jsx';
 import PostPage_title from './pages/PostPage_title.jsx';
+import PostList from './pages/PostList.jsx';
+import PostPage_tagcopy from './pages/PostPage_tagcopy.jsx';
 import MyPage from './pages/MyPage/MyPage.jsx';
 import TravelBagDropdown from './Navbar/TravelBagDropdown.jsx'
 
@@ -97,6 +99,8 @@ function AppContent() {
           <Route path="/write" element={<WritePage/>} />
           <Route path='/PostPage_tag' element={<PostPage_tag/>}/>
           <Route path='/postpage_title' element={<PostPage_title/>}/> 
+          <Route path='/postlist' element={<PostList/>}/>
+          <Route path="/posttag" element={<PostPage_tagcopy/>} />
           <Route path="/MyPage" element={<MyPage />} />        
         </Routes>
       </ContentContainer>

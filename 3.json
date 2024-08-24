@@ -1,0 +1,23 @@
+{
+    "isSuccess": true,
+    "code": "COMMON200",
+    "message": "성공입니다.",
+    "result": {
+        "id": 2,
+        "title": "두번째 게시글",
+        "content": "<p>연구실에서</p>\r\n<p><img src=\"\\images\\1723315829497_text_image_05.png\" alt=\"\" width=\"177\" height=\"225\" /></p>\r\n<p>논문보기</p>",
+        "continent": "대한민국",
+        "country": "경상남도",
+        "likeCount": 0,
+        "scrapCount": 0,
+        "viewCount": 0,
+        "createDate": "2024-08-11T03:50:35",
+        "repImage": "\\images\\1723315829497_text_image_05.png",
+        "user": {
+            "id": 1,
+            "userid": "circlezero",
+            "nickname": "오네로",
+            "email": "wy129@naver.com"
+        }
+    }
+}

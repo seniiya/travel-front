@@ -1,0 +1,23 @@
+{
+    "isSuccess": true,
+    "code": "COMMON200",
+    "message": "성공입니다.",
+    "result": {
+        "id": 1,
+        "title": "첫 게시글",
+        "content": "<p><img src=\"\\images\\1723315771446_후시미이나리2.jpg\" alt=\"\" /></p>\r\n<p>후시미이나리 다녀옴</p>",
+        "continent": "아시아",
+        "country": "일본",
+        "likeCount": 0,
+        "scrapCount": 0,
+        "viewCount": 0,
+        "createDate": "2024-08-11T03:49:43",
+        "repImage": "\\images\\1723315771446_후시미이나리2.jpg",
+        "user": {
+            "id": 1,
+            "userid": "circlezero",
+            "nickname": "오네로",
+            "email": "wy129@naver.com"
+        }
+    }
+}

@@ -34,17 +34,14 @@ const TravelerModal = ({ children, onClose, traveler }) => {
     }
 
     const simplifyUrl = (url) => {
+        if (!url) return '';
         let simplified = url.replace(/^(https?:\/\/)?(www\.)?/, '');
         
         let parts = simplified.split('/');
         
         let domain = parts[0];
         
-        if (domain === 'x.com') {
-            return 'x';
-        }
-        
-        return domain.split('.')[0];
+        return domain === 'x.com' ? 'x' : domain.split('.')[0];
     };
 
     return (
@@ -64,7 +61,7 @@ const TravelerModal = ({ children, onClose, traveler }) => {
                     </LogoContainer>
                     <Twinkle src={twinkle} alt="Twinkle" />
                     <Description>
-                        {traveler.description}
+                        {traveler.intro || '소개글이 없습니다.'}
                     </Description>
                 
                     <Introduce>
@@ -72,11 +69,15 @@ const TravelerModal = ({ children, onClose, traveler }) => {
                             <InfoColumn>
                                 <InfoItem>
                                     <SNSIcon src={snsicon} alt="Sns icon"/>
-                                    {traveler.sns.map((link, index) => (
-                                        <SnsLink key={index} href={link} target="_blank" rel="noopener noreferrer">
-                                            {simplifyUrl(link)}
-                                        </SnsLink>
-                                    ))}
+                                    {traveler.sns && traveler.sns.length > 0 ? (
+                                        traveler.sns.map((link, index) => (
+                                            <SnsLink key={index} href={link} target="_blank" rel="noopener noreferrer">
+                                                {simplifyUrl(link)}
+                                            </SnsLink>
+                                        ))
+                                    ) : (
+                                        <InfoText>SNS 정보가 없습니다.</InfoText>
+                                    )}
                                 </InfoItem>
                             </InfoColumn>
 
@@ -85,11 +86,11 @@ const TravelerModal = ({ children, onClose, traveler }) => {
                             <InfoColumn>
                                 <InfoItem>
                                     <SectionTitle src={nickicon} alt="Nickname icon" />
-                                    <InfoText>{traveler.name}</InfoText>
+                                    <InfoText>{traveler.nickname}</InfoText>
                                 </InfoItem>
                                 <InfoItem>
                                     <SectionTitle src={locationicon} alt="Location icon" />
-                                    <InfoText>{traveler.location || ' '}</InfoText>
+                                    <InfoText>{traveler.location || '정보 없음'}</InfoText>
                                 </InfoItem>
                             </InfoColumn>
 
@@ -98,11 +99,11 @@ const TravelerModal = ({ children, onClose, traveler }) => {
                             <InfoColumn>
                                 <InfoItem>
                                     <DateIcon src={dateissue} alt="Date of Issue" />
-                                    <InfoText>{traveler.dateofissue || ' '}</InfoText>
+                                    <InfoText>{traveler.dateofissue || '정보 없음'}</InfoText>
                                 </InfoItem>
                                 <InfoItem>
                                     <CountryIcon src={favcountry} alt="Favorite Country" />
-                                    <InfoText>{traveler.favcountry || ' '}</InfoText>
+                                    <InfoText>{traveler.favcountry || '정보 없음'}</InfoText>
                                 </InfoItem>
                             </InfoColumn>
                         </Section>

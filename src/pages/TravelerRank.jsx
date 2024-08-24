@@ -75,7 +75,7 @@ export default function TravelerRank() {
             // 제공 안함 => 모달 뜰 때 안 뜸 ? 
             joinDate: user.joinDate,
             favoriteCountry: user.favoriteCountry,
-            location: user,
+            location: user.location,
             sns: user.sns
           }));
           setTravelers(enhancedUsers.slice(0, 30)); // 최대 30명만 
