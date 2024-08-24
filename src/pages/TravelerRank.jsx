@@ -47,17 +47,6 @@ export default function TravelerRank() {
 
 
 
-    // 좋아요 누르면 색상 바뀌는 건가? 
-    const handleLikeClick = (travelerId) => {
-      setLikedTraveler(prevState => {
-          if (prevState.includes(travelerId)) {
-              return prevState.filter(id => id !== travelerId);
-          } else {
-              return [...prevState, travelerId];
-          }
-      });
-    };
-
     const fetchTravelers = async () => {
       try {
         const response = await axios.get('http://3.37.134.143:8080/api/v1/user/topUsers');

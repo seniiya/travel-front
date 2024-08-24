@@ -116,7 +116,7 @@ const EmailSignupPage = () => {
   const handleEmailVerification = async () => {
     try {
       const response = await axios.post('http://3.37.134.143:8080/api/v1/auth/mailSend', { 
-        email: 'seeunbana@naver.com' });
+        email: 'dhwjdguq@ng.com' });
       if (response.data.isSuccess) {
         setIsEmailSent(true);
         setError('');

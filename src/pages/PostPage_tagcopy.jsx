@@ -140,6 +140,12 @@ const post = {
   scrapCount: 45,
   viewCount: 102,
   createDate: "2024-08-24 12:50",
+  author: "여행자",
+  authorImage: sampleDefault, // Use a default image or appropriate author image
+  date: "2024-08-24",
+  tag1: "여행",
+  tag2: "제주도",
+  tag3: "맛집",
   user: {
     id: 101,
     userid: "travel_enthusiast",
@@ -162,6 +168,10 @@ const PostPage = () => {
     }
   };
 
+  const formatNumber = (num) => {
+    return num && typeof num === 'number' ? num.toLocaleString() : '0';
+  };
+
   return (
     <GlobalStyle>
       <ContentWrapper>
@@ -182,15 +192,15 @@ const PostPage = () => {
                 <div className="stats">
                   <div className="stat-item">
                     <img src={heartImage} alt="Likes" />
-                    <span>{`${post.likes.toLocaleString()}`}</span>
+                    <span>{formatNumber(post.likes)}</span>
                   </div>
                   <div className="stat-item">
                     <img src={downloadImage} alt="Downloads" />
-                    <span>{`${post.downloads.toLocaleString()}`}</span>
+                    <span>{formatNumber(post.downloads)}</span>
                   </div>
                   <div className="stat-item">
                     <img src={viewImage} alt="Views" />
-                    <span>{`${post.views.toLocaleString()}`}</span>
+                    <span>{formatNumber(post.views)}</span>
                   </div>
                 </div>
               </MetaInfo>
@@ -202,16 +212,16 @@ const PostPage = () => {
           </HeaderWrapper>
 
           <PostContent content={post.content} />
-          <div ref={commentSectionRef}>  {/* 댓글 */}
+          <div ref={commentSectionRef}>
             <CommentSection comments={post.comments} />
           </div>
         </MainContent>
 
         <SidebarWrapper>
-          <Sidebar scrollToComments={scrollToComments} /> {/* 댓글로 이동 */}
+          <Sidebar scrollToComments={scrollToComments} />
         </SidebarWrapper>
-    </ContentWrapper>
-    </GlobalStyle >
+      </ContentWrapper>
+    </GlobalStyle>
   );
 };
 

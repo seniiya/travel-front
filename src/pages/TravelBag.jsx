@@ -287,6 +287,11 @@ function TravelBag({ selectedCategory }) {
     navigate('/write');
   };
 
+  const handleCardClick = (cardId) => {
+    navigate(`/posttag/${cardId}`);
+  };
+
+
   useEffect(() => {
     const fetchCards = async () => {
       try {
@@ -408,7 +413,7 @@ function TravelBag({ selectedCategory }) {
           <Card
             key={card.id}
             isActive={activeCard === card.id} 
-            onClick={() => setActiveCard(card.id)}
+            onClick={() => handleCardClick(card.id)}
           >
             <TagsContainer>
               {card.tags.slice(0, 3).map((tag, index) => (
