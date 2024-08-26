@@ -1,5 +1,6 @@
-import PropTypes from 'prop-types';
+import React from 'react';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 
 const DropdownContainer = styled.div`
   background-color: white;
@@ -41,17 +42,12 @@ const CategoryColumn = styled.div`
   } 
 `;
 
-const CategoryTitle = styled.h3`
-  margin: 0 0 10px;
-  font-size: 1em;
-  color: #333;
-`;
-
 const CategoryItem = styled.p`
   margin: 5px 0;
-  color: #666;
+  color: black;
   cursor: pointer;
   font-size: 0.9em;
+  font-weight: normal;
 
   &:hover {
     color: #007bff;
@@ -67,24 +63,33 @@ const CloseButton = styled.div`
   opacity: 0.8;
 `;
 
-const categories = {
-  '공항': ['티켓'],
-  '의류·신발': ['여권·비자'],
-  '패션 소품': ['의료·영양'],
-  '가방·캐리어': ['웹·앱'],
-  '라이프·뷰티': ['스포츠·레저'],
-  '유아': ['기타']
-};
+const categories = [
+  ['공항', '티켓'],
+  ['의류·신발', '여권·비자'],
+  ['패션 소품', '의료·영양'],
+  ['가방·캐리어', '웹·앱'],
+  ['라이프·뷰티', '스포츠·레저'],
+  ['유아', '기타']
+];
 
-function TravelBagDropdown({ onClose }) {
+function TravelBagDropdown({ onClose, setSelectedCategory }) {
+  const navigate = useNavigate();
+
+  const handleCategoryClick = (category) => {
+    setSelectedCategory(category);
+    navigate('/travel-bag');
+    onClose();
+  };
+
   return (
     <DropdownContainer>
       <DropdownContent>
-        {Object.entries(categories).map(([category, items]) => (
-          <CategoryColumn key={category}>
-            <CategoryTitle>{category}</CategoryTitle>
-            {items.map(item => (
-              <CategoryItem key={item}>{item}</CategoryItem>
+        {categories.map((category, index) => (
+          <CategoryColumn key={index}>
+            {category.map((item, itemIndex) => (
+              <CategoryItem key={itemIndex} onClick={() => handleCategoryClick(item)}>
+                {item}
+              </CategoryItem>
             ))}
           </CategoryColumn>
         ))}
@@ -93,9 +98,5 @@ function TravelBagDropdown({ onClose }) {
     </DropdownContainer>
   );
 }
-
-TravelBagDropdown.propTypes = {
-  onClose: PropTypes.func.isRequired,
-};
 
 export default TravelBagDropdown;

@@ -1,26 +1,29 @@
+// 위랑 이거랑 같은 코드인지 모르겠음 
 import React, { useState } from "react";
-// import styled from 'styled-components';
-import logo from '../img/logo.svg';
-import copyright from '../img/copyright.svg';
-import visible from '../img/visible.svg';
-import invisible from '../img/invisible.svg';
-import * as A from "./Login.style";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
+import axios from "axios";
+import logo from '../../components/pic/logo.svg';
+import copyright from '../../components/pic/copyright.svg';
+import visible from '../../components/pic/visible.svg';
+import invisible from '../../components/pic/invisible.svg';
+import * as A from "../Login.style.jsx";
+
 
 
 
 
 export default function RePW() {
-    const { register, handleSubmit, watch, formState: { errors, isVlaid }} = useForm({mode: "onChange"}); // 유효성 검사 실시간 반영 
+    const { register, handleSubmit, watch, formState: { errors }} = useForm({mode: "onChange"}); // 유효성 검사 실시간 반영 
     const [ showPw, setShowPw ] = useState(false);
-    // const [ pwValue, setPwValue ] = useState("");
     const [ reShowPw, setReShowPw] = useState(false);
-    // const [ rePwValue, setRePwValue ] = useState("");
     const navigate = useNavigate();
+    const location = useLocation();
+    // 이전 페이지에서 전달받은 useid
+    const userId = location.state?.userId;
 
     const handleLogoClick = () => {
-        navigate('/mainpage');
+        navigate('/');
       };
 
     
@@ -33,11 +36,34 @@ export default function RePW() {
     };
 
     
-    const onSubmit = (data) => {
-        alert('비밀번호가 번경이 완료되었습니다.');
-        navigate('/login');
+    const onSubmit = async (data) => {
+        if (!userId) {
+            alert('사용자 정보를 찾을 수 없습니다. 다시 시도해주세요.');
+            navigate('/findid');
+            return;
+        }
+
+        try {
+            // 재설정은 경로가 어떻게 되는지 몰라서 비번초기화와 동일하게
+            const response = await axios.post('https://a162-203-255-3-239.ngrok-free.app/api/v1/user/repassword', {
+                userId: userId,
+                password: data.password
+            });
+
+            if (response.data.userId) {
+                alert('비밀번호 변경이 완료되었습니다.');
+                // 변경 확인 후 로그인 창으로 이동
+                navigate('/login');
+            } else {
+                alert('비밀번호 변경에 실패했습니다. 다시 시도해주세요.');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('서버 오류가 발생했습니다. 나중에 다시 시도해주세요.');
+        }
     };
-    // 변경 확인 후 로그인 창으로 이동 
+
+   
 
 
     const validateRule = {
@@ -65,19 +91,14 @@ export default function RePW() {
                 <A.Logo src={logo} alt="Memoir Logo" onClick={handleLogoClick}/>
                 <A.Description>새로운 비밀번호로 변경해 주세요.</A.Description>
                 <form onSubmit={handleSubmit(onSubmit)}>
+
                     <A.InputForm>
                         
                         <A.InputContainer>
                      
-                                {/* <A.Input 
-                                    type={showPw ? 'text' : 'password'} 
-                                    placeholder='비밀번호'
-                                    value={pwValue}
-                                    onChange={handlePwChange}                            
-                                />   */}
                                 <A.Input 
                                     type={showPw ? 'text' : 'password'} 
-                                    placeholder='비밀번호'
+                                    placeholder='비밀번호 (숫자+영문자 8자리 이상)'
                                     {...register("password", validateRule.password)}                            
                                 /> 
                                   
@@ -90,10 +111,7 @@ export default function RePW() {
 
                         
                         <A.InputContainer>
-                            {/* <A.Input type={reShowPw ? 'text' : 'password'} placeholder='비밀번호 확인'
-                                value={rePwValue}
-                                onChange={handleRePwChange}                            
-                            />   */}
+                            
                             <A.Input type={reShowPw ? 'text' : 'password'} 
                                 placeholder='비밀번호 확인'
                                 {...register("repassword", validateRule.repassword)}                            
@@ -115,7 +133,7 @@ export default function RePW() {
                         <A.SignText >계정을 찾으셨나요?</A.SignText>
                         <A.LookText>
                             <A.LoglookLink to="/login">로그인</A.LoglookLink> | {' '}
-                            <A.PwlookLink to="/find-id">아이디 찾기</A.PwlookLink>
+                            <A.PwlookLink to="/findid">아이디 찾기</A.PwlookLink>
                         </A.LookText>
                     </A.UnderText>
                    
@@ -124,11 +142,13 @@ export default function RePW() {
             </A.LoginPageContainer>
             <A.UnderContainer>
                 <A.UnderLinks>
-                    {/* to='' 링크 넣어주기 */}
-                    <A.Underlink to="/terms">이용약관</A.Underlink> | {' '}
-                    <A.Underlink to="/privacy">개인정보 처리방침</A.Underlink> |  {' '}
-                    <A.Underlink to="/support">고객센터</A.Underlink>  |  {' '}
-                    <A.Underlink to="/contact">Contact Us</A.Underlink>
+                    <A.Underlink to='/terms' color='#A5A8AB'>이용약관</A.Underlink> 
+                    <A.SectionBar/> {' '}
+                    <A.Underlink to='privacy' color='#63676A'>개인정보 처리방침</A.Underlink> 
+                    <A.SectionBar/>  {' '}
+                    <A.Underlink to='/support' color='#A5A8AB'>고객센터</A.Underlink>  
+                    <A.SectionBar/> {' '}
+                    <A.Underlink to='/contact' color='#A5A8AB'>Contact Us</A.Underlink>
                 </A.UnderLinks>
                     <img src={copyright} alt='Memoir copyright'/>
             </A.UnderContainer>

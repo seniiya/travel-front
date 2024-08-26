@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import logo from '../img/logo.svg';
+import axios from 'axios';
+import logo from '../../components/pic/logo.svg';
+import copyright from '../../components/pic/copyright.svg';
+import * as A from "../Login.style.jsx";
 
 const PageContainer = styled.div`
   display: flex;
@@ -104,9 +107,11 @@ const FooterLink = styled.a`
   &:hover {
     text-decoration: underline;
   }
+  color: #55585B;
+
 `;
 
-const FindIdPage = () => {
+const FindPwPage = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [verificationCode, setVerificationCode] = useState('');
@@ -118,7 +123,7 @@ const FindIdPage = () => {
 
 
   const handleLogoClick = () => {
-    navigate('/mainpage');
+    navigate('/');
   };
 
   const validateEmail = () => {
@@ -132,45 +137,47 @@ const FindIdPage = () => {
     }
   };
 
-  const validateId = () => {
-    if (verificationCode !== 'qwe') {
-      setIdError('아이디의 정보가 올바르지 않습니다.');
-      return false;
-    } else {
-      setIdError('');
-      return true;
-    }
-  }
-
-  const validateCode = () => {
-    if (verificationCode !== '123456') {
-      setCodeError('인증번호가 올바르지 않습니다. 확인 후 다시 입력해 주세요.');
-      return false;
-    } else {
-      setCodeError('');
-      return true;
-    }
-  };
-
-  const handleEmailVerification = (e) => {
+  const handleEmailVerification = async (e) => {
     e.preventDefault();
     if (validateEmail()) {
-      window.alert('인증번호를 발송했습니다. 인증번호가 오지 않으면 입력하신 정보를 다시 한번 확인해 주세요.');
+      try {
+        const response = await axios.post('https://6bd2-203-255-3-239.ngrok-free.app/api/v1/auth/mailSend', { email });
+        if (response.data.success) {
+          alert('인증번호를 발송했습니다. 인증번호가 오지 않으면 입력하신 정보를 다시 한번 확인해 주세요.');
+        } else {
+          alert('인증번호 발송에 실패했습니다. 다시 시도해주세요.');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('서버 오류가 발생했습니다. 나중에 다시 시도해주세요.');
+      }
     }
   };
 
-  const handleIdSearch = (e) => {
+  // 변경 handlePwReset 
+  const handlePwReset = async (e) => {
     e.preventDefault();
-    if (validateCode()) {
-      const userId = 'pre***y'; // Replace this with actual logic to fetch user ID
-      window.alert(`www.memoir.com 내용: 메일 인증이 완료 되었습니다. 회원님의 아이디는 ${userId} 입니다.`);
-      navigate('/repasswd'); // 인증 완료 후 비밀번호 재설정으로 넘어가야해서 추가했습니다 !!
+    if (verificationId && verificationCode) {  // verificationId를 userId 대신 사용
+      try {
+        // 비번 새로 바꾸는 api 명세서 있나요??  경로를 어떻게.. 
+        const response = await axios.post('https://6bd2-203-255-3-239.ngrok-free.app/api/v1/user/repassword', { userId: verificationId, password: verificationCode });
+        if (response.data.userId) {
+          alert('비밀번호 초기화가 완료되었습니다. 새 비밀번호를 설정해주세요.');
+          navigate('/repasswd', { state: { userId: response.data.userId } });
+        } else {
+          alert('비밀번호 초기화에 실패했습니다. 다시 시도해주세요.');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('서버 오류가 발생했습니다. 나중에 다시 시도해주세요.');
+      }
+    } else {
+      alert('아이디와 인증번호를 모두 입력해주세요.');
     }
-    
   };
 
   return (
-    <PageContainer>
+    <A.loginpage>
       <FormContainer>
         <Logo src={logo} alt="Memoir Logo" onClick={handleLogoClick} />
         <Description>계정에 등록된 이메일로 인증을 해주세요.</Description>
@@ -203,16 +210,33 @@ const FindIdPage = () => {
             />
           </InputWrapper>
           {codeError && <ErrorMessage>{codeError}</ErrorMessage>}
-          <Button onClick={handleIdSearch}>아이디 찾기</Button>
+          <Button onClick={handlePwReset}>비밀번호 찾기</Button>
+          {/* handlePwReset 으로 변경 */}
         </RegisterForm>
-        <Footer>
-          <p>
-            계정을 찾으셨나요? <FooterLink href="/login">로그인</FooterLink> | <FooterLink href="/findpw">비밀번호 찾기</FooterLink>
-          </p>
-        </Footer>
+        <A.UnderText>
+          <A.SignText >계정을 찾으셨나요?</A.SignText>
+              <A.LookText>
+                <A.LoglookLink to="/login">로그인</A.LoglookLink> 
+                <A.SectionBar/> {' '}
+                <A.PwlookLink to="/findid">아이디 찾기</A.PwlookLink>
+              </A.LookText>
+        </A.UnderText>
       </FormContainer>
-    </PageContainer>
+      <A.UnderContainer>
+          <A.UnderLinks>
+              <A.Underlink to='/terms' color='#A5A8AB'>이용약관</A.Underlink> 
+              <A.SectionBar/> {' '}
+              <A.Underlink to='privacy' color='#63676A'>개인정보 처리방침</A.Underlink> 
+              <A.SectionBar/>  {' '}
+              <A.Underlink to='/support' color='#A5A8AB'>고객센터</A.Underlink>  
+              <A.SectionBar/> {' '}
+              <A.Underlink to='/contact' color='#A5A8AB'>Contact Us</A.Underlink>
+          </A.UnderLinks>
+              <img src={copyright} alt='Memoir copyright'/>
+      </A.UnderContainer>
+     
+    </A.loginpage>
   );
 };
 
-export default FindIdPage;
+export default FindPwPage;

@@ -1,10 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
-import logo from '../img/logo.svg';
-import cancel from '../img/cancel.svg';
-import invisible from '../img/invisible.svg';
-import visible from '../img/visible.svg';
+import { useNavigate, useLocation } from 'react-router-dom';
+import axios from 'axios';
+import logo from '../../components/pic/logo.svg';
+import cancel from '../../components/pic/cancel.svg';
+import invisible from '../../components/pic/invisible.svg';
+import visible from '../../components/pic/visible.svg';
+import copyright from '../../components/pic/copyright.svg';
+import * as A from "../Login.style.jsx";
+
 
 const PageContainer = styled.div`
   display: flex;
@@ -137,18 +141,56 @@ const FooterLink = styled.a`
   }
 `;
 
+const SuccessMessage = styled.p`
+  color: green;
+  font-size: 0.8em;
+  text-align: left;
+  margin: 5px 0 0 0;
+`;
+
 const SignupPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
-  const [username, setUsername] = useState('');
+  const [userId, setUserId] = useState('');
   const [nickname, setNickname] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [errors, setErrors] = useState({});
+  const [duplicateCheckResult, setDuplicateCheckResult] = useState({
+    userId: null,
+    nickname: null,
+    email: null
+  });
+
+  const checkUnique = async (field, value) => {
+    try {
+      const response = await axios.post('http://3.37.134.143:8080/api/v1/auth/check/${field}', {
+       [field]: value 
+      });
+      return response.data.result.unique;
+    } catch (error) {
+      console.error(`Error checking ${field}:`, error);
+      return false;
+    }
+  };
+
+
+  // emailsignuppage에서 이메일 내용 받아오기 
+  useEffect(() => {
+    if (location.state?.email) {
+      setEmail(location.state.email);
+      checkEmailUnique(location.state.email);
+    } else {
+      navigate('/email-signup');
+    }
+  }, [location.state, navigate]);
+
 
   const handleLogoClick = () => {
-    navigate('/mainpage');
+    navigate('/');
   };
 
   const togglePasswordVisibility = () => {
@@ -159,22 +201,55 @@ const SignupPage = () => {
     setConfirmPasswordVisible(!confirmPasswordVisible);
   };
 
-  const handleDuplicateCheck = () => {
-    // Simulate duplicate check
-    let newErrors = { ...errors };
-    if (username === 'duplicate') {
-      newErrors.username = '중복된 아이디 입니다.';
-    } else {
-      delete newErrors.username;
+  const checkEmailUnique = async (email) => {
+    try {
+      const response = await axios.post(`http://3.37.134.143:8080/api/v1/auth/check/email?email=${encodeURIComponent(email)}`);
+      
+      if (response.data.isSuccess) {
+        const isUnique = response.data.result.unique;
+        setDuplicateCheckResult(prev => ({ ...prev, email: isUnique }));
+        
+        if (!isUnique) {
+          setErrors(prev => ({ ...prev, email: '이미 사용 중인 이메일입니다.' }));
+        } else {
+          setErrors(prev => ({ ...prev, email: null }));
+        }
+      } else {
+        throw new Error(response.data.message || '서버 응답 오류');
+      }
+    } catch (error) {
+      console.error('이메일 중복 확인 오류:', error);
+      setErrors(prev => ({ ...prev, email: '이메일 확인 중 오류가 발생했습니다.' }));
+      setDuplicateCheckResult(prev => ({ ...prev, email: null }));
     }
-    if (nickname === 'duplicate') {
-      newErrors.nickname = '중복된 닉네임 입니다.';
-    } else {
-      delete newErrors.nickname;
-    }
-    setErrors(newErrors);
   };
 
+  const handleDuplicateCheck = async () => {
+    try {
+      const userIdResponse = await checkUnique('userid', userId);
+      const nicknameResponse = await checkUnique('nickname', nickname);
+      const emailResponse = await checkUnique('email', email);
+
+      setDuplicateCheckResult({
+        userId: userIdResponse,
+        nickname: nicknameResponse,
+        email: emailResponse
+      });
+
+      let newErrors = {};
+      if (!userIdResponse) newErrors.userId = '이미 사용 중인 아이디입니다.';
+      if (!nicknameResponse) newErrors.nickname = '이미 사용 중인 닉네임입니다.';
+      if (!emailResponse) newErrors.email = '이미 사용 중인 이메일입니다.';
+
+      setErrors(prevErrors => ({ ...prevErrors, ...newErrors }));
+
+    } catch (error) {
+      console.error('중복 확인 중 오류 발생:', error);
+    }
+  };
+
+
+  // 이거 필요없나?
   const handlePasswordChange = (e) => {
     const newPassword = e.target.value;
     setPassword(newPassword);
@@ -188,30 +263,57 @@ const SignupPage = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     let newErrors = {};
+
+    if (duplicateCheckResult.userId === null) newErrors.userId = '아이디 중복 확인이 필요합니다.';
+    if (duplicateCheckResult.nickname === null) newErrors.nickname = '닉네임 중복 확인이 필요합니다.';
+    if (duplicateCheckResult.email === false) newErrors.email = '이미 사용 중인 이메일입니다.';
+
+    // 비밀번호 검증
     if (!/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(password)) {
       newErrors.password = '숫자+영문자 조합으로 8자리 이상 입력해 주세요.';
     }
     if (password !== confirmPassword) {
       newErrors.confirmPassword = '비밀번호가 일치하지 않습니다.';
     }
-    setErrors(newErrors);
+
     if (Object.keys(newErrors).length === 0) {
-      // Submit form
+      try {
+        const response = await axios.post('http://3.37.134.143:8080/api/v1/auth/signup', {
+          userid: userId,
+          nickname,
+          email,
+          password
+        });
+        if (response.data.isSuccess && response.data.result.token) {
+          localStorage.setItem('token', response.data.result.token);
+          localStorage.setItem('nickname', nickname);  // 닉네임 저장
+          navigate('/');
+        }
+      } catch (error) {
+        setErrors({ submit: '회원가입 중 오류가 발생했습니다.' });
+        console.error('Signup error:', error);
+      }
     }
   };
-
+  
+  // 얘도 필요없나?
   const clearInput = (field) => {
-    if (field === 'username') {
-      setUsername('');
-    } else if (field === 'nickname') {
-      setNickname('');
-    } else if (field === 'password') {
-      setPassword('');
-    } else if (field === 'confirmPassword') {
-      setConfirmPassword('');
+    switch(field) {
+      case 'userid':
+        setUserId('');
+        break;
+      case 'nickname':
+        setNickname('');
+        break;
+      case 'password':
+        setPassword('');
+        break;
+      case 'confirmPassword':
+        setConfirmPassword('');
+        break;
     }
   };
 
@@ -220,27 +322,37 @@ const SignupPage = () => {
       <FormContainer>
         <Logo src={logo} alt="Memoir Logo" onClick={handleLogoClick} />
         <Description>회원 가입으로 여행가들의 기록을 따라 떠나보세요.</Description>
+        {/* 이메일 중복 오류 */}
+        {errors.email && <ErrorMessage>{errors.email}</ErrorMessage>}
         <RegisterForm onSubmit={handleSubmit}>
           <InputWrapper>
             <Input
               type="text"
               placeholder="아이디"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              value={userId}
+              onChange={(e) => {
+                setUserId(e.target.value);
+                setDuplicateCheckResult(prev => ({ ...prev, userId: null }));
+              }}
             />
             <Icon
               src={cancel}
               alt="Cancel Icon"
-              onClick={() => clearInput('username')}
+              onClick={() => clearInput('userId')}
             />
           </InputWrapper>
-          {errors.username && <ErrorMessage>{errors.username}</ErrorMessage>}
+          {errors.userId && <ErrorMessage>{errors.userId}</ErrorMessage>}
+          {duplicateCheckResult.userId === true && <SuccessMessage>사용 가능한 아이디입니다.</SuccessMessage>}
+          
           <InputWrapper>
             <Input
               type="text"
               placeholder="닉네임"
               value={nickname}
-              onChange={(e) => setNickname(e.target.value)}
+              onChange={(e) => {
+                setNickname(e.target.value);
+                setDuplicateCheckResult(prev => ({ ...prev, nickname: null }));
+              }}
             />
             <Icon
               src={cancel}
@@ -249,6 +361,8 @@ const SignupPage = () => {
             />
           </InputWrapper>
           {errors.nickname && <ErrorMessage>{errors.nickname}</ErrorMessage>}
+          {duplicateCheckResult.nickname === true && <SuccessMessage>사용 가능한 닉네임입니다.</SuccessMessage>}
+          
           <InputWrapper>
             <Input
               type={passwordVisible ? 'text' : 'password'}
@@ -286,25 +400,28 @@ const SignupPage = () => {
           </DuplicateCheckContainer>
           <Button type="submit">회원가입</Button>
         </RegisterForm>
-        <SignupFooter>
-          <p>계정이 있으신가요?</p>
-          <p>
-            <FooterLink href="/login">로그인</FooterLink> |{' '}
-            <FooterLink href="/find-id">아이디 찾기</FooterLink>
-          </p>
-        </SignupFooter>
+        
+        <A.UnderText>
+          <A.SignText >계정이 있으신가요?</A.SignText>
+              <A.LookText>
+                <A.LoglookLink to="/login">로그인</A.LoglookLink>
+                <A.SectionBar/> {' '}
+                <A.PwlookLink to="/findid">아이디 찾기</A.PwlookLink>
+              </A.LookText>
+        </A.UnderText>
       </FormContainer>
-      <Footer>
-        <FooterLink href="/terms">이용약관</FooterLink>
-        <span>|</span>
-        <FooterLink href="/privacy">개인정보 처리방침</FooterLink>
-        <span>|</span>
-        <FooterLink href="/support">고객센터</FooterLink>
-        <span>|</span>
-        <FooterLink href="/contact">Contact Us</FooterLink>
-        <span>|</span>
-        <span>&copy; Memoir 2024</span>
-      </Footer>
+      <A.UnderContainer>
+        <A.UnderLinks>
+          <A.Underlink to='/terms' color='#A5A8AB'>이용약관</A.Underlink> 
+          <A.SectionBar/> {' '}
+          <A.Underlink to='privacy' color='#63676A'>개인정보 처리방침</A.Underlink> 
+          <A.SectionBar/>  {' '}
+          <A.Underlink to='/support' color='#A5A8AB'>고객센터</A.Underlink>  
+          <A.SectionBar/> {' '}
+          <A.Underlink to='/contact' color='#A5A8AB'>Contact Us</A.Underlink>
+        </A.UnderLinks>
+          <img src={copyright} alt='Memoir copyright'/>
+      </A.UnderContainer>
     </PageContainer>
   );
 };

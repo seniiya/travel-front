@@ -1,0 +1,15 @@
+{
+    "id": 1,
+    "title": "제주도 여행 리뷰",
+    "content": "<p>제주도는 정말 아름다운 곳입니다.이곳에서 즐길 수 있는 여러 명소들이 있는데, 그중에서도 한라산 등반이 가장 인상 깊었습니다.</p><p>맛있는 해산물 요리도 많이 즐겼습니다!</p>",
+    "likeCount": 150,
+    "scrapCount": 45,
+    "viewCount": 102,
+    "createDate": "2024-08-24 12:50",
+    "user": {
+        "id": 101,
+        "userid": "travel_enthusiast",
+        "nickname": "여행자",
+        "email": "travel@example.com"
+    }
+}

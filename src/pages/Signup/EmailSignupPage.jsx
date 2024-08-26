@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import logo from '../img/logo.svg';
+import axios from 'axios';
+import logo from '../../components/pic/logo.svg';
+import copyright from '../../components/pic/copyright.svg';
+import * as A from "../Login.style.jsx";
 
 const PageContainer = styled.div`
   display: flex;
@@ -89,49 +92,75 @@ const Button = styled.button`
   }
 `;
 
-const Footer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 20px;
-  font-size: 0.9em;
-  text-align: center;
-  color: #666; /* Adjust text color */
-  gap: 5px; /* Add gap between elements */
-`;
 
-const FooterLink = styled.a`
-  color: #007bff;
-  text-decoration: none;
-  margin: 0 5px; /* Add margin for spacing */
-  &:hover {
-    text-decoration: underline;
-  }
+
+//추가
+const ErrorMessage = styled.p`
+  color: red;
+  font-size: 0.8em;
+  margin-top: 5px;
 `;
 
 const EmailSignupPage = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [verificationCode, setVerificationCode] = useState('');
-  const [isEmailVerified, setIsEmailVerified] = useState(false);
+  const [isEmailSent, setIsEmailSent] = useState(false);
+  const [error, setError] = useState('');
 
   const handleLogoClick = () => {
-    navigate('/mainpage');
+    navigate('/');
   };
 
-  const handleEmailVerification = () => {
-    // Simulate email verification
-    setIsEmailVerified(true);
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (isEmailVerified) {
-      // Handle successful email verification
-      navigate('/signup');
-      // 이메일 인증이 완료되면 회원가입창으로 넘어가도록 수정했습니다 !! 
+  
+  const handleEmailVerification = async () => {
+    try {
+      const response = await axios.post('http://3.37.134.143:8080/api/v1/auth/mailSend', { 
+        email: 'dhwjdguq@ng.com' });
+      if (response.data.isSuccess) {
+        setIsEmailSent(true);
+        setError('');
+        alert('인증번호를 발송했습니다. 인증번호가 오지 않으면 입력하신 정보를 다시 한번 확인해 주세요.');
+      } else {
+        // 중복확인 api 명세서 적용 안 시켜도 되나 ? 
+        if (response.data.message === 'DUPLICATE_EMAIL') {
+          setError('중복된 이메일입니다.');
+        } else if (response.data.message === 'INVALID_EMAIL_FORMAT') {
+          setError('올바른 이메일 형식이 아닙니다.');
+        } else {
+          console.error('이메일 전송 실패:', response.data.message);
+          setError('이메일 전송에 실패했습니다. 다시 시도해주세요.');
+        }
+      }
+    } catch (error) {
+      console.error('서버 오류:', error);
     }
   };
+
+
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!isEmailSent) {
+      console.error('인증 코드 요청 필요');
+      setError('올바른 이메일 형식이 아닙니다.')
+      return;
+    }
+    try {
+      const response = await axios.post('http://3.37.134.143:8080/api/v1/auth/mailCheck', { 
+        email: email, //email, 만 해줘도 되나?? 
+        authNum: verificationCode 
+      });
+      if (response.data.isSuccess) {
+        navigate('/signup', { state: { email: response.data.result.email } });
+      } else {
+        setError('인증 번호가 올바르지 않습니다. 다시 확인해주세요.');
+      }
+    } catch (error) {
+      console.error('서버 오류:', error);
+    }
+  };
+
 
   return (
     <PageContainer>
@@ -146,7 +175,7 @@ const EmailSignupPage = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
-            <SmallButton type="button" onClick={handleEmailVerification}>
+            <SmallButton type="button" onClick={handleEmailVerification} disabled={isEmailSent}>
               인증하기
             </SmallButton>
           </InputWrapper>
@@ -155,27 +184,37 @@ const EmailSignupPage = () => {
               type="text"
               placeholder="인증번호"
               value={verificationCode}
-              onChange={(e) => setVerificationCode(e.target.value)}
-              disabled={!isEmailVerified}
+              onChange={(e) => {
+                console.log('Verification code changed:', e.target.value);
+                setVerificationCode(e.target.value);
+              }}
             />
           </InputWrapper>
+          {error && <ErrorMessage>{error}</ErrorMessage>}
+
           <Button type="submit">이메일 인증</Button>
         </RegisterForm>
-        <Footer>
-          <p>계정이 있으신가요? <FooterLink href="/login">로그인</FooterLink> | <FooterLink href="/find-id">아이디 찾기</FooterLink></p>
-        </Footer>
+        <A.UnderText>
+          <A.SignText >계정이 있으신가요?</A.SignText>
+              <A.LookText>
+                <A.LoglookLink to="/login">로그인</A.LoglookLink>
+                <A.SectionBar/> {' '}
+                <A.PwlookLink to="/findid">아이디 찾기</A.PwlookLink>
+              </A.LookText>
+        </A.UnderText>
       </FormContainer>
-      <Footer>
-        <FooterLink href="/terms">이용약관</FooterLink>
-        <span>|</span>
-        <FooterLink href="/privacy">개인정보 처리방침</FooterLink>
-        <span>|</span>
-        <FooterLink href="/support">고객센터</FooterLink>
-        <span>|</span>
-        <FooterLink href="/contact">Contact Us</FooterLink>
-        <span>|</span>
-        <span>&copy; Memoir 2024</span>
-      </Footer>
+      <A.UnderContainer>
+        <A.UnderLinks>
+          <A.Underlink to='/terms' color='#A5A8AB'>이용약관</A.Underlink> 
+          <A.SectionBar/> {' '}
+          <A.Underlink to='privacy' color='#63676A'>개인정보 처리방침</A.Underlink> 
+          <A.SectionBar/>  {' '}
+          <A.Underlink to='/support' color='#A5A8AB'>고객센터</A.Underlink>  
+          <A.SectionBar/> {' '}
+          <A.Underlink to='/contact' color='#A5A8AB'>Contact Us</A.Underlink>
+        </A.UnderLinks>
+          <img src={copyright} alt='Memoir copyright'/>
+      </A.UnderContainer>
     </PageContainer>
   );
 };

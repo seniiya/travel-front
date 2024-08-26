@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import axios from 'axios';
 import MainBack from '../components/pic/MainBack.png';
 import logo2 from '../components/pic/logo2.png';
 import folder from '../components/pic/folder.png';
-
 
 const MainContainer = styled.div`
   position: relative;
@@ -34,8 +34,9 @@ const Logo = styled.img`
   top: 200px;
   left: 50%;
   transform: translateX(-50%);
-  opacity: 0.5;
+  opacity: 0.8;
   z-index: 1; 
+  filter: brightness(1.5) contrast(0.9) saturate(1) hue-rotate(-180deg);
 `;
 
 const Heading = styled.h2`
@@ -73,13 +74,14 @@ const FolderContainer = styled.div`
 const FolderCard = styled.div`
   position: relative;
   width: 210px;
-  height: 160px;
+  height: 180px;
   background: url(${folder}) no-repeat center center;
   background-size: 120% 120%;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #B6CEF7;
+  font-size: 15px;
   font-weight: bold;
 
   div {
@@ -88,15 +90,56 @@ const FolderCard = styled.div`
     left: 25px;
     text-align: center;
   }
+
+  span {
+    position: absolute;
+    bottom: 68px;
+    left: 83px;
+    font-size: 24px;
+    font-weight: 500;
+    color: #B6CEF7;
+    transition: color 0.3s ease;
+  }
+
+  &:hover span {
+    color: #005CF9;
+  }
 `;
 
-const createFolder = (text) => (
-  <FolderCard key={text}>
-    <div>{text}</div>
-  </FolderCard>
-);
-
 const MainPage = () => {
+  const [serverLogs, setServerLogs] = useState({
+    allUsers: 0,
+    recentSignupUsers: 0,
+    allPosts: 0,
+    runningDays: 0,
+  });
+
+  useEffect(() => {
+    const fetchServerLogs = async () => {
+      try {
+        const response = await axios.get('http://3.37.134.143:8080/api/v1/main/serverLogs');
+        console.log('API Response:', response);
+
+        if (response.headers['content-type'].includes('application/json')) {
+          const { isSuccess, result } = response.data;
+          if (isSuccess) {
+            setServerLogs(result);
+          }
+        }
+      } catch (error) {
+        if (error.response) {
+          console.error('서버에서 오류를 응답했습니다:', error.response.data);
+        } else if (error.request) {
+          console.error('응답을 받을 수 없습니다:', error.request);
+        } else {
+          console.error('요청을 처리하는 중 오류가 발생했습니다:', error.message);
+        }
+      }
+    };
+
+    fetchServerLogs();
+  }, []);
+
   return (
     <MainContainer>
       <BackgroundImage src={MainBack} alt="배경" />
@@ -104,15 +147,24 @@ const MainPage = () => {
       <Heading style={{ top: '350px' }}>여행가들의 기록을 따라 떠나보세요</Heading>
       <Heading style={{ top: '380px' }}>기록을 통해 나만의 (memoir)를 완성해 보세요</Heading>
       <FolderContainer>
-        {createFolder('• 모든 여행가')}
-        {createFolder('• 신규 여행가')}
-        {createFolder('• 쌓인 기록')}
-        {createFolder('• 총 기록일')}
+        <FolderCard>
+          <div>• 모든 여행가</div>
+          <span>{serverLogs.allUsers}명</span>
+        </FolderCard>
+        <FolderCard>
+          <div>• 신규 여행가</div>
+          <span>{serverLogs.recentSignupUsers}명</span>
+        </FolderCard>
+        <FolderCard>
+          <div>• 쌓인 기록</div>
+          <span>{serverLogs.allPosts}개</span>
+        </FolderCard>
+        <FolderCard>
+          <div>• 총 기록일</div>
+          <span>{serverLogs.runningDays}일</span>
+        </FolderCard>
       </FolderContainer>
-      
     </MainContainer>
-
-
   );
 };
 
