@@ -58,8 +58,9 @@ export default function TravelerRank() {
             title: user.title,
             content: user.content,
             intro: user.intro || '소개글이 없습니다.',
-            totalLikes: user.totalLikes || 0,
-            totalScraps: user.totalScraps || 0,
+            totalLikes: user.likeCount || 0,
+            totalScraps: user.scrapCount || 0,
+            totalPosts: user.postCount || 0,
             imgSrc: user.imgSrc || sampleDefault,
             // 제공 안함 => 모달 뜰 때 안 뜸 ? 
             joinDate: user.joinDate,
@@ -280,8 +281,8 @@ const TravelerCard = styled.div`
 
     .traveler-stats {
       display: flex;
-      margin-top: 10px;
-      font-size: 12px;
+      height:
+      font-size: 14px;
       color: #888;
     }
 }
@@ -290,22 +291,23 @@ const TravelerCard = styled.div`
 const Description = styled.p`
     font-size: 14px;
     width: 200px;
-    color: ${props => props.noDescription ? '#AAAAAA' : 'inherit'};
+    color: ${props => props.noDescription ? '#AAAAAA' : '#75797D'};
 `;
 
 const StatItem = styled.div`
   display: flex;
   align-items: center;
   margin-right: 10px;
+  margin-top: 20px;
 
   img {
     margin-right: 5px;
-    width: 14px;
-    height: 12px;
+    width: 16px;
+    height: 14px;
   }
 
   span {
-    font-size: 14px;
+    font-size: 15px;
   }
 `;
 

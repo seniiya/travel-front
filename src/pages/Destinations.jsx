@@ -8,6 +8,7 @@ import like from '../components/pic/whiteLike.svg';
 import scrap from '../components/pic/whiteScrap.svg';
 import link from '../components/pic/whiteLink.svg';
 import img from '../components/pic/default.png';
+import sampleDefault from '../components/pic/samples/sample18.svg';
 
 function Destinations({ selectedDest }) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -146,7 +147,7 @@ function Destinations({ selectedDest }) {
             onClick={() => setActiveCard(card.id)}
           >
             <CardImageContainer>
-              <CardImage src={card.repImage || img} alt={card.title} />
+              <CardImage src={sampleDefault} alt={card.title} />
               <Overlay>
                 <span><img src={like} alt="like" /> {card.likeCount}</span>&emsp;&emsp;
                 <span><img src={scrap} alt="scrap" /> {card.scrapCount}</span>

@@ -52,9 +52,10 @@ export default function PopularPage() {
                 scrapCount: post.scrapCount,
                 viewCount: post.viewCount,
                 createDate: post.createDate,
-                repImage: post.repImage,
+                repImage: sampleDefault,
                 user: post.user
               }));
+
               setTopPosts(formattedPosts);
             } else {
               throw new Error(response.data?.message || '데이터를 불러오는데 실패했습니다.');
@@ -139,15 +140,17 @@ export default function PopularPage() {
                     <CardImg src={post.repImage} alt={post.title}/>
                     <Overlay>
                     <LikesScraps>
-                      <span>
-                        <img src={likeicon} alt="like" />
-                        {post.likeCount}
-                      </span>
-                      <span>
-                        <img src={scrapicon} alt="scrap" />
-                        {post.scrapCount}
-                      </span>
-                      <span>
+                      <div className="left-icons">
+                        <span>
+                          <img src={likeicon} alt="like" />
+                          {post.likeCount}
+                        </span>
+                        <span>
+                          <img src={scrapicon} alt="scrap" />
+                          {post.scrapCount}
+                        </span>
+                      </div>
+                      <span >
                         <img src={linkicon} alt="link" />
                       </span>
                     </LikesScraps>
@@ -211,6 +214,7 @@ const SectionTxt = styled(Link)`
 
     &:hover {
         color: #005CF9;
+
     }
 
     .separator {
@@ -284,8 +288,8 @@ const ContentCard = styled.div`
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   position: relative;
   cursor: pointer;
+  overflow: hidden;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  // overflow: hidden;
 
   &:hover {
     transform: translateY(-10px);
@@ -339,11 +343,9 @@ const CardImg = styled.img`
 
 const Overlay = styled.div`
   position: absolute;
-  // bottom: 120px;
-  top: 15px;
+  bottom: 130px;
   left: 0;
   width: 100%;
-  height: 40%;
   display: flex;
   align-items: end;
   color: white;
@@ -351,15 +353,23 @@ const Overlay = styled.div`
   opacity: 0;
   transition: opacity 0.3s ease;
   border-radius: 10px 10px 0 0;
-  margin-left: 3px;
+  
 `;
 
 const LikesScraps = styled.div`
   display: flex;
+  justify-content: space-between;
+  width: 100%;
   gap: 10px;
   opacity: 2;
+  margin-left: 8px;
+  margin-right: 8px;
 
-
+  .left-icons {
+    display: flex;
+    gap: 10px;
+  }
+  
   span {
     display: flex;
     align-items: center;
@@ -371,5 +381,7 @@ const LikesScraps = styled.div`
       color: white;
       filter: brightness(100%) !important;
     }
+
+   
   }
 `;
