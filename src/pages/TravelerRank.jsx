@@ -28,10 +28,10 @@ export default function TravelerRank() {
     }, []);
 
     const handleClick = (traveler) => {
-      setSelectedTraveler(traveler);
+      setSelectedTraveler(traveler.userid);  // traveler.userid로 변경
     };
     
-    const handelCloseModal = () => {
+    const handleCloseModal = () => {
       setSelectedTraveler(null);
     }
 
@@ -145,9 +145,12 @@ export default function TravelerRank() {
             </A.GoTop>
             
 
-        {selectedTraveler && (
-          <TravelerModal onClose={handelCloseModal} traveler={selectedTraveler}/>
-        )}
+            {selectedTraveler && (
+              <TravelerModal 
+                onClose={handleCloseModal} 
+                travelerUserId={selectedTraveler}
+              />
+            )}
         </Container>
     )
 }

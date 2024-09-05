@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 import hearticon from '../components/pic/hearticon.svg';
 import fullheart from '../components/pic/fullheart.svg';
@@ -25,13 +26,50 @@ import nickicon from '../components/pic/Nickname.svg';
 import locationicon from '../components/pic/LocationIcon.svg';
 import dateissue from '../components/pic/dateofissue.svg';
 import favcountry from '../components/pic/FavoriteCountry.svg';
+import sampleDefault from '../components/pic/samples/sample18.svg';
 
-const TravelerModal = ({ children, onClose, traveler }) => {
+
+const TravelerModal = ({ onClose, travelerUserId  }) => {
     const navigate = useNavigate();
+    const [travelerData, setTravelerData] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const fetchTravelerData = async () => {
+            if (!travelerUserId) {
+                setError('travelerUserId is missing');
+                setLoading(false);
+                return;
+            }
+
+            try {
+                const response = await axios.post('/api/v1/user/userProfile', {
+                    userid: travelerUserId
+
+                });
+                if (response.data.isSuccess) {
+                    setTravelerData(response.data.result);
+                } else {
+                    setError(response.data.message);
+                }
+            } catch (err) {
+                setError('Failed to fetch traveler data');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchTravelerData();
+    }, [travelerUserId]);
+
 
     const GoTravelerClick = () => {
-        navigate(`/tarveler/${traveler.id}`);
+        if (travelerData && travelerData.id) {
+            navigate(`/traveler/${travelerData.id}`);
+        }
     }
+
 
     const simplifyUrl = (url) => {
         if (!url) return '';
@@ -52,7 +90,10 @@ const TravelerModal = ({ children, onClose, traveler }) => {
                 <CloseButton src={cancel} alt="Close Modal" onClick={onClose}/>
                 <ModalContent>
                     <Profile>
-                        <ProfileImage src={traveler.imgSrc} alt='Profileimg'/>
+                        <ProfileImage 
+                            src={travelerData?.imgSrc || sampleDefault} 
+                            alt='Profileimg'
+                        />
                         <img src={idcard} alt='Idcardtxt'/>
                     </Profile>
                     <GoTraveler src={goTraveler} alt="Move Traveler" onClick={GoTravelerClick}/>
@@ -61,7 +102,7 @@ const TravelerModal = ({ children, onClose, traveler }) => {
                     </LogoContainer>
                     <Twinkle src={twinkle} alt="Twinkle" />
                     <Description>
-                        {traveler.intro || '소개글이 없습니다.'}
+                        {travelerData.intro || '소개글이 없습니다.'}
                     </Description>
                 
                     <Introduce>
@@ -69,8 +110,8 @@ const TravelerModal = ({ children, onClose, traveler }) => {
                             <InfoColumn>
                                 <InfoItem>
                                     <SNSIcon src={snsicon} alt="Sns icon"/>
-                                    {traveler.sns && traveler.sns.length > 0 ? (
-                                        traveler.sns.map((link, index) => (
+                                    {travelerData.sns && travelerData.sns.length > 0 ? (
+                                        travelerData.sns.map((link, index) => (
                                             <SnsLink key={index} href={link} target="_blank" rel="noopener noreferrer">
                                                 {simplifyUrl(link)}
                                             </SnsLink>
@@ -86,11 +127,11 @@ const TravelerModal = ({ children, onClose, traveler }) => {
                             <InfoColumn>
                                 <InfoItem>
                                     <SectionTitle src={nickicon} alt="Nickname icon" />
-                                    <InfoText>{traveler.nickname}</InfoText>
+                                    <InfoText>{travelerData.nickname}</InfoText>
                                 </InfoItem>
                                 <InfoItem>
                                     <SectionTitle src={locationicon} alt="Location icon" />
-                                    <InfoText>{traveler.location || '정보 없음'}</InfoText>
+                                    <InfoText>{travelerData.location || '정보 없음'}</InfoText>
                                 </InfoItem>
                             </InfoColumn>
 
@@ -99,11 +140,11 @@ const TravelerModal = ({ children, onClose, traveler }) => {
                             <InfoColumn>
                                 <InfoItem>
                                     <DateIcon src={dateissue} alt="Date of Issue" />
-                                    <InfoText>{traveler.dateofissue || '정보 없음'}</InfoText>
+                                    <InfoText>{travelerData.startDate || '정보 없음'}</InfoText>
                                 </InfoItem>
                                 <InfoItem>
                                     <CountryIcon src={favcountry} alt="Favorite Country" />
-                                    <InfoText>{traveler.favcountry || '정보 없음'}</InfoText>
+                                    <InfoText>{travelerData.favoriteCountry || '정보 없음'}</InfoText>
                                 </InfoItem>
                             </InfoColumn>
                         </Section>
